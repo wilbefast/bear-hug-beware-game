@@ -13,7 +13,9 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 Lesser General Public License for more details.
 --]]
 
-local state = gstate.new()
+local game = require("game")
+
+local state = GameState.new()
 
 function state:init()
 end
@@ -57,7 +59,9 @@ end
 function state:keypressed(key, uni)
 	if key=="escape" then
 		love.event.push("quit")
-	end
+  elseif key=="return" then
+    GameState.switch(game)
+  end
 end
 
 

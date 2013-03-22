@@ -15,51 +15,51 @@ Lesser General Public License for more details.
 
 
 function love.load(arg)
-  gstate = require("hump/gamestate")
+  GameState = require("hump/gamestate")
   title = require("title")
-  gstate.switch(title)
+  GameState.switch(title)
 end
 
 
 function love.focus(f)
-  gstate.focus(f)
+  GameState.focus(f)
 end
 
 function love.mousepressed(x, y, btn)
-  gstate.mousepressed(x, y, btn)
+  GameState.mousepressed(x, y, btn)
 end
 
 function love.mousereleased(x, y, btn)
-  gstate.mousereleased(x, y, btn)
+  GameState.mousereleased(x, y, btn)
 end
 
 function love.joystickpressed(joystick, button)
-  gstate.joystickpressed(joystick, button)
+  GameState.joystickpressed(joystick, button)
 end
 
 function love.joystickreleased(joystick, button)
-  gstate.joystickreleased(joystick, button)
+  GameState.joystickreleased(joystick, button)
 end
 
 function love.quit()
-  gstate.quit()
+  GameState.quit()
 end
 
 function love.keypressed(key, uni)
-  gstate.keypressed(key, uni)
+  GameState.keypressed(key, uni)
 end
 
 function keyreleased(key, uni)
-  gstate.keyreleased(key)
+  GameState.keyreleased(key)
 end
 
 MAX_DT = 1/30 -- global!
 function love.update(dt)
   dt = math.min(MAX_DT, dt)
-  gstate.update(dt)
+  GameState.update(dt)
 end
 
 function love.draw()
-  gstate.draw()
+  GameState.draw()
   love.graphics.print(love.timer.getFPS(), 10, 10)
 end
