@@ -21,29 +21,29 @@ end
 
 
 function state:mousereleased(x, y, btn)
-	
+  
 end
 
 
 function state:joystickpressed(joystick, button)
-	
+  
 end
 
 
 function state:joystickreleased(joystick, button)
-	
+  
 end
 
 
 function state:quit()
-	
+  
 end
 
 
 function state:keypressed(key, uni)
-	if key=="escape" then
-		love.event.push("quit")
-	end
+  if key=="escape" then
+    love.event.push("quit")
+  end
 end
 
 
@@ -56,7 +56,7 @@ end
 
 
 function state:draw()
-  love.graphics.print("main menu", 32, 32)
+  love.graphics.print("Game screen", 32, 32)
 end
 
 return state

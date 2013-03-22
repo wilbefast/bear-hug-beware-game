@@ -1,7 +1,7 @@
 function love.load(arg)
   gstate = require("hump/gamestate")
-  game = require("main_menu")
-  gstate.switch(game)
+  title = require("title")
+  gstate.switch(title)
 end
 
 
