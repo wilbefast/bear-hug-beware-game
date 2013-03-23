@@ -115,7 +115,7 @@ function Player:update(dt, level)
     self.requestMoveX, self.requestMoveY = 0, 0
 
     -- base update
-    Character.update(self, dt, tilegrid)
+    Character.update(self, dt, level)
   end
 
   hauteur = love.graphics.getCanvas( ):getHeight() / 2
