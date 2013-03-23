@@ -65,8 +65,6 @@ function state:enter()
   -- reset objects
   self.level:load("../assets/maps/map01")
   self.level:addObject(self.player)
-  
-  
   --TODO reset player position base on level
 end
 
@@ -207,7 +205,7 @@ function state:draw()
                           love.graphics.getHeight())
   
   self.camera:attach()
-    self.level:draw(view)
+  self.level:draw(view)
   self.camera:detach()
 
   -- barre de magie et life :
