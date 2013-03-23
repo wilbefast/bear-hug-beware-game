@@ -106,9 +106,10 @@ function state:keypressed(key, uni)
     self.player:magic_change(-5)
 	-- TEST DE SONS :
   elseif key =="f" then
-	degats_subis:play()
+    --! FIXME MP3 IS NOT SUPPORTED!
+    --degats_subis:play()
   elseif key =="g" then
-  cri_mort:play()
+    cri_mort:play()
   elseif key =="h" then 
 	saut:play()
   end

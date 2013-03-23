@@ -45,10 +45,10 @@ Game loop
 
 function Attack:update(dt, tilegrid)
   -- destroy self
-  self.purge = true
+  --self.purge = true
 end
 
-function Attack:draw(view)
+function Attack:draw()
   -- FIXME debug
   GameObject.draw(self)
 end

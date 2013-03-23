@@ -17,10 +17,11 @@ Lesser General Public License for more details.
 IMPORTS
 --]]------------------------------------------------------------
 
-local Class     = require("hump/class")
-local Character = require("character")
-local GameObject = require("GameObject")
-local Attack    = require("Attack")
+local Class       = require("hump/class")
+local Character   = require("character")
+local GameObject  = require("GameObject")
+local Attack      = require("Attack")
+local useful      = require("useful")
 
 --[[------------------------------------------------------------
 CHARACTER CLASS
@@ -44,6 +45,7 @@ Player:include(Character)
 Constants
 --]]
 
+-- physics
 Player.MOVE_X = 50.0
 Player.MOVE_Y = 32.0
 Player.MAX_DX = 1000.0
@@ -52,6 +54,13 @@ Player.GRAVITY = 700.0
 Player.FRICTION_X = 50
 Player.w = 128
 Player.h = 128
+-- combat
+Player.LIGHTATTACK_REACH = 200
+Player.LIGHTATTACK_DAMAGE = 30
+Player.LIGHTATTACK_RELOADTIME = 1
+Player.HEAVYATTACK_REACH = 300
+Player.HEAVYATTACK_DAMAGE = 80
+Player.HEAVYATTACK_RELOADTIME = 1.7
 
 --[[------------------------------------------------------------
 Collisions
@@ -70,12 +79,16 @@ Game loop
 --]]
 
 function Player:update(dt, level)
-  -- TODO check if move is possible (stunned?)
-  -- accelerate
-  self.dx = self.dx + self.requestMoveX * self.MOVE_X
-
   --update player only if alive
   if self.life > 0 then
+    
+    -- accelerate
+    local moveDir = useful.sign(self.requestMoveX)
+    if moveDir ~= 0 then
+      self.dx = self.dx + moveDir*self.MOVE_X
+      self.facing = moveDir
+    end
+
     -- jump
     if self.requestJump then
       -- check if on the ground
@@ -89,10 +102,11 @@ function Player:update(dt, level)
 
     -- attack
     if self.requestLightAttack then
-      print("request light attack")
-      -- TODO
-
-
+      level:addObject(Attack(self.x, self.y, 
+          self.LIGHTATTACK_DAMAGE,
+          self.LIGHTATTACK_W, 
+          self.LIGHTATTACK_H))
+      
       -- reset
       self.requestLightAttack = false
     end
