@@ -28,24 +28,33 @@ CHARACTER CLASS
 local Player = Class
   {
   type  = "player",
-  magie = 100,
+  magic = 100,
   init = function(self, x, y, image)
     Character.init(self, x, y, image)
   end,
-  life = function(self,nb,bool)
-	if bool then 
-		self.life = self.life + 1
+  life_change = function(self,nb,add)
+	if add then 
+		if self.life+nb < 100 then
+			self.life = self.life + nb
+		end
 	else
-		self.life = self.life - 1
+		if self.life-nb>=0 then
+			self.life = self.life - nb
+		end
 	end
   end,
   
-  magic = function(self,nb,bool)
-	if bool then 
-		self.magie = self.magie + 1
+  magic_change = function(self,nb,add)
+	love.graphics.print("value : "..self.magic,400,400)
+	if add then 
+		if self.magic+nb<100 then
+			self.magic = self.magic + nb
+		end
 	else
-		self.magie = self.magie - 1
-	end
+		if self.magic-nb >= 0 then 
+			self.magic = self.magic - nb
+		end
+	end	
   end
 }
 

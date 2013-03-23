@@ -84,13 +84,9 @@ function state:keypressed(key, uni)
   if key=="escape" then
     GameState.switch(title)
   elseif key == "p" then
-    if self.player.life >0 then
-      self.player.life = self.player.life -1
-    end
+    self.player:life_change(10,false)
   elseif key == "m" then
-    if self.player.magie > 0 then
-      self.player.magie = self.player.magie -1
-    end
+    self.player:magic_change(5,false)
   end
 end
 
@@ -133,7 +129,7 @@ function state:draw()
 	love.graphics.rectangle("line",x_b1,y_b1,100,20)
 	love.graphics.rectangle("line",x_b2,y_b2,100,20)
 	love.graphics.rectangle("fill",x_b1,y_b1,self.player.life,20)
-	love.graphics.rectangle("fill",x_b2,y_b2,self.player.magie,20)
+	love.graphics.rectangle("fill",x_b2,y_b2,self.player.magic,20)
 
 end
 
