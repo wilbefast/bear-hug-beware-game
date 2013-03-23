@@ -54,15 +54,67 @@ local Character = Class{
   end
 }
 
-function Character:update(dt)
+Character.w = 0
+Character.h = 0
+
+--[[----------------------------------------------------------------------------
+Collisions
+--]]
+
+function Character:snap_from_collision(dx, dy, tilegrid, max)
+  local i = 0
+  while tilegrid:collision(self) and (not max or i < max)  do
+    self.x = self.x + dx
+    self.y = self.y + dy
+    i = i + 1
+  end
+end
+
+function Character:snap_to_collision(dx, dy, tilegrid, max)
+  local i = 0
+  while not tilegrid:collision(self, self.x + dx, self.y + dy) 
+        and (not max or i < max)  do
+    self.x = self.x + dx
+    self.y = self.y + dy
+    i = i + 1
+  end
+end
+
+--[[------------------------------------------------------------
+Game loop
+--]]
+
+function Character:update(dt, tilegrid)
+  
+  -- gravity
+  if self.GRAVITY and self.airborne then
+    self.dy = self.dy + self.GRAVITY
+  end
+  
   -- move based on speed
   self.x = self.x + self.dx
   self.y = self.y + self.dy
+  
+  -- check if we're on the ground
+  self.airborne = 
+    (not tilegrid:pixelCollision(self.x, self.y + self.h + 1))
+  if not self.airborne and self.dy > 0 then
+    if tilegrid:collision(self) then
+      self:snap_from_collision(0, -1, tilegrid, dy)
+    end
+    self.dy = 0
+  end 
+  
+  -- move HORIZONTALLY FIRST
+  
 end
 
 function Character:draw(view)
   image = love.graphics.newImage(self.image)
   love.graphics.draw(image, self.x, self.y)
+  
+  -- FIXME debug
+  love.graphics.rectangle("line", self.x, self.y, self.w, self.h)
 end
 
 return Character

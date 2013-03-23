@@ -39,9 +39,18 @@ function Level:load(filename)
   -- load tiles
   self.tilegrid = TileGrid(mapfile)
   -- load objects
+  self.players = {}
   self.enemies = {}
   -- FIXME test
   table.insert(self.enemies, Enemy(350, 250))
+end
+
+--[[------------------------------------------------------------
+Objects
+--]]
+
+function Level:addPlayer(player)
+  table.insert(self.players, player)
 end
 
 --[[------------------------------------------------------------
@@ -49,15 +58,22 @@ Game loop
 --]]
 
 function Level:update(dt)
+  -- update all players
+  useful.map(self.players, 
+      function (player) player:update(dt, self.tilegrid) 
+  end)
   -- update all enemies
   useful.map(self.enemies, 
-      function (enemy) enemy:update(dt) end)
+      function (enemy) enemy:update(dt, self.tilegrid) 
+  end)
 end
 
 function Level:draw(view)
   love.graphics.print("I am a Level", 32, 32)
   self.tilegrid:draw(view)
-  
+  -- draw all players
+  useful.map(self.players, 
+      function (player) player:draw() end)
   -- draw all enemies
   useful.map(self.enemies, 
       function (enemy) enemy:draw() end)

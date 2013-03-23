@@ -113,7 +113,7 @@ end
 Accessors
 --]]--
 
-function TileGrid:gridToTile(self, x, y, z)
+function TileGrid:gridToTile(x, y, z)
   z = (z or 1)
   if self:validGridPos(x, y, z) then
     return self.layers[z][x][y]
@@ -122,7 +122,7 @@ function TileGrid:gridToTile(self, x, y, z)
   end
 end
 
-function TileGrid:pixelToTile(self, x, y, z)
+function TileGrid:pixelToTile(x, y, z)
   return self:gridToTile(math.floor(x / self.tilew),
                          math.floor(y / self.tileh), z)
 end
@@ -132,14 +132,14 @@ Avoid array out-of-bounds exceptions
 --]]--
 
 
-function TileGrid:validGridPos(self, x, y)
+function TileGrid:validGridPos(x, y)
   return (x >= 1 
       and y >= 1
-      and x <= self.size.x 
-      and y <= self.size.y) 
+      and x <= self.w 
+      and y <= self.h) 
 end
 
-function TileGrid:validPixelPos(self, x, y)
+function TileGrid:validPixelPos(x, y)
   return (x >= 0
       and y >= 0
       and x <= self.size.x*self.tilew
@@ -151,23 +151,23 @@ end
 Basic collision tests
 --]]--
 
-function TileGrid:gridCollision(self, x, y)
+function TileGrid:gridCollision(x, y)
   local type = self:gridToTile(x, y).isWall()
 end
 
-function TileGrid:pixelCollision(self, x, y)
+function TileGrid:pixelCollision(x, y)
   local tile = self:pixelToTile(x, y)
-  return ((not tile) or tile.isWall())
+  return ((not tile) or tile:isWall())
 end
 
 --[[----------------------------------------------------------------------------
 GameObject collision tests
 --]]--
 
-function TileGrid:collision(self, go, x, y)
+function TileGrid:collision(go, x, y)
   -- x & y are optional: leave them out to test the object where it actually is
-  x = x or go.x
-  y = y or go.y
+  x = (x or go.x)
+  y = (y or go.y)
   
   -- rectangle collision mask, origin is at the top-left
   return (self:pixelCollision(x,         y) 
@@ -176,7 +176,7 @@ function TileGrid:collision(self, go, x, y)
       or  self:pixelCollision(x + go.w,  y + go.h))
 end
 
-function TileGrid:collision_next(self, go, dt)
+function TileGrid:collision_next(go, dt)
   return self:collision(go, go.x + go.dx*dt, go.y + go.dy*dt)
 end
 

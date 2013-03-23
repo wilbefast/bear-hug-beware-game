@@ -32,7 +32,7 @@ function state:init()
   -- create objects
   self.level = Level()
   self.camera = Camera(0, 0)
-  self.player = Player(100, 100)
+  self.player = Player(300, 300)
 
   self.x_b1 = 600
   self.y_b1 = 150
@@ -44,6 +44,7 @@ end
 function state:enter()
   -- reset objects
   self.level:load("../assets/maps/map01")
+  self.level:addPlayer(self.player)
   --TODO reset player position base on level
   self.camera:lookAt(self.player.x, self.player.y)
 end
@@ -133,7 +134,6 @@ function state:update(dt)
 	  self.player.requestMoveY = ky
 
 	  -- update the objects in the Level
-	  self.player:update(dt)
 	  self.level:update(dt)
 	  
 	  -- point camera at player object
@@ -152,8 +152,7 @@ function state:draw()
                           love.graphics.getHeight())
   
   self.camera:attach()
-  self.level:draw(view)
-  self.player:draw(view)
+    self.level:draw(view)
   self.camera:detach()
 
   -- barre de magie et life :

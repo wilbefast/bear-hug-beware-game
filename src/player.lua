@@ -42,19 +42,22 @@ Player:include(Character)
 Constants
 --]]
 
-Player.SPEED_X = 8
-Player.SPEED_Y = 8
+Player.SPEED_X = 0.4
+Player.SPEED_Y = 0.4
+Player.GRAVITY = 0.1
+Player.w = 128
+Player.h = 128
 
 --[[------------------------------------------------------------
 Game loop
 --]]
 
-function Player:update(dt)
+function Player:update(dt, tilegrid)
 
   -- TODO check if move is possible (stunned?)
   -- accelerate
-  self.dx = self.requestMoveX * self.SPEED_X
-  self.dy = self.requestMoveY * self.SPEED_Y
+  self.dx = self.dx + self.requestMoveX * self.SPEED_X
+  self.dy = self.dy + self.requestMoveY * self.SPEED_Y
   
   -- attack
   if self.requestLightAttack then
@@ -85,7 +88,7 @@ function Player:update(dt)
   self.requestMoveX, self.requestMoveY = 0, 0
 
   -- base update
-  Character.update(self, dt)
+  Character.update(self, dt, tilegrid)
 end
 
 

@@ -38,6 +38,15 @@ function Enemy:init(x, y)
   Character.init(self, x, y, "assets/sprites/sol.png")
 end
 
+--[[------------------------------------------------------------
+Game loop
+--]]
+
+function Enemy:update(dt, tilegrid)
+  -- base update
+  Character.update(self, dt, tilegrid)
+end
+
 
 --[[------------------------------------------------------------
 EXPORT
