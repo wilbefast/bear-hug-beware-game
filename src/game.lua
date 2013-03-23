@@ -107,7 +107,9 @@ function state:keypressed(key, uni)
     self.player:magic_change(-5)
 	-- TEST DE SONS :
   elseif key =="f" then
+    degats_subis:stop()
     degats_subis:play()
+    print("fuck")
   elseif key =="g" then
     cri_mort:play()
   elseif key =="h" then 
