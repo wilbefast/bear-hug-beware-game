@@ -17,9 +17,10 @@ Lesser General Public License for more details.
 IMPORTS
 --]]------------------------------------------------------------
 
-local Character = require("character")
-local GameObject = require("GameObject")
-local Class     = require("hump/class")
+local Character   = require("character")
+local GameObject  = require("GameObject")
+local Class       = require("hump/class")
+local useful      = require("useful")
 
 --[[------------------------------------------------------------
 ENEMY CLASS
@@ -39,7 +40,12 @@ function Enemy:init(x, y, w, h)
   Character.init(self, x, y, w, h, "assets/sprites/sol.png")
 end
 
+-- fisix
 Enemy.GRAVITY         = 700
+Enemy.MOVE_X         = 50.0
+Enemy.MAX_DX         = 1000.0
+Enemy.FRICTION_X = 50
+-- combat
 Enemy.ATTACK_INTERVAL = 2
 Enemy.DAMAGE          = 6
 
@@ -56,6 +62,9 @@ function Enemy:eventCollision(other)
   -- collision with attack
   if other.type == GameObject.TYPE.ATTACK then
     self:life_change(-other.damage)
+    -- knock-back
+    push = useful.sign(self.x - other.x)
+    self.dx = self.dx + push * other.knockback
   
   -- collision with player
   elseif other.type == GameObject.TYPE.PLAYER then

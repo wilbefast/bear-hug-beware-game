@@ -54,7 +54,6 @@ Constants
 
 -- physics
 Player.MOVE_X = 50.0
-Player.MOVE_Y = 32.0
 Player.MAX_DX = 1000.0
 Player.BOOST = 600.0
 Player.GRAVITY = 1200.0
@@ -68,7 +67,8 @@ Player.LIGHTATTACK =
   DAMAGE = 30,
   RELOAD_TIME = 0.5,
   W = 40,
-  H = 40
+  H = 40,
+  KNOCKBACK = 300
 }
 -- combat - heavy attack
 Player.HEAVYATTACK = 
@@ -78,7 +78,8 @@ Player.HEAVYATTACK =
   DAMAGE = 50,
   RELOAD_TIME = 1.2,
   W = 50,
-  H = 50
+  H = 50,
+  KNOCKBACK = 500
 }
 -- combat - magic attack
 Player.MAGICATTACK = 
@@ -88,7 +89,8 @@ Player.MAGICATTACK =
   DAMAGE = 10,
   RELOAD_TIME = 4.0,
   W = 256,
-  H = 256
+  H = 256,
+  KNOCKBACK = 600
 }
 
 --[[------------------------------------------------------------
@@ -114,7 +116,8 @@ function Player:attack(attack)
     self.y + attack.OFFSET_Y, 
     attack.W, 
     attack.H,
-    attack.DAMAGE))
+    attack.DAMAGE,
+    attack.KNOCKBACK))
 end
 
 --[[------------------------------------------------------------
