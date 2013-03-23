@@ -33,8 +33,6 @@ function state:init()
 
   self.level         = Level()
   self.camera        = Camera(0, 0)
-  self.player        = Player(300, 300)
-  self.player.camera = self.camera
 
   self.xLifeBarre  = 150
   self.yLifeBarre  = 100
@@ -63,6 +61,7 @@ end
 
 function state:enter()
   -- reset objects
+  self.player = Player(300, 300)
   self.level:load("../assets/maps/map01")
   self.level:addObject(self.player)
   
