@@ -62,12 +62,12 @@ end
 Game loop
 --]]
 
-function Character:update(dt, tilegrid)
+function Character:update(dt, level)
   -- base update
-  GameObject.update(self, dt, tilegrid)
+  GameObject.update(self, dt, level)
 end
 
-function Character:draw(view)
+function Character:draw()
   -- FIXME animation
   love.graphics.draw(self.image, self.x, self.y)
   -- FIXME debug

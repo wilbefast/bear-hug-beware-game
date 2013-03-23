@@ -35,6 +35,7 @@ local GameObject = Class
     self.y        = y
   end,
   
+  -- default attribute values
   w = 0,
   h = 0,
   dx = 0,
@@ -91,7 +92,10 @@ end
 Game loop
 --]]
 
-function GameObject:update(dt, tilegrid)
+function GameObject:update(dt, level)
+  -- shortcut
+  local tilegrid = level.tilegrid
+  
   -- object may have several fisix settings
   local fisix = (self.fisix or self)
   
@@ -166,7 +170,7 @@ function GameObject:update(dt, tilegrid)
   end
 end
 
-function GameObject:draw(view)
+function GameObject:draw()
   -- FIXME debug
   love.graphics.rectangle("line", self.x, self.y, self.w, self.h)
 end

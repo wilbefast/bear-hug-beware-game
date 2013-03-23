@@ -62,7 +62,7 @@ function Level:update(dt)
   useful.map(self.players, 
       function (player)
         -- update the player
-        player:update(dt, self.tilegrid)
+        player:update(dt, self)
         -- check collisions with enemies
         useful.map(self.enemies,
             function(enemy)
@@ -74,7 +74,7 @@ function Level:update(dt)
   end)
   -- update all enemies
   useful.map(self.enemies, 
-      function (enemy) enemy:update(dt, self.tilegrid) 
+      function (enemy) enemy:update(dt, self) 
   end)
 end
 

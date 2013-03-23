@@ -17,8 +17,9 @@ Lesser General Public License for more details.
 IMPORTS
 --]]------------------------------------------------------------
 
-local Character = require("character")
 local Class     = require("hump/class")
+local Character = require("character")
+local Attack    = require("Attack")
 
 --[[------------------------------------------------------------
 CHARACTER CLASS
@@ -83,6 +84,7 @@ function Player:update(dt, tilegrid)
   if self.requestLightAttack then
     print("request light attack")
     -- TODO
+    
     
     -- reset
     self.requestLightAttack = false
