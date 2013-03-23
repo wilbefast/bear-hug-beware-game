@@ -21,6 +21,8 @@ local Class = require("hump/class")
 local TileGrid = require("TileGrid")
 local GameObject = require("GameObject")
 local Enemy = require("enemy")
+local Death = require("Death")
+local Bonus = require("Bonus")
 local useful = require("useful")
 
 --[[------------------------------------------------------------
@@ -54,9 +56,9 @@ function Level:load(filename)
     if layer.name == "bisounours" then
       parse_objects(layer, Enemy)
     elseif layer.name == "death" then
-      --parse_objects(layer, Death)
+      parse_objects(layer, Death)
     elseif layer.name == "bonus" then
-      --parse_objects(layer, Bonus)
+      parse_objects(layer, Bonus)
     end
   end
 end
