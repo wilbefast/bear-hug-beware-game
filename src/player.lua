@@ -25,9 +25,12 @@ CHARACTER CLASS
 --]]------------------------------------------------------------
 
 
-local Player = Class 
-{
-    type = "player"
+local Player = Class
+  {
+  type = "player",
+  init = function(self, position, image)
+    Character.init(self, position, image)
+  end
 }
 
 Player:include(Character)

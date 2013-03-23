@@ -27,7 +27,7 @@ CHARACTER CLASS
 local Character = Class{
   init = function(self, position, image)
     self.position = position
-    self.image   = image
+    self.image    = image
   end,
   speed = 5,
   type  = "character"
@@ -58,7 +58,8 @@ function Character:update(dt)
 end
 
 function Character:draw()
-  love.graphics.rectangle("fill", self.x, self.y, 50, 50)
+  image = love.graphics.newImage(self.image)
+  love.graphics.draw(image, 50, 50)
 end
 
 return Character

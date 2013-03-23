@@ -135,6 +135,9 @@ function state:draw()
   self.camera:detach()
 
 --[[
+  level:draw()
+  player.draw()
+
   love.graphics.rectangle("line",50,50,600,500)
   love.graphics.rectangle("fill",c1.x,c1.y,c1.tw,c1.th)
   love.graphics.rectangle("fill",c2.x,c2.y,c2.tw,c2.th)
