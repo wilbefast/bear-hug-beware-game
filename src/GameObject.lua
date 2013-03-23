@@ -34,8 +34,8 @@ local GameObject = Class
   init = function(self, x, y, w, h)
     self.w        = (w or 0)
     self.h        = (h or 0)
-    self.x        = x - w/2
-    self.y        = y - h/2
+    self.x        = x
+    self.y        = y
     self.prevx    = self.x
     self.prevy    = self.y
   end,
@@ -66,6 +66,10 @@ GameObject.TYPE[4] = "ENEMYATTACK"
 --[[----------------------------------------------------------------------------
 Collisions
 --]]
+
+function GameObject:centreOn(x, y)
+  self.x, self.y = x - self.w/2, y - self.h/2 
+end
 
 function GameObject:centreX()
   return self.x + self.w/2

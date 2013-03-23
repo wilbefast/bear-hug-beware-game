@@ -28,7 +28,7 @@ CHARACTER CLASS
 local Attack = Class
 {
   init = function(self, x, y, w, h, damage, launcher, knockback)
-    GameObject.init(self, x, y, w, h)
+    GameObject.init(self, x-w/2, y-h/2, w, h)
     self.damage = damage
     self.launcher = (launcher or self)
     self.knockback = (knockback or 0)
