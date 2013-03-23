@@ -44,7 +44,7 @@ end
 function state:enter()
   -- reset objects
   self.level:load("../assets/maps/map01")
-  self.level:addPlayer(self.player)
+  self.level:addObject(self.player)
   --TODO reset player position base on level
   self.camera:lookAt(self.player.x, self.player.y)
 end

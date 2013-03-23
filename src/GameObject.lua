@@ -84,7 +84,18 @@ function GameObject:eventCollision(other)
   -- override me!
 end
 
+function GameObject:collidesType(type)
+  -- override me!
+  return false
+end
+
 function GameObject:isColliding(other)
+  
+  -- no self collisions
+  if self == other then
+    return false
+  end
+
   -- horizontally seperate ? 
   local v1x = (other.x + other.w) - self.x
   local v2x = (self.x + self.w) - other.x

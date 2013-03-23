@@ -22,6 +22,10 @@ local TileGrid = require("TileGrid")
 local Enemy = require("enemy")
 local useful = require("useful")
 
+
+--FIXME
+local GameObject = require("GameObject")
+
 --[[------------------------------------------------------------
 LEVEL CLASS
 --]]------------------------------------------------------------
@@ -38,55 +42,70 @@ function Level:load(filename)
   local mapfile = require(filename)
   -- load tiles
   self.tilegrid = TileGrid(mapfile)
-  -- load objects
-  self.players = {}
-  self.enemies = {}
+  
+  self.object_types = {}
+  -- TODO load objects
   -- FIXME test
-  table.insert(self.enemies, Enemy(350, 250))
+  self:addObject(Enemy(350, 250))
 end
 
 --[[------------------------------------------------------------
 Objects
 --]]
 
-function Level:addPlayer(player)
-  table.insert(self.players, player)
+function Level:addObject(object)
+  -- are there other objects of this type?
+  if (not self.object_types[object.type]) then
+    self.object_types[object.type] = {}
+  end
+  table.insert(self.object_types[object.type], object) 
 end
 
 --[[------------------------------------------------------------
 Game loop
 --]]
-
+local first = true
 function Level:update(dt)
-  -- for each player
-  useful.map(self.players, 
-      function (player)
-        -- update the player
-        player:update(dt, self)
-        -- check collisions with enemies
-        useful.map(self.enemies,
-            function(enemy)
-              if player:isColliding(enemy) then
-                player:eventCollision(enemy)
-                enemy:eventCollision(player)
-              end
-            end)
-  end)
-  -- update all enemies
-  useful.map(self.enemies, 
-      function (enemy) enemy:update(dt, self) 
-  end)
+  
+  -- for each type of object
+  for type, objects_of_type in pairs(self.object_types) do
+    -- for each object
+    useful.map(objects_of_type,
+      function(object)
+        -- update the object
+        object:update(dt, self)
+        -- check collisions with other object
+        -- ... for each other type of object
+        for othertype, objects_of_othertype 
+            in pairs(self.object_types) do
+          if object:collidesType(othertype) then
+            -- ... for each object of this other type
+            useful.map(objects_of_othertype,
+                function(otherobject)
+                  -- check collisions between objects
+                  if object:isColliding(otherobject) then
+                    object:eventCollision(otherobject)
+                  end
+                end)
+          end
+        end  
+    end)
+  end
 end
 
 function Level:draw(view)
   love.graphics.print("I am a Level", 32, 32)
   self.tilegrid:draw(view)
-  -- draw all players
-  useful.map(self.players, 
-      function (player) player:draw() end)
-  -- draw all enemies
-  useful.map(self.enemies, 
-      function (enemy) enemy:draw() end)
+  
+  -- for each type of object
+  for t, object_type in pairs(self.object_types) do
+    -- for each object
+    useful.map(object_type,
+      function(object)
+        -- draw the object
+        object:draw()
+    end)
+  end
 end
 
 --[[------------------------------------------------------------

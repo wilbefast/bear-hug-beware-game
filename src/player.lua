@@ -57,6 +57,10 @@ Player.h = 128
 Collisions
 --]]
 
+function Player:collidesType(type)
+  return (type == GameObject.TYPE.ENEMY)
+end
+
 function Player:eventCollision(other)
   -- TODO
 end
@@ -65,7 +69,7 @@ end
 Game loop
 --]]
 
-function Player:update(dt, tilegrid)
+function Player:update(dt, level)
   -- TODO check if move is possible (stunned?)
   -- accelerate
   self.dx = self.dx + self.requestMoveX * self.MOVE_X
@@ -111,7 +115,7 @@ function Player:update(dt, tilegrid)
   self.requestMoveX, self.requestMoveY = 0, 0
 
   -- base update
-  Character.update(self, dt, tilegrid)
+  Character.update(self, dt, level)
 end
 
 
