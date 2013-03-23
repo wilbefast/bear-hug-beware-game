@@ -20,6 +20,7 @@ IMPORTS
 local Class = require("hump/class")
 local TileGrid = require("TileGrid")
 local Enemy = require("enemy")
+local useful = require("useful")
 
 --[[------------------------------------------------------------
 LEVEL CLASS
@@ -38,9 +39,9 @@ function Level:load(filename)
   -- load tiles
   self.tilegrid = TileGrid(mapfile)
   -- load objects
-  --self.objectholder = ObjectHolder(mapfile)
-
-  self.ennemy = Enemy(350, 250)
+  self.enemies = {}
+  -- FIXME test
+  table.insert(self.enemies, Enemy(350, 250))
 end
 
 --[[------------------------------------------------------------
@@ -48,12 +49,18 @@ Game loop
 --]]
 
 function Level:update(dt)
+  -- update all enemies
+  useful.map(self.enemies, 
+      function (enemy) enemy:update(dt) end)
 end
 
 function Level:draw(view)
   love.graphics.print("I am a Level", 32, 32)
   self.tilegrid:draw(view)
-  self.ennemy:draw()
+  
+  -- draw all enemies
+  useful.map(self.enemies, 
+      function (enemy) enemy:draw() end)
 end
 
 --[[------------------------------------------------------------

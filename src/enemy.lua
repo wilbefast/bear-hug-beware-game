@@ -21,18 +21,26 @@ local Character = require("character")
 local Class     = require("hump/class")
 
 --[[------------------------------------------------------------
-CHARACTER CLASS
+ENEMY CLASS
 --]]------------------------------------------------------------
 
+--[[------------------------------------------------------------
+Initialise
+--]]
 local Enemy = Class
 {
   type  = "enemy",
-
-  init = function(self, x, y)
-    Character.init(self, x, y, "assets/sprites/sol.png")
-  end,
 }
-
 Enemy:include(Character)
+
+function Enemy:init(x, y)
+  -- base constructor
+  Character.init(self, x, y, "assets/sprites/sol.png")
+end
+
+
+--[[------------------------------------------------------------
+EXPORT
+--]]------------------------------------------------------------
 
 return Enemy
