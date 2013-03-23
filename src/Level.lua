@@ -64,19 +64,20 @@ Game loop
 
 function Level:update(dt)
   
-  -- for each type of object
+  -- update objects
+  -- ...for each type of object
   for type, objects_of_type in pairs(self.object_types) do
-    -- for each object
+    -- ...for each object
     useful.map(objects_of_type,
       function(object)
-        -- update the object
+        -- ...update the object
         object:update(dt, self)
-        -- check collisions with other object
-        -- ... for each other type of object
+        -- ...check collisions with other object
+        -- ...... for each other type of object
         for othertype, objects_of_othertype 
             in pairs(self.object_types) do
           if object:collidesType(othertype) then
-            -- ... for each object of this other type
+            -- ...... for each object of this other type
             useful.map(objects_of_othertype,
                 function(otherobject)
                   -- check collisions between objects

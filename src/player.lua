@@ -63,30 +63,30 @@ Player.FRICTION_X = 50
 -- combat - light attack
 Player.LIGHTATTACK = 
 {
-  REACH = 100,
+  REACH = 80,
   OFFSET_Y = 32,
   DAMAGE = 30,
-  RELOAD_TIME = 1,
-  W = 32,
-  H = 32
+  RELOAD_TIME = 0.5,
+  W = 40,
+  H = 40
 }
 -- combat - heavy attack
 Player.HEAVYATTACK = 
 {
-  REACH = 150,
+  REACH = 110,
   OFFSET_Y = 32,
   DAMAGE = 50,
-  RELOAD_TIME = 1.8,
-  W = 48,
-  H = 48
+  RELOAD_TIME = 1.2,
+  W = 50,
+  H = 50
 }
 -- combat - magic attack
 Player.MAGICATTACK = 
 {
-  REACH = 0,
+  REACH = 32,
   OFFSET_Y = 32,
   DAMAGE = 10,
-  RELOAD_TIME = 5.0,
+  RELOAD_TIME = 4.0,
   W = 256,
   H = 256
 }
@@ -108,6 +108,7 @@ Combat
 --]]
 
 function Player:attack(attack)
+  self.reloadTime = attack.RELOAD_TIME
   return (Attack(
     self.x + self.w/2 + attack.REACH*self.facing,
     self.y + attack.OFFSET_Y, 
@@ -143,23 +144,25 @@ function Player:update(dt, level)
     end
 
     -- attack only if reloaded
-    --if self.reloaded
-    if self.requestLightAttack then
-      level:addObject(self:attack(self.LIGHTATTACK))
-      -- reset
-      self.requestLightAttack = false
-    end
-
-    if self.requestHeavyAttack then
-      level:addObject(self:attack(self.HEAVYATTACK))
-      -- reset
-      self.requestHeavyAttack = false
-    end
-
-    if self.requestMagicAttack then
-      level:addObject(self:attack(self.MAGICATTACK))
-      -- reset
-      self.requestMagicAttack = false
+    if self.reloadTime <= 0 then
+      -- light attack
+      if self.requestLightAttack then
+        level:addObject(self:attack(self.LIGHTATTACK))
+        -- reset
+        self.requestLightAttack = false
+      end
+      -- heavy attack
+      if self.requestHeavyAttack then
+        level:addObject(self:attack(self.HEAVYATTACK))
+        -- reset
+        self.requestHeavyAttack = false
+      end
+      -- magic attack
+      if self.requestMagicAttack then
+        level:addObject(self:attack(self.MAGICATTACK))
+        -- reset
+        self.requestMagicAttack = false
+      end
     end
 
     --update animation
@@ -186,6 +189,8 @@ function Player:draw()
   self.animation:draw(x, self.y, 0, self.facing, 1)
   -- FIXME debug
   GameObject.draw(self)
+  
+  love.graphics.print(self.reloadTime, self.x, self.y)
 end
 
 return Player

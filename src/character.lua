@@ -84,6 +84,7 @@ end
 function Character:draw()
   -- FIXME animation
   love.graphics.draw(self.image, self.x, self.y)
+  love.graphics.print(self.life, self.x, self.y)
   -- FIXME debug
   GameObject.draw(self)
 end

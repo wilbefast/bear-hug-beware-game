@@ -30,6 +30,7 @@ local Attack = Class
   init = function(self, x, y, w, h, damage)
     GameObject.init(self, x, y, w, h)
     self.damage = damage
+    self.first_update = true
   end,
       
   type  =  GameObject.TYPE["ATTACK"],
@@ -42,8 +43,12 @@ Game loop
 --]]
 
 function Attack:update(dt, tilegrid)
-  -- destroy self
-  --self.purge = true
+  -- destroy self on *second* update
+  if self.first_update then
+    self.first_update = false
+  else
+    self.purge = true
+  end
 end
 
 function Attack:draw()

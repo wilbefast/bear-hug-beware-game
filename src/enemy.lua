@@ -48,13 +48,21 @@ Collisions
 --]]
 
 function Enemy:collidesType(type)
-  return (type == GameObject.TYPE.PLAYER)
+  return ((type == GameObject.TYPE.PLAYER) 
+      or (type == GameObject.TYPE.ATTACK))
 end
 
 function Enemy:eventCollision(other)
-  if self.reloadTime <= 0 then
-    other:life_change(-self.DAMAGE)
-    self.reloadTime = self.ATTACK_INTERVAL
+  -- collision with attack
+  if other.type == GameObject.TYPE.ATTACK then
+    self:life_change(-other.damage)
+  
+  -- collision with player
+  elseif other.type == GameObject.TYPE.PLAYER then
+    if self.reloadTime <= 0 then
+      other:life_change(-self.DAMAGE)
+      self.reloadTime = self.ATTACK_INTERVAL
+    end
   end
 end
 
