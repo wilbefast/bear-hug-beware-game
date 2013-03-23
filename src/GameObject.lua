@@ -61,6 +61,14 @@ GameObject.TYPE[3] = "ENEMY"
 Collisions
 --]]
 
+function GameObject:centreX()
+  return self.x + self.w/2
+end
+
+function GameObject:centreY()
+  return self.x + self.h/2
+end
+
 function GameObject:snap_from_collision(dx, dy, tilegrid, max)
   local i = 0
   while tilegrid:collision(self) and (not max or i < max)  do

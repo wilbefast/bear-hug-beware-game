@@ -63,7 +63,7 @@ function Enemy:eventCollision(other)
   if other.type == GameObject.TYPE.ATTACK then
     self:life_change(-other.damage)
     -- knock-back
-    push = useful.sign(self.x - other.x)
+    push = useful.sign(self.x - other.launcher:centreX())
     self.dx = self.dx + push * other.knockback
   
   -- collision with player

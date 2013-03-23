@@ -117,6 +117,7 @@ function Player:attack(attack)
     attack.W, 
     attack.H,
     attack.DAMAGE,
+    self,
     attack.KNOCKBACK))
 end
 
@@ -147,6 +148,7 @@ function Player:update(dt, level)
     if self.reloadTime <= 0 then
       -- light attack
       if self.requestLightAttack then
+        
         level:addObject(self:attack(self.LIGHTATTACK))
       end
       -- heavy attack
