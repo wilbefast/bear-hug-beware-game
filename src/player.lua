@@ -71,49 +71,52 @@ function Player:update(dt, tilegrid)
   -- TODO check if move is possible (stunned?)
   -- accelerate
   self.dx = self.dx + self.requestMoveX * self.MOVE_X
-  
-  -- jump
-  if self.requestJump then
-    -- check if on the ground
-    if (not self.airborne) then
-      self.dy = -Player.BOOST
+
+  --update player only if alive
+  if self.life > 0 then
+    -- jump
+    if self.requestJump then
+      -- check if on the ground
+      if (not self.airborne) then
+        self.dy = -Player.BOOST
+      end
+
+      -- reset
+      self.requestJump = false
     end
-    
-    -- reset
-    self.requestJump = false
-  end
-  
-  -- attack
-  if self.requestLightAttack then
-    print("request light attack")
-    -- TODO
-    
-    
-    -- reset
-    self.requestLightAttack = false
-  end
-  
-  if self.requestHeavyAttack then
-    print("request heavy attack")
-    -- TODO
-    
-    -- reset
-    self.requestHeavyAttack = false
-  end
 
-  if self.requestMagicAttack then
-    print("request magic attack")
-    -- TODO
-    
-    -- reset
-    self.requestMagicAttack = false
-  end
-  
-  -- reset input requests to false
-  self.requestMoveX, self.requestMoveY = 0, 0
+    -- attack
+    if self.requestLightAttack then
+      print("request light attack")
+      -- TODO
 
-  -- base update
-  Character.update(self, dt, tilegrid)
+
+      -- reset
+      self.requestLightAttack = false
+    end
+
+    if self.requestHeavyAttack then
+      print("request heavy attack")
+      -- TODO
+
+      -- reset
+      self.requestHeavyAttack = false
+    end
+
+    if self.requestMagicAttack then
+      print("request magic attack")
+      -- TODO
+
+      -- reset
+      self.requestMagicAttack = false
+    end
+
+    -- reset input requests to false
+    self.requestMoveX, self.requestMoveY = 0, 0
+
+    -- base update
+    Character.update(self, dt, tilegrid)
+  end
 
   if self.x > 0 then
     self.camera:lookAt(self.x, self.y)
