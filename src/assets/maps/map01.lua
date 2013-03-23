@@ -15,7 +15,7 @@ return {
       tileheight = 64,
       spacing = 0,
       margin = 0,
-      image = "../../../assets/sprites/mur.png",
+      image = "assets/sprites/mur.png",
       imagewidth = 64,
       imageheight = 64,
       transparentcolor = "#ffffff",
