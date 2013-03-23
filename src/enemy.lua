@@ -38,6 +38,10 @@ function Enemy:init(x, y)
   Character.init(self, x, y, "assets/sprites/sol.png")
 end
 
+Enemy.GRAVITY = 30
+Enemy.w = 64
+Enemy.h = 64
+
 --[[------------------------------------------------------------
 Game loop
 --]]
