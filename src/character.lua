@@ -94,6 +94,14 @@ function Character:update(dt, tilegrid)
     self.dy = self.dy + fisix.GRAVITY
   end
   
+  -- friction
+  if fisix.FRICTION_X and (fisix.FRICTION_X ~= 0) then
+    self.dx = self.dx / (math.pow(fisix.FRICTION_X, dt))
+  end
+  if fisix.FRICTION_Y and (fisix.FRICTION_Y ~= 0) then
+    self.dy = self.dy / (math.pow(fisix.FRICTION_Y, dt))
+  end
+  
   -- terminal velocity
   local abs_dx, abs_dy = math.abs(self.dx), math.abs(self.dy)
   if fisix.MAX_DX and (abs_dx > fisix.MAX_DX) then
