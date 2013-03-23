@@ -68,7 +68,8 @@ Player.LIGHTATTACK =
   RELOAD_TIME = 0.5,
   W = 40,
   H = 40,
-  KNOCKBACK = 300
+  KNOCKBACK = 300,
+  reloadTime = 0
 }
 -- combat - heavy attack
 Player.HEAVYATTACK = 
@@ -79,7 +80,8 @@ Player.HEAVYATTACK =
   RELOAD_TIME = 1.2,
   W = 50,
   H = 50,
-  KNOCKBACK = 500
+  KNOCKBACK = 500,
+  reloadTime = 0
 }
 -- combat - magic attack
 Player.MAGICATTACK = 
@@ -90,7 +92,8 @@ Player.MAGICATTACK =
   RELOAD_TIME = 4.0,
   W = 256,
   H = 256,
-  KNOCKBACK = 600
+  KNOCKBACK = 600,
+  reloadTime = 0
 }
 
 --[[------------------------------------------------------------
@@ -109,16 +112,20 @@ end
 Combat
 --]]
 
-function Player:attack(attack)
-  self.reloadTime = attack.RELOAD_TIME
+function Player:attack(weapon)
+  weapon.reloadTime = weapon.RELOAD_TIME
   return (Attack(
-    self.x + self.w/2 + attack.REACH*self.facing,
-    self.y + attack.OFFSET_Y, 
-    attack.W, 
-    attack.H,
-    attack.DAMAGE,
+    self.x + self.w/2 + weapon.REACH*self.facing,
+    self.y + weapon.OFFSET_Y, 
+    weapon.W, 
+    weapon.H,
+    weapon.DAMAGE,
     self,
-    attack.KNOCKBACK))
+    weapon.KNOCKBACK))
+end
+
+function reload(weapon, dt)
+  weapon.reloadTime = math.max(0, weapon.reloadTime - dt)
 end
 
 --[[------------------------------------------------------------
@@ -144,23 +151,29 @@ function Player:update(dt, level)
       end
     end
 
-    -- attack only if reloaded
-    if self.reloadTime <= 0 then
-      -- light attack
-      if self.requestLightAttack then
-        
-        level:addObject(self:attack(self.LIGHTATTACK))
-      end
-      -- heavy attack
-      if self.requestHeavyAttack then
-        level:addObject(self:attack(self.HEAVYATTACK))
-      end
-      -- magic attack
-      if self.requestMagicAttack then
-        level:addObject(self:attack(self.MAGICATTACK))
-      end
+    -- attack
+    local weapon = nil
+    -- ... light
+    if self.requestLightAttack then
+      weapon = self.LIGHTATTACK
     end
-
+    -- ... heavy
+    if self.requestHeavyAttack then
+      weapon = self.HEAVYATTACK
+    end
+    -- ... magic
+    if self.requestMagicAttack then
+      weapon = self.MAGICATTACK
+    end
+    if weapon and (weapon.reloadTime <= 0) then 
+      level:addObject(self:attack(weapon))
+    end
+    
+    -- reload weapons
+    reload(self.LIGHTATTACK, dt)
+    reload(self.HEAVYATTACK, dt)  
+    reload(self.MAGICATTACK, dt)
+    
     --update animation
     if self.requestMoveX ~= 0 then
       self.animation:update(dt)
@@ -190,7 +203,9 @@ function Player:draw()
   -- FIXME debug
   GameObject.draw(self)
   
-  love.graphics.print(self.reloadTime, self.x, self.y)
+  love.graphics.print(self.LIGHTATTACK.reloadTime, self.x, self.y)
+  love.graphics.print(self.HEAVYATTACK.reloadTime, self.x, self.y+20)
+  love.graphics.print(self.MAGICATTACK.reloadTime, self.x, self.y+40)
 end
 
 return Player
