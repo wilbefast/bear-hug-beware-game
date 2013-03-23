@@ -141,9 +141,6 @@ function Player:update(dt, level)
       if (not self.airborne) then
         self.dy = -Player.BOOST
       end
-
-      -- reset
-      self.requestJump = false
     end
 
     -- attack only if reloaded
@@ -151,20 +148,14 @@ function Player:update(dt, level)
       -- light attack
       if self.requestLightAttack then
         level:addObject(self:attack(self.LIGHTATTACK))
-        -- reset
-        self.requestLightAttack = false
       end
       -- heavy attack
       if self.requestHeavyAttack then
         level:addObject(self:attack(self.HEAVYATTACK))
-        -- reset
-        self.requestHeavyAttack = false
       end
       -- magic attack
       if self.requestMagicAttack then
         level:addObject(self:attack(self.MAGICATTACK))
-        -- reset
-        self.requestMagicAttack = false
       end
     end
 
@@ -177,7 +168,11 @@ function Player:update(dt, level)
 
     -- reset input requests to false
     self.requestMoveX, self.requestMoveY = 0, 0
-
+    self.requestJump = false
+    self.requestLightAttack = false
+    self.requestMagicAttack = false
+    self.requestHeavyAttack = false
+        
     -- base update
     Character.update(self, dt, level)
   end
