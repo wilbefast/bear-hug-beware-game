@@ -18,42 +18,24 @@ IMPORTS
 --]]------------------------------------------------------------
 
 local Class = require("hump/class")
-local TileGrid = require("TileGrid")
 
 --[[------------------------------------------------------------
-LEVEL CLASS
+TILE CLASS
 --]]------------------------------------------------------------
 
 --[[------------------------------------------------------------
 Initialisation
 --]]
 
-local Level = Class
+local Tile = Class
 {
+  init = function(self, type)
+    self.type = type
+  end
 }
-
-function Level:load(filename)
-  local mapfile = require(filename)
-  -- load tiles
-  self.tilegrid = TileGrid(mapfile)
-  -- load objects
-  --self.objectholder = ObjectHolder(mapfile)
-end
-
---[[------------------------------------------------------------
-Game loop
---]]
-
-function Level:update(dt)
-end
-
-function Level:draw()
-    love.graphics.print("I am a Level", 128, 128)
-    self.tilegrid:draw()
-end
 
 --[[------------------------------------------------------------
 EXPORT
 --]]------------------------------------------------------------
 
-return Level
+return Tile
