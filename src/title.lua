@@ -1,6 +1,6 @@
 --[[
 (C) Copyright 2013 
-William Dyce, Maxime Ailloud, Alex Averbrugghe, Julien Deville
+William Dyce, Maxime Ailloud, Alex Verbrugghe, Julien Deville
 
 All rights reserved. This program and the accompanying materials
 are made available under the terms of the GNU Lesser General Public License
@@ -72,7 +72,7 @@ end
 
 
 function state:draw()
-  love.graphics.print("Title screen", 32, 32)
+  love.graphics.print("Press Enter to play", 32, 32)
 end
 
 return state

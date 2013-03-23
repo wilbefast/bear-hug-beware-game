@@ -1,6 +1,6 @@
 --[[
 (C) Copyright 2013
-William Dyce, Maxime Ailloud, Alex Averbrugghe, Julien Deville
+William Dyce, Maxime Ailloud, Alex Verbrugghe, Julien Deville
 
 All rights reserved. This program and the accompanying materials
 are made available under the terms of the GNU Lesser General Public License
@@ -36,27 +36,6 @@ local Character = Class{
 }
 
 function Character:update(dt)
-  -- see hump.vector
-  local delta = vector(0,0)
-    if love.keyboard.isDown('left') then
-      delta.x = -1
-    elseif love.keyboard.isDown('right') then
-      delta.x =  1
-    end
-    if love.keyboard.isDown('up') then
-      delta.y = -1
-    elseif love.keyboard.isDown('down') then
-      delta.y =  1
-    end
-    delta:normalize_inplace()
-
-    player.velocity = Character.velocity + delta * Character.acceleration * dt
-
-    if Character.velocity:len() > Character.max_velocity then
-      player.velocity = Character.velocity:normalized() * Character.max_velocity
-    end
-
-    player.position = Character.position + Character.velocity * dt
 end
 
 function Character:draw()

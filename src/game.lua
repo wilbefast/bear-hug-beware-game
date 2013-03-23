@@ -1,6 +1,6 @@
 --[[
 (C) Copyright 2013 
-William Dyce, Maxime Ailloud, Alex verbrugghe, Julien Deville
+William Dyce, Maxime Ailloud, Alex Verbrugghe, Julien Deville
 
 All rights reserved. This program and the accompanying materials
 are made available under the terms of the GNU Lesser General Public License
@@ -32,12 +32,12 @@ function state:init()
   -- create objects
   self.level = Level()
   self.camera = Camera(0, 0)
-  self.player = Player()
+  self.player = Player(100, 100, "assets/sprites/mur.png")
 
   x_b1 = 600
-	y_b1 = 150
-	x_b2 = 600
-	y_b2 = 200
+  y_b1 = 150
+  x_b2 = 600
+  y_b2 = 200
 end
 
 
@@ -47,7 +47,6 @@ function state:enter()
   self.camera:lookAt(128, 128) --FIXME look at player
 
   --TODO reset player position base on level
-  self.player.x, self.player.y, self.player.image = 100, 100, "assets/sprites/mur.png"
   self.camera:lookAt(self.player.x, self.player.y)
 end
 
@@ -122,23 +121,11 @@ end
 
 function state:draw()
   love.graphics.print("Game screen", 32, 32)
-
-
+  
   self.camera:attach()
   self.level:draw()
   self.player:draw()
   self.camera:detach()
-
---[[
-  level:draw()
-  player.draw()
-
-  love.graphics.rectangle("line",50,50,600,500)
-  love.graphics.rectangle("fill",c1.x,c1.y,c1.tw,c1.th)
-  love.graphics.rectangle("fill",c2.x,c2.y,c2.tw,c2.th)
-  love.graphics.rectangle("fill",c3.x,c3.y,c3.tw,c3.th)
-  love.graphics.rectangle("fill",player.x,player.y,5,5)
---]]
 
   -- barre de magie et life :
 	love.graphics.print("life : " ,560,150)
