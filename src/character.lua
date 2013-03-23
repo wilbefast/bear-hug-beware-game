@@ -33,8 +33,25 @@ local Character = Class{
     self.dy       = 0
   end,
   life  = 100,
+  magic = 100,
   speed = 5,
-  type  = "character"
+  type  = "character",
+
+  life_change = function(self,nb)
+    local newLife = self.life + nb
+    if newLife < 0 then
+      newLife = 0
+    end
+    self.life = newLife
+  end,
+
+  magic_change = function(self,nb)
+    local newMagic = self.magic + nb
+    if newMagic < 0 then
+      newMagic = 0
+    end
+    self.magic = newMagic
+  end
 }
 
 function Character:update(dt)

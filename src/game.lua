@@ -81,18 +81,20 @@ end
 function state:keypressed(key, uni)
   if key=="escape" then
     GameState.switch(title)
-
   elseif key == "p" then
     if paused then
 		paused = false
+		--[[ ogg = love.sound.newSoundData("assets/audio/chaconne.ogg")
+		ogg:setVolume(0.9)
+		love.audio.play(ogg) ]]
 	else 
 		paused = true
 	end
   --! TODO remove debug test when no longer needed
   -----------------------------
   elseif key == "m" then
-    self.player:life_change(10,false)
-    self.player:magic_change(5,false)
+    self.player:life_change(-10)
+    self.player:magic_change(-5)
   end
 -----------------------------
   
@@ -112,30 +114,31 @@ end
 
 
 function state:update(dt)
-  
-  -- deal with input
-  local kx, ky = 0, 0
-  if love.keyboard.isDown("left", "q", "a") then
-    kx = kx - 1 
-  end
-  if love.keyboard.isDown("right", "d") then
-    kx = kx + 1 
-  end
-  if love.keyboard.isDown("up", "z", "w") then
-    ky = ky - 1 
-  end
-  if love.keyboard.isDown("down", "s") then 
-    ky = ky + 1 
-  end
-  self.player.requestMoveX = kx
-  self.player.requestMoveY = ky
+  if not paused then 
+	  -- deal with input
+	  local kx, ky = 0, 0
+	  if love.keyboard.isDown("left", "q", "a") then
+		kx = kx - 1 
+	  end
+	  if love.keyboard.isDown("right", "d") then
+		kx = kx + 1 
+	  end
+	  if love.keyboard.isDown("up", "z", "w") then
+		ky = ky - 1 
+	  end
+	  if love.keyboard.isDown("down", "s") then 
+		ky = ky + 1 
+	  end
+	  self.player.requestMoveX = kx
+	  self.player.requestMoveY = ky
 
-  -- update the objects in the Level
-  self.player:update(dt)
-  self.level:update(dt)
-  
-  -- point camera at player object
-  self.camera:lookAt(self.player.x, self.player.y)
+	  -- update the objects in the Level
+	  self.player:update(dt)
+	  self.level:update(dt)
+	  
+	  -- point camera at player object
+	  self.camera:lookAt(self.player.x, self.player.y)
+  end
 end
 
 
@@ -149,8 +152,8 @@ function state:draw()
                           love.graphics.getHeight())
   
   self.camera:attach()
-  	self.level:draw(view)
-  	self.player:draw(view)
+  self.level:draw(view)
+  self.player:draw(view)
   self.camera:detach()
 
   -- barre de magie et life :
@@ -161,6 +164,8 @@ function state:draw()
 
 	love.graphics.rectangle("fill",self.x_b1,self.y_b1,self.player.life,20)
 	if self.player.life == 0 then
+		love.graphics.print("game over ! ",self.x_b1,self.y_b1)
+		love.graphics.rectangle("fill",self.x_b2,self.y_b2,self.player.magic,20)
 		love.graphics.rectangle("line",1000, 100,100,100)
 		love.graphics.print("game over ! \n t'es mauvais \n JACK",1010,110)
 	end
