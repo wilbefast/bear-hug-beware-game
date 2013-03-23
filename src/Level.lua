@@ -48,7 +48,7 @@ function Level:update(dt)
 end
 
 function Level:draw()
-    love.graphics.print("I am a Level", 128, 128)
+    love.graphics.print("I am a Level", 32, 32)
     self.tilegrid:draw()
 end
 

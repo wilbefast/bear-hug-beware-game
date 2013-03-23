@@ -63,7 +63,7 @@ function TileGrid:draw()
    
     for x = 1, self.width do
       for y = 1, self.height do
-        love.graphics.print(self.layers[1][y][x].type, x*6, y*10 + 200)
+        love.graphics.print(self.layers[1][y][x].type, x*16, y*16 + 32)
       end
     end
     

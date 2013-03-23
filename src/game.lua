@@ -13,18 +13,30 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 Lesser General Public License for more details.
 --]]
 
-local state = GameState.new()
+--[[------------------------------------------------------------
+IMPORTS
+--]]------------------------------------------------------------
 
 local Level = require("Level")
-local level = Level()
+local Camera = require("hump/camera")
 
+--[[------------------------------------------------------------
+LEVEL CLASS
+--]]------------------------------------------------------------
+
+local state = GameState.new()
 
 function state:init()
+  -- create objects
+  self.level = Level()
+  self.camera = Camera(0, 0)
 end
 
 
 function state:enter()
-  level:load("../assets/maps/map01")
+  -- reset objects
+  self.level:load("../assets/maps/map01")
+  self.camera:lookAt(128, 128) --FIXME look at player
 end
 
 
@@ -69,12 +81,28 @@ end
 
 
 function state:update(dt)
+  --FIXME 
+  if love.keyboard.isDown("left") then
+    self.camera.x = self.camera.x - dt*512
+  end
+  if love.keyboard.isDown("right") then
+    self.camera.x = self.camera.x + dt*512
+  end
+  if love.keyboard.isDown("down") then
+    self.camera.y = self.camera.y + dt*512
+  end
+  if love.keyboard.isDown("up") then
+    self.camera.y = self.camera.y - dt*512
+  end
 end
 
 
 function state:draw()
   love.graphics.print("Game screen", 32, 32)
-  level:draw()
+  
+  self.camera:attach()
+  self.level:draw()
+  self.camera:detach()
 end
 
 return state
