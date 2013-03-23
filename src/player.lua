@@ -56,22 +56,40 @@ Constants
 Player.MOVE_X = 50.0
 Player.MOVE_Y = 32.0
 Player.MAX_DX = 1000.0
-Player.BOOST = 850.0
-Player.GRAVITY = 700.0
+Player.BOOST = 600.0
+Player.GRAVITY = 1200.0
 Player.FRICTION_X = 50
 
 -- combat - light attack
-Player.LIGHTATTACK_REACH = 200
-Player.LIGHTATTACK_DAMAGE = 30
-Player.LIGHTATTACK_RELOADTIME = 1
-Player.LIGHTATTACK_W = 32
-Player.LIGHTATTACK_H = 32
+Player.LIGHTATTACK = 
+{
+  REACH = 100,
+  OFFSET_Y = 32,
+  DAMAGE = 30,
+  RELOAD_TIME = 1,
+  W = 32,
+  H = 32
+}
 -- combat - heavy attack
-Player.HEAVYATTACK_REACH = 300
-Player.HEAVYATTACK_DAMAGE = 80
-Player.HEAVYATTACK_RELOADTIME = 1.7
-Player.LIGHTATTACK_W = 64
-Player.LIGHTATTACK_H = 64
+Player.HEAVYATTACK = 
+{
+  REACH = 150,
+  OFFSET_Y = 32,
+  DAMAGE = 50,
+  RELOAD_TIME = 1.8,
+  W = 48,
+  H = 48
+}
+-- combat - magic attack
+Player.MAGICATTACK = 
+{
+  REACH = 0,
+  OFFSET_Y = 32,
+  DAMAGE = 10,
+  RELOAD_TIME = 5.0,
+  W = 256,
+  H = 256
+}
 
 --[[------------------------------------------------------------
 Collisions
@@ -83,6 +101,19 @@ end
 
 function Player:eventCollision(other)
 
+end
+
+--[[------------------------------------------------------------
+Combat
+--]]
+
+function Player:attack(attack)
+  return (Attack(
+    self.x + self.w/2 + attack.REACH*self.facing,
+    self.y + attack.OFFSET_Y, 
+    attack.W, 
+    attack.H,
+    attack.DAMAGE))
 end
 
 --[[------------------------------------------------------------
@@ -111,29 +142,22 @@ function Player:update(dt, level)
       self.requestJump = false
     end
 
-    -- attack
+    -- attack only if reloaded
+    --if self.reloaded
     if self.requestLightAttack then
-      level:addObject(Attack(self.x, self.y, 
-          self.LIGHTATTACK_W, 
-          self.LIGHTATTACK_H,
-          self.LIGHTATTACK_DAMAGE))
-      
+      level:addObject(self:attack(self.LIGHTATTACK))
       -- reset
       self.requestLightAttack = false
     end
 
     if self.requestHeavyAttack then
-      print("request heavy attack")
-      -- TODO
-
+      level:addObject(self:attack(self.HEAVYATTACK))
       -- reset
       self.requestHeavyAttack = false
     end
 
     if self.requestMagicAttack then
-      print("request magic attack")
-      -- TODO
-
+      level:addObject(self:attack(self.MAGICATTACK))
       -- reset
       self.requestMagicAttack = false
     end

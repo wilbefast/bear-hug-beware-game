@@ -39,6 +39,14 @@ local Character = Class
 }
 Character:include(GameObject)
 
+
+--[[------------------------------------------------------------
+Resources
+--]]
+
+--function Charactr
+
+
 --[[------------------------------------------------------------
 Resources
 --]]
