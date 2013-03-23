@@ -36,9 +36,9 @@ local Enemy = Class
 }
 Enemy:include(Character)
 
-function Enemy:init(x, y, w, h)
+function Enemy:init(x, y)
   -- base constructor
-  Character.init(self, x, y, w, h, "assets/sprites/sol.png")
+  Character.init(self, x, y, 128, 128, "assets/sprites/sol.png")
   self.requestLightAttack = true
 end
 

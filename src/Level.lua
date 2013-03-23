@@ -40,10 +40,24 @@ function Level:load(filename)
   -- load tiles
   self.tilegrid = TileGrid(mapfile)
   
+  -- load objects
   self.object_types = {}
-  -- TODO load objects
-  -- FIXME test
-  self:addObject(Enemy(350, 250, 128, 128))
+  -- ... using this function
+  function parse_objects(table, constructor)
+    for i, object in ipairs(table.objects) do
+      self:addObject(constructor(object.x, object.y))
+    end
+  end
+  -- ... go through the layers and create objects!
+  for z, layer in ipairs(mapfile.layers) do
+    if layer.name == "bisounours" then
+      parse_objects(layer, Enemy)
+    elseif layer.name == "death" then
+      --parse_objects(layer, Death)
+    elseif layer.name == "bonus" then
+      --parse_objects(layer, Bonus)
+    end
+  end
 end
 
 --[[------------------------------------------------------------
