@@ -42,13 +42,17 @@ Player:include(Character)
 Constants
 --]]
 
-Player.MOVE_X = 32.0
+Player.MOVE_X = 64.0
 Player.MOVE_Y = 32.0
-Player.MAX_DX = 512.0
-Player.BOOST = 512.0
+Player.MAX_DX = 2000.0
+Player.BOOST = 850.0
 Player.GRAVITY = 20.0
+<<<<<<< HEAD
 Player.FRICTION_X = 150
 
+=======
+Player.FRICTION_X = 50
+>>>>>>> nouvelle map
 Player.w = 128
 Player.h = 128
 
