@@ -37,9 +37,10 @@ local Player = Class
   type  =  GameObject.TYPE["PLAYER"],
 
   init = function(self, x, y)
-    Character.init(self, x, y, 64, 128, 
-                    "assets/sprites/HerosCourseSprite.png")
-  	self.animation = newAnimation(self.image, 128, 128, 0.1, 0)
+    Character.init(self, x, y, 128, 128, 
+                    "assets/sprites/HerosSprite.png")
+  	self.animation = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 1, 3, 5, 7, 9, 11, 13, 15 })
+    --saut { 21, 22, 23, 24, 25, 26 }
     self.animation:setSpeed(1,2)
 end,
 }
@@ -52,8 +53,13 @@ Constants
 -- physics
 Player.MOVE_X = 50.0
 Player.MAX_DX = 1000.0
+<<<<<<< HEAD
 Player.BOOST = 1000.0
 Player.GRAVITY = 1500.0
+=======
+Player.BOOST = 850.0
+Player.GRAVITY = 1200.0
+>>>>>>> animation
 Player.FRICTION_X = 50
 
 -- combat - light attack

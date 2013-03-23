@@ -34,13 +34,14 @@ animation.__index = animation
 -- @param delay The delay between two frames
 -- @param frames The number of frames, 0 for autodetect
 -- @return The created animation
-function newAnimation(image, fw, fh, delay, frames, x, y)
+function newAnimation(image, fw, fh, delay, frames, x, y, t)
   local a = {}
 
   x = x or 0
   y = y or 0
 
   a.img = image
+  a.framesAnim = {}
   a.frames = {}
   a.delays = {}
   a.timer = 0
@@ -56,26 +57,40 @@ function newAnimation(image, fw, fh, delay, frames, x, y)
   if frames == 0 then
     frames = imgw / fw * imgh / fh
   end
+  print( )
   local rowsize = imgw/fw
   for i = 1, frames do
     local row = math.floor((i-1)/rowsize)
     local column = (i-1)%rowsize
     local frame = love.graphics.newQuad(column*fw+x*fw, row*fh+y*fh, fw, fh, imgw, imgh)
+    table.insert(a.framesAnim, i)
     table.insert(a.frames, frame)
     table.insert(a.delays, delay)
   end
+
+  if( t ) then
+    print("good")
+    a.framesAnim = {}
+    for i = 1, #t do
+      table.insert(a.framesAnim, t[i] )
+    end
+  end
+
   return setmetatable(a, animation)
 end
+
 
 --- Update the animation
 -- @param dt Time that has passed since last call
 function animation:update(dt)
   if not self.playing then return end
   self.timer = self.timer + dt * self.speed
-  if self.timer > self.delays[self.position] then
-    self.timer = self.timer - self.delays[self.position]
+  if self.timer > self.delays[self.framesAnim[self.position]] then
+    self.timer = self.timer - self.delays[self.framesAnim[self.position]]
     self.position = self.position + 1 * self.direction
-    if self.position > #self.frames then
+    print( self.position )
+    print( #self.framesAnim )
+    if self.position > #self.framesAnim then --frames then
       if self.mode == 1 then
         self.position = 1
       elseif self.mode == 2 then
@@ -94,7 +109,11 @@ end
 
 --- Draw the animation
 function animation:draw(...)
-  love.graphics.drawq(self.img, self.frames[self.position], ...)
+  print(self.position)
+  print(self.framesAnim[self.position])
+  print(#self.frames)
+  print(self.frames[self.framesAnim[self.position]])
+  love.graphics.drawq(self.img, self.frames[self.framesAnim[self.position]], ...)
 end
 
 --- Add a frame
@@ -147,6 +166,12 @@ function animation:getSize()
   return #self.frames
 end
 
+--- Get the number of frames
+-- @return The number of frames
+function animation:getSizeAnim()
+  return #self.framesAnim
+end
+
 --- Set the delay between frames
 -- @param frame Which frame to set the delay for
 -- @param delay The delay
@@ -163,13 +188,13 @@ end
 --- Get the width of the current frame
 -- @return The width of the current frame
 function animation:getWidth()
-  return self.frames[self.position]:getWidth()
+  return self.frames[self.framesAnim[self.position]]:getWidth()
 end
 
 --- Get the height of the current frame
 -- @return The height of the current frame
 function animation:getHeight()
-  return self.frames[self.position]:getHeight()
+  return self.frames[self.framesAnim[self.position]]:getHeight()
 end
 
 --- Set the play mode
