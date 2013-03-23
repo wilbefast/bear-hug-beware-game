@@ -24,7 +24,7 @@ end
 
 
 function state:enter()
-  -- level.load()
+  level:load("..assets/maps/map01")
 end
 
 
