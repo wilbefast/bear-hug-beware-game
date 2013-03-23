@@ -127,7 +127,7 @@ function GameObject:update(dt, level)
   
   -- gravity
   if fisix.GRAVITY and self.airborne then
-    self.dy = self.dy + fisix.GRAVITY
+    self.dy = self.dy + fisix.GRAVITY*dt
   end
   
   -- friction
