@@ -37,7 +37,7 @@ local Player = Class
   type  =  GameObject.TYPE["PLAYER"],
 
   init = function(self, x, y)
-    Character.init(self, x, y, 128, 128, 
+    Character.init(self, x, y, 64, 128, 
                     "assets/sprites/HerosCourseSprite.png")
   	self.animation = newAnimation(self.image, 128, 128, 0.1, 0)
     self.animation:setSpeed(1,2)
@@ -199,11 +199,11 @@ function Player:update(dt, level)
 end
 
 function Player:draw()
-  local x = self.x
+  local x = self.x - 32*self.facing
   if self.facing < 0 then
-    x = self.x + self.w
+    x = x + self.w
   end
-  self.animation:draw(x, self.y, 0, self.facing, 1)
+  self.animation:draw(x, self.y + 16, 0, self.facing, 1)
   -- FIXME debug
   GameObject.draw(self)
   
