@@ -19,6 +19,7 @@ IMPORTS
 
 local Class = require("hump/class")
 local Tile = require("Tile")
+local useful = require("useful")
 
 --[[------------------------------------------------------------
 TILEGRID CLASS
@@ -62,7 +63,12 @@ Game loop
 function TileGrid:draw()
     for x = 1, self.width do
       for y = 1, self.height do
-        love.graphics.print(self.layers[1][y][x].type, x*16, y*16 + 32)
+        print(x, y, self.layers[1][y][x].type)
+        love.graphics.rectangle(
+          useful.tri(self.layers[1][y][x].type == 0, "line", "fill"), 
+            x*self.tilewidth, y*self.tileheight,
+            self.tilewidth, self.tileheight)
+  
       end
     end
     
