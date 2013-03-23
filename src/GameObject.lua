@@ -77,7 +77,7 @@ Collisions
 --]]
 
 function GameObject:centreOn(x, y)
-  self.x, self.y = x - self.w/2, y - self.h/2 
+  self.x, self.y = x - self.w/2, y - self.h/2
 end
 
 function GameObject:centreX()

@@ -22,6 +22,7 @@ local GameObject  = require("GameObject")
 local Attack      = require("Attack")
 local Class       = require("hump/class")
 local useful      = require("useful")
+local DeadEnemy   = require("DeadEnemy")
 
 --[[------------------------------------------------------------
 ENEMY CLASS
@@ -43,9 +44,9 @@ function Enemy:init(x, y, w, h)
 end
 
 -- fisix
-Enemy.GRAVITY         = 700
-Enemy.MOVE_X         = 50.0
-Enemy.MAX_DX         = 1000.0
+Enemy.GRAVITY    = 700
+Enemy.MOVE_X     = 50.0
+Enemy.MAX_DX     = 1000.0
 Enemy.FRICTION_X = 50
 
 -- combat - light attack
@@ -61,6 +62,22 @@ Enemy.LIGHTATTACK =
 }
 
 --[[------------------------------------------------------------
+Resources
+--]]
+
+function Enemy:life_change(nb, level)
+  local newLife = self.life + nb
+  if newLife <= 0 then
+    newLife = 0
+    self.purge = true
+    local deadEnemy = DeadEnemy(self.x, self.y, 128, 128)
+    deadEnemy.dx, deadEnemy.dy = self.dx, self.dy
+    level:addObject(deadEnemy)
+  end
+  self.life = newLife
+end
+
+--[[------------------------------------------------------------
 Collisions
 --]]
 
@@ -72,10 +89,12 @@ end
 function Enemy:eventCollision(other, level)
   -- collision with attack
   if other.type == GameObject.TYPE.ATTACK then
-    self:life_change(-other.damage)
     -- knock-back
     push = useful.sign(self:centreX() - other.launcher:centreX())
     self.dx = self.dx + push * other.knockback
+
+    -- lost life
+    self:life_change(-other.damage, level)
   
   -- collision with player
   elseif other.type == GameObject.TYPE.PLAYER then

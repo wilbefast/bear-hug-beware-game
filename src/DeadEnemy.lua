@@ -17,74 +17,67 @@ Lesser General Public License for more details.
 IMPORTS
 --]]------------------------------------------------------------
 
-local Class      = require("hump/class")
-local GameObject = require("GameObject")
+local Character   = require("character")
+local GameObject  = require("GameObject")
+local Class       = require("hump/class")
 
 --[[------------------------------------------------------------
-CHARACTER CLASS
+DeadEnemy CLASS
 --]]------------------------------------------------------------
 
-
-local Character = Class
-{
-  init = function(self, x, y, w, h, imagefile)
-    GameObject.init(self, x, y, w, h)
-    self.image     = love.graphics.newImage(imagefile)
-    self.deadImage = love.graphics.newImage("assets/sprites/sol.png")
-  end,
-
-  life       = 100,
-  magic      = 100,
-  damage     = 0,
-  reloadTime = 0,
-  facing     = 1
-}
-Character:include(GameObject)
-
-
---function Character
-
-
 --[[------------------------------------------------------------
-Resources
+Initialise
 --]]
+local DeadEnemy = Class
+{
+  type = GameObject.TYPE["DEADENEMY"]
+}
+DeadEnemy:include(Character)
 
-function Character:life_change(nb)
-  local newLife = self.life + nb
-  if newLife <= 0 then
-    newLife = 0
-  end
-  self.life = newLife
+function DeadEnemy:init(x, y, w, h)
+  -- base constructor
+  Character.init(self, x, y, w, h, "assets/sprites/mur.png")
 end
 
-function Character:magic_change(nb)
-  local newMagic = self.magic + nb
-  if newMagic <= 0 then
-    newMagic = 0
-  end
-  self.magic = newMagic
+-- fisix
+DeadEnemy.GRAVITY    = 1500
+DeadEnemy.FRICTION_X = 50
+
+--[[------------------------------------------------------------
+Collisions
+--]]
+
+function DeadEnemy:collidesType(type)
+end
+
+function DeadEnemy:eventCollision(other, level)
+end
+
+--[[------------------------------------------------------------
+Combat
+--]]
+
+function DeadEnemy:attack(attack)
 end
 
 --[[------------------------------------------------------------
 Game loop
 --]]
 
-function Character:update(dt, level)
-  -- update reloadTime for attack
-  if self.reloadTime > 0 then
-    self.reloadTime = self.reloadTime - dt
-  end
-  
+function DeadEnemy:update(dt, level)
   -- base update
-  GameObject.update(self, dt, level)
+  Character.update(self, dt, level)
 end
 
-function Character:draw()
-  -- FIXME animation
+function DeadEnemy:draw()
   love.graphics.draw(self.image, self.x, self.y)
-  love.graphics.print(self.life, self.x, self.y)
   -- FIXME debug
   GameObject.draw(self)
 end
 
-return Character
+
+--[[------------------------------------------------------------
+EXPORT
+--]]------------------------------------------------------------
+
+return DeadEnemy
