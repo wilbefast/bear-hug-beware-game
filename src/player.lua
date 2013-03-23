@@ -32,6 +32,21 @@ local Player = Class
   init = function(self, x, y, image)
     Character.init(self, x, y, image)
   end
+  life = function(self,nb,bool)
+	if bool then 
+		self.life = self.life + 1
+	else
+		self.life = self.life - 1
+	end
+  end 
+  
+  magic = function(self,nb,bool)
+	if bool then 
+		self.magie = self.magie + 1
+	else
+		self.magie = self.magie - 1
+	end
+  end
 }
 
 Player:include(Character)
