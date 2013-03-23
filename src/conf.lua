@@ -1,10 +1,8 @@
 
 
 function love.conf(t)
-	love.filesystem.setIdentity( "src" )
-
 	t.title = "Bisounours Killer"        -- The title of the window the game is in (string)
-	t.author = "Bisounours"        -- The author of the game (string)
+	t.author = "Bisounours Team"        -- The author of the game (string)
 	t.url = nil                 -- The website of the game (string)
 	t.identity = nil            -- The name of the save directory (string)
 	t.version = "0.8.0"         -- The LÖVE version this game was made for (string)

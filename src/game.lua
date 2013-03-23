@@ -19,9 +19,10 @@ IMPORTS
 
 local Level = require("Level")
 local Camera = require("hump/camera")
+local Player = require("player")
 
 --[[------------------------------------------------------------
-LEVEL CLASS
+GAME GAMESTATE
 --]]------------------------------------------------------------
 
 local state = GameState.new()
@@ -30,6 +31,7 @@ function state:init()
   -- create objects
   self.level = Level()
   self.camera = Camera(0, 0)
+  self.player = Player()
 end
 
 
@@ -101,7 +103,8 @@ function state:draw()
   love.graphics.print("Game screen", 32, 32)
   
   self.camera:attach()
-  self.level:draw()
+  	self.level:draw()
+  	self.player.draw()
   self.camera:detach()
 end
 
