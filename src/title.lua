@@ -17,13 +17,14 @@ local state = GameState.new()
 
 function state:init()
   fic = "assets/audio/bisounours.ogg"
-  bisous = love.audio.newSource(fic, "static")
+  bisous = love.audio.newSource(fic)
 	  
 end
 
 
 function state:enter()
   bisous:play()
+  bisous:setLooping(true)
 end
 
 
@@ -57,6 +58,7 @@ function state:quit()
 end
 
 function state:leave()
+bisous:setLooping(false)
 bisous:stop()
 end
 

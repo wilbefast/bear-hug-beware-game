@@ -44,15 +44,21 @@ function state:init()
  
   path = "assets/audio/prise_de_degats.ogg"
   degats_subis = love.audio.newSource(path, "static")
+  
   fic="assets/audio/cri_mort.ogg"
   cri_mort = love.audio.newSource(fic,"static")
+  
   fic_saut = "assets/audio/saut.ogg"
   saut = love.audio.newSource(fic_saut,"static")
+  
   image_mort = love.graphics.newImage("assets/images/mort.png")
+  
   son_explosion = "assets/audio/explosion_magique.ogg"
   explosion = love.audio.newSource(son_explosion,"static")
+  
   son_jeu = "assets/audio/themejeu.ogg"
   jeu_son = love.audio.newSource(son_jeu)
+  
   happy_tree = "assets/audio/happy.ogg"
   happy = love.audio.newSource(happy_tree,"static")
   
@@ -95,6 +101,10 @@ end
 
 function state:quit()
   
+end
+
+function state:leave()
+	happy:stop()
 end
 
 
