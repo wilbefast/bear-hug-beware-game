@@ -42,8 +42,10 @@ Player:include(Character)
 Constants
 --]]
 
-Player.SPEED_X = 32.0
-Player.SPEED_Y = 32.0
+Player.MOVE_X = 32.0
+Player.MOVE_Y = 32.0
+Player.MAX_DX = 512.0
+Player.BOOST = 512.0
 Player.GRAVITY = 20.0
 Player.w = 128
 Player.h = 128
@@ -56,8 +58,18 @@ function Player:update(dt, tilegrid)
 
   -- TODO check if move is possible (stunned?)
   -- accelerate
-  self.dx = self.dx + self.requestMoveX * self.SPEED_X
-  self.dy = self.dy + self.requestMoveY * self.SPEED_Y
+  self.dx = self.dx + self.requestMoveX * self.MOVE_X
+  
+  -- jump
+  if self.requestJump then
+    -- check if on the ground
+    if (not self.airborne) then
+      self.dy = -Player.BOOST
+    end
+    
+    -- reset
+    self.requestJump = false
+  end
   
   -- attack
   if self.requestLightAttack then

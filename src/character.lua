@@ -86,11 +86,27 @@ Game loop
 --]]
 
 function Character:update(dt, tilegrid)
+  -- object may have several fisix settings
+  local fisix = (self.fisix or self)
   
   -- gravity
-  if self.GRAVITY and self.airborne then
-    self.dy = self.dy + self.GRAVITY
+  if fisix.GRAVITY and self.airborne then
+    self.dy = self.dy + fisix.GRAVITY
   end
+  
+  -- terminal velocity
+  local abs_dx, abs_dy = math.abs(self.dx), math.abs(self.dy)
+  if fisix.MAX_DX and (abs_dx > fisix.MAX_DX) then
+    self.dx = fisix.MAX_DX*useful.sign(self.dx)
+  end
+  if fisix.MAX_DY and (abs_dy > fisix.MAX_DY) then
+    self.dy = fisix.MAX_DY*useful.sign(self.dy)
+  end
+  
+  -- clamp less than epsilon inertia to 0
+  if math.abs(self.dx) < 0.01 then self.dx = 0 end
+  if math.abs(self.dy) < 0.01 then self.dy = 0 end
+  
   
   -- check if we're on the ground
   self.airborne = 

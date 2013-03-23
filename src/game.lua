@@ -99,7 +99,12 @@ function state:keypressed(key, uni)
   end
 -----------------------------
   
-  -- player attacks
+  -- player 1 jump
+  self.player.requestJump
+    = (key == " " or key == "up" 
+      or key == "z" or key == "w")
+  
+  -- player 1 attacks
   self.player.requestLightAttack 
     = (key == "kp0" or key == "y")
   self.player.requestHeavyAttack 
