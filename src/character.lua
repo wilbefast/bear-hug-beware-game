@@ -18,183 +18,67 @@ IMPORTS
 --]]------------------------------------------------------------
 
 local Class = require("hump/class")
-local useful = require("useful")
+local GameObject = require("GameObject")
 
 --[[------------------------------------------------------------
 CHARACTER CLASS
 --]]------------------------------------------------------------
 
 
-local Character = Class{
-  init = function(self, x, y, image)
-    self.x        = x
-    self.y        = y
-    self.image    = image
-    self.dx       = 0
-    self.dy       = 0
+local Character = Class
+{
+  init = function(self, x, y, imagefile)
+    GameObject.init(self, x, y)
+    self.image    = love.graphics.newImage(imagefile)
   end,
+      
+  type       = "character",
   life       = 100,
   magic      = 100,
-  speed      = 5,
-  type       = "character",
   damage     = 0,
   reloadTime = 0,
-
-  life_change = function(self,nb)
-    local newLife = self.life + nb
-    if newLife < 0 then
-      newLife = 0
-    end
-    self.life = newLife
-  end,
-
-  magic_change = function(self,nb)
-    local newMagic = self.magic + nb
-    if newMagic < 0 then
-      newMagic = 0
-    end
-    self.magic = newMagic
-  end
 }
+Character:include(GameObject)
 
-Character.w = 0
-Character.h = 0
-
---[[----------------------------------------------------------------------------
-Collisions
+--[[------------------------------------------------------------
+Resources
 --]]
 
-function Character:snap_from_collision(dx, dy, tilegrid, max)
-  local i = 0
-  while tilegrid:collision(self) and (not max or i < max)  do
-    self.x = self.x + dx
-    self.y = self.y + dy
-    i = i + 1
+function Character:life_change(nb)
+  local newLife = self.life + nb
+  if newLife < 0 then
+    newLife = 0
   end
+  self.life = newLife
 end
 
-function Character:snap_to_collision(dx, dy, tilegrid, max)
-  local i = 0
-  while not tilegrid:collision(self, self.x + dx, self.y + dy) 
-        and (not max or i < max)  do
-    self.x = self.x + dx
-    self.y = self.y + dy
-    i = i + 1
+function Character:magic_change(nb)
+  local newMagic = self.magic + nb
+  if newMagic < 0 then
+    newMagic = 0
   end
-end
-
-function Character:eventCollision(other)
-  -- override me!
-end
-
-function Character:isColliding(other)
-  -- horizontally seperate ? 
-  local v1x = (other.x + other.w) - self.x
-  local v2x = (self.x + self.w) - other.x
-  if useful.sign(v1x) ~= useful.sign(v2x) then
-    return false
-  end
-  -- vertically seperate ?
-  local v1y = (self.y + self.h) - other.y
-  local v2y = (other.y + other.h) - self.y
-  if useful.sign(v1y) ~= useful.sign(v2y) then
-    return false
-  end
-  
-  -- in every other case there is a collision
-  return true
+  self.magic = newMagic
 end
 
 --[[------------------------------------------------------------
 Game loop
 --]]
 
-function Character:update(dt, tilegrid)
+function Character:update(dt, level)
   -- update reloadTime for attack
   if self.reloadTime > 0 then
     self.reloadTime = self.reloadTime - dt
   end
-
-  -- object may have several fisix settings
-  local fisix = (self.fisix or self)
   
-  -- gravity
-  if fisix.GRAVITY and self.airborne then
-    self.dy = self.dy + fisix.GRAVITY
-  end
-  
-  -- friction
-  if fisix.FRICTION_X and (fisix.FRICTION_X ~= 0) then
-    self.dx = self.dx / (math.pow(fisix.FRICTION_X, dt))
-  end
-  if fisix.FRICTION_Y and (fisix.FRICTION_Y ~= 0) then
-    self.dy = self.dy / (math.pow(fisix.FRICTION_Y, dt))
-  end
-  
-  -- terminal velocity
-  local abs_dx, abs_dy = math.abs(self.dx), math.abs(self.dy)
-  if fisix.MAX_DX and (abs_dx > fisix.MAX_DX) then
-    self.dx = fisix.MAX_DX*useful.sign(self.dx)
-  end
-  if fisix.MAX_DY and (abs_dy > fisix.MAX_DY) then
-    self.dy = fisix.MAX_DY*useful.sign(self.dy)
-  end
-  
-  -- clamp less than epsilon inertia to 0
-  if math.abs(self.dx) < 0.01 then self.dx = 0 end
-  if math.abs(self.dy) < 0.01 then self.dy = 0 end
-  
-  
-  -- check if we're on the ground
-  self.airborne = 
-    (not tilegrid:pixelCollision(self.x, self.y + self.h + 1))
-  if not self.airborne and self.dy > 0 then
-    if tilegrid:collision(self) then
-      self:snap_from_collision(0, -1, tilegrid, math.abs(self.dy))
-    end
-    self.dy = 0
-  end 
-  
-  -- move HORIZONTALLY FIRST
-  if self.dx ~= 0 then
-    local move_x = self.dx * dt
-    local new_x = self.x + move_x
-  
-    -- is new x in collision ?
-    if tilegrid:collision(self, new_x, self.y) then
-      -- move as far as possible towards new position
-      self:snap_to_collision(useful.sign(self.dx), 0, 
-                        tilegrid, math.abs(self.dx))
-      self.dx = 0
-    else
-      -- if not move to new position
-      self.x = new_x
-    end
-  end
-  
-  -- move the object VERTICALLY SECOND
-  if self.dy ~= 0 then
-    local move_y = self.dy*dt
-    local new_y = self.y + move_y
-    -- is new y position free ?
-    if tilegrid:collision(self, self.x, new_y) then
-      -- if not move as far as possible
-      self:snap_to_collision(0, useful.sign(self.dy), tilegrid, math.abs(self.dy))
-      self.dy = 0
-    else
-      -- if so move to new position
-      self.y = new_y
-    end
-  end
-  
+  -- base update
+  GameObject.update(self, dt, level)
 end
 
-function Character:draw(view)
-  image = love.graphics.newImage(self.image)
-  love.graphics.draw(image, self.x, self.y)
-  
+function Character:draw()
+  -- FIXME animation
+  love.graphics.draw(self.image, self.x, self.y)
   -- FIXME debug
-  love.graphics.rectangle("line", self.x, self.y, self.w, self.h)
+  GameObject.draw(self)
 end
 
 return Character

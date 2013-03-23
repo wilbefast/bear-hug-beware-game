@@ -17,57 +17,40 @@ Lesser General Public License for more details.
 IMPORTS
 --]]------------------------------------------------------------
 
-local Character = require("character")
-local Class     = require("hump/class")
+local Class = require("hump/class")
+local GameObject = require("GameObject")
 
 --[[------------------------------------------------------------
-ENEMY CLASS
+CHARACTER CLASS
 --]]------------------------------------------------------------
 
---[[------------------------------------------------------------
-Initialise
---]]
-local Enemy = Class
+
+local Attack = Class
 {
-  type = "enemy"
+  init = function(self, x, y, damage, w, h)
+    GameObject.init(self, x, y)
+    self.damage = damage
+    self.w = w
+    self.h = h
+  end,
+      
+  type  = "attack",
 }
-Enemy:include(Character)
+Attack:include(GameObject)
 
-function Enemy:init(x, y)
-  -- base constructor
-  Character.init(self, x, y, "assets/sprites/sol.png")
-end
-
-Enemy.GRAVITY         = 30
-Enemy.ATTACK_INTERVAL = 2
-Enemy.DAMAGE          = 6
-
-Enemy.w = 128
-Enemy.h = 128
-
---[[------------------------------------------------------------
-Collisions
---]]
-
-function Enemy:eventCollision(other)
-  if self.reloadTime <= 0 then
-    other:life_change(-self.DAMAGE)
-    self.reloadTime = self.ATTACK_INTERVAL
-  end
-end
 
 --[[------------------------------------------------------------
 Game loop
 --]]
 
-function Enemy:update(dt, level)
-  -- base update
-  Character.update(self, dt, level)
+function Attack:update(dt, tilegrid)
+  -- destroy self
+  self.purge = true
 end
 
+function Attack:draw(view)
+  -- FIXME debug
+  GameObject.draw(self)
+end
 
---[[------------------------------------------------------------
-EXPORT
---]]------------------------------------------------------------
-
-return Enemy
+return Attack
