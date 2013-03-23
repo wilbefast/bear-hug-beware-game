@@ -30,15 +30,15 @@ local state = GameState.new()
 
 function state:init()
   -- create objects
-  self.level = Level()
-  self.camera = Camera(0, 0)
-  self.player = Player(300, 300)
+  self.level         = Level()
+  self.camera        = Camera(0, 0)
+  self.player        = Player(300, 300)
   self.player.camera = self.camera
 
-  self.x_b1 = 600
-  self.y_b1 = 150
-  self.x_b2 = 600
-  self.y_b2 = 200
+  self.xLifeBarre  = 150
+  self.yLifeBarre  = 100
+  self.xMagicBarre = 150
+  self.yMagicBarre = 150
 end
 
 
@@ -160,19 +160,19 @@ function state:draw()
   self.camera:detach()
 
   -- barre de magie et life :
-	love.graphics.print("life : " ,560,150)
-	love.graphics.print("magic power : " ,500,200)
-	love.graphics.rectangle("line",self.x_b1,self.y_b1,100,20)
-	love.graphics.rectangle("line",self.x_b2,self.y_b2,100,20)
+	love.graphics.print("life : ",50,100)
+	love.graphics.print("magic power : ",50,150)
+	love.graphics.rectangle("line",self.xLifeBarre,self.yLifeBarre,100,20)
+	love.graphics.rectangle("line",self.xMagicBarre,self.yMagicBarre,100,20)
 
-	love.graphics.rectangle("fill",self.x_b1,self.y_b1,self.player.life,20)
+	love.graphics.rectangle("fill",self.xLifeBarre,self.yLifeBarre,self.player.life,20)
 	if self.player.life == 0 then
-		love.graphics.print("game over ! ",self.x_b1,self.y_b1)
-		love.graphics.rectangle("fill",self.x_b2,self.y_b2,self.player.magic,20)
+		love.graphics.print("game over ! ",self.xLifeBarre,self.yLifeBarre)
+		love.graphics.rectangle("fill",self.xMagicBarre,self.yMagicBarre,self.player.magic,20)
 		love.graphics.rectangle("line",1000, 100,100,100)
 		love.graphics.print("game over ! \n t'es mauvais \n JACK",1010,110)
 	end
-	love.graphics.rectangle("fill",self.x_b2,self.y_b2,self.player.magic,20)
+	love.graphics.rectangle("fill",self.xMagicBarre,self.yMagicBarre,self.player.magic,20)
 	
 	if paused then 
 		love.graphics.rectangle("line",50,50, 150,100)
