@@ -124,12 +124,6 @@ function Player:update(dt, level)
   local cam_x = self.x
   local cam_y = self.y
 
-  print( "level.tilegrid.w"..level.tilegrid.w )
-  print( "level.tilegrid.h"..level.tilegrid.h )
-  print( "x-avant-"..cam_x )
-  print( "y-avant-"..cam_y )
-
-
   local levelh = level.tilegrid.h  * level.tilegrid.tileh
   local levelw = level.tilegrid.w  * level.tilegrid.tilew
 
@@ -146,9 +140,6 @@ function Player:update(dt, level)
   if( self.y >= levelh - hauteur ) then
     cam_y = levelh - hauteur
   end
-
-  print( "x-after-"..cam_x )
-  print( "y-after-"..cam_y )
 
   self.camera:lookAt( cam_x, cam_y )
 end
