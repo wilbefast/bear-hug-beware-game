@@ -55,8 +55,8 @@ Constants
 -- physics
 Player.MOVE_X = 50.0
 Player.MAX_DX = 1000.0
-Player.BOOST = 600.0
-Player.GRAVITY = 1200.0
+Player.BOOST = 1000.0
+Player.GRAVITY = 1500.0
 Player.FRICTION_X = 50
 
 -- combat - light attack

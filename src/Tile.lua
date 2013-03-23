@@ -34,6 +34,15 @@ local Tile = Class
   end
 }
 
+-- types
+Tile.TYPE = {}
+
+Tile.TYPE.WALL = 1
+Tile.TYPE[1] = "WALL"
+
+Tile.TYPE.ONESIDED = 2
+Tile.TYPE[2] = "ONESIDED"
+
 --[[------------------------------------------------------------
 Accessors
 --]]

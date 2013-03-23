@@ -162,8 +162,8 @@ function GameObject:update(dt, level)
   
   -- check if we're on the ground
   self.airborne = 
-    ((not tilegrid:pixelCollision(self.x, self.y + self.h + 1)
-    and (not tilegrid:pixelCollision(self.x + self.w, self.y + self.h + 1))))
+    ((not tilegrid:pixelCollision(self.x, self.y + self.h + 1, true)
+    and (not tilegrid:pixelCollision(self.x + self.w, self.y + self.h + 1, true))))
   if not self.airborne and self.dy > 0 then
     if tilegrid:collision(self) then
       self:snap_from_collision(0, -1, tilegrid, math.abs(self.dy))
