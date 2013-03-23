@@ -47,9 +47,9 @@ Game loop
 function Level:update(dt)
 end
 
-function Level:draw()
+function Level:draw(view)
     love.graphics.print("I am a Level", 32, 32)
-    self.tilegrid:draw()
+    self.tilegrid:draw(view)
 end
 
 --[[------------------------------------------------------------

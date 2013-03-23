@@ -127,21 +127,16 @@ end
 function state:draw()
   love.graphics.print("Game screen", 32, 32)
   
+  local view = {}
+  view.x, view.y = self.camera:worldCoords(0, 0)
+  view.w, view.h = self.camera:worldCoords(
+                          love.graphics.getWidth(), 
+                          love.graphics.getHeight())
+  
   self.camera:attach()
-  	self.level:draw()
-  	self.player:draw()
+  	self.level:draw(view)
+  	self.player:draw(view)
   self.camera:detach()
-
---[[
-  level:draw()
-  player.draw()
-
-  love.graphics.rectangle("line",50,50,600,500)
-  love.graphics.rectangle("fill",c1.x,c1.y,c1.tw,c1.th)
-  love.graphics.rectangle("fill",c2.x,c2.y,c2.tw,c2.th)
-  love.graphics.rectangle("fill",c3.x,c3.y,c3.tw,c3.th)
-  love.graphics.rectangle("fill",player.x,player.y,5,5)
---]]
 
 end
 

@@ -37,7 +37,7 @@ local Character = Class{
 function Character:update(dt)
 end
 
-function Character:draw()
+function Character:draw(view)
   image = love.graphics.newImage(self.image)
   love.graphics.draw(image, self.x, self.y)
 end

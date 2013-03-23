@@ -42,13 +42,24 @@ local TileGrid = Class
     self.layers = {}
     for z, layer in ipairs(mapfile.layers) do
       if layer.type == "tilelayer" then
-        self.layers[z] = {}
+
+        -- the mapfile stores tiles in [row, col] format
+        local temp_layer = {}
         local data_i = 1
-        for y = 1, self.height do
-          self.layers[z][y] = {}
-          for x = 1, self.width do
-            self.layers[z][y][x] = Tile(layer.data[data_i])
+        for row = 1, self.height do
+          temp_layer[row] = {}
+          for col = 1, self.width do
+            temp_layer[row][col] = Tile(layer.data[data_i])
             data_i = data_i + 1
+          end
+        end
+          
+        -- we want them in [x, y] format, so we transpose
+        self.layers[z] = {}
+        for x = 1, self.width do
+          self.layers[z][x] = {}
+          for y = 1, self.height do
+            self.layers[z][x][y] = temp_layer[y][x]
           end
         end
       end
@@ -60,18 +71,28 @@ local TileGrid = Class
 Game loop
 --]]
 
-function TileGrid:draw()
-    for x = 1, self.width do
-      for y = 1, self.height do
-        print(x, y, self.layers[1][y][x].type)
-        love.graphics.rectangle(
-          useful.tri(self.layers[1][y][x].type == 0, "line", "fill"), 
-            x*self.tilewidth, y*self.tileheight,
-            self.tilewidth, self.tileheight)
+function TileGrid:draw(view)
   
-      end
-    end
+  local start_x = math.max(1, 
+              math.floor(view.x / self.tilewidth))
+  local end_x = math.min(self.width, 
+              start_x + math.ceil(view.w / self.tilewidth))
+  
+  local start_y = math.max(1, 
+              math.floor(view.y / self.tileheight))
+  local end_y = math.min(self.height, 
+              start_y + math.ceil(view.h / self.tileheight))
     
+  for x = start_x, end_x do
+    for y = start_y, end_y do
+      love.graphics.rectangle(
+        useful.tri(self.layers[1][x][y].type == 0, "line", "fill"), 
+          x * self.tilewidth, y * self.tileheight,
+          self.tilewidth, self.tileheight)
+
+    end
+  end
+
     --TODO use sprite batches
 end
 
