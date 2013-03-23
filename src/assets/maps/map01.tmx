@@ -3,9 +3,12 @@
  <tileset firstgid="1" name="mur" tilewidth="64" tileheight="64">
   <image source="../sprites/mur.png" trans="ffffff" width="64" height="64"/>
  </tileset>
+ <tileset firstgid="2" name="sol" tilewidth="64" tileheight="64">
+  <image source="../sprites/sol.png" trans="ffffff" width="64" height="64"/>
+ </tileset>
  <layer name="Calque de Tile 1" width="500" height="20" opacity="0.99">
   <data encoding="base64" compression="zlib">
-   eJzt3csKhDAQBEDz/z+9eJUVfGQinVRBszcRMk4f9pC2bVsTERGR+AAAufQ5AOTT5wCQT58DQD59DgD59DkA5NPnAJBPnwNAPn0OAPn0OQDk0+cAME5V5+pzABirHX57PVOfA4zlDg16n71ZAhjP/Vhrqzh/8wMwnrsv2fU8dzOzlivzYpdAPfdaszue65v/1c3JOq7uBjsE6j3pc9/lfM76/OmzzMb87uwDuwPqve1z3+ccKvpc1suZr99LZLb88/U7yZz5AUfEBHg=
+   eJzt3cGuwjAMBEB4///RT4gbohI0TuMNM5LFsUnjeA8cer/dbnellFJKxRcAkEueA0A+eQ4A+eQ5AOST5wCQT54DQD55DiT6O1Hwzple6thX8hxIlDx36UWeA6yTPHfpRZ4DrJM8d+lFnu9v9Iw7nvcO0t934ppX6nYP3f19VPbWN2c9K3Pl+bFuc4Sn9PeduOaVut1Dd38fq/L84f7yW0GeH+s2R3hKf9+Ja16p2z2seqZvaKy3Ms8fqs9eLx3rNkd4Sn/fiWteqds9nJXnsv16K/N8xvn/Uv9Un90VlWrmvtPf28iad+unxPtU9czEb18mnE/aPirPvWPPzHL17OjY35/0S8UsmbnvTnPhjJE1d+unUYn3qeqZid+1TjiftH28nuvI/+pd+uQKV8+Obv396WyomCEz991pLpwxsuZO/VQh8T5VPfNMnq/O9oTzSdvHUZ6fIc97V5Vv5kHF7Ji5705z4YyRNXfppyqJ96nqmaN5viLbE84nbR8z8lz9Xh1ZvS6ldqt3Vq9J7Vn/yRUNqA==
   </data>
  </layer>
  <objectgroup color="#ff0000" name="murs" width="500" height="20">
