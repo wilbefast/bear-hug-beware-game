@@ -82,7 +82,7 @@ function Enemy:eventCollision(other, level)
     self.facing = useful.tri(other:centreX() > self:centreX(), 1, -1)
     if self.requestLightAttack then
       if self.reloadTime <= 0 then
-        level:addObject(self:attack(self.LIGHTATTACK))
+        level:addObject(self:attack(self.LIGHTATTACK, other))
       end
     end
   end
@@ -92,10 +92,13 @@ end
 Combat
 --]]
 
-function Enemy:attack(attack)
+function Enemy:attack(attack, target)
   self.reloadTime = attack.RELOAD_TIME
+  local target_distance = math.abs(target.x - self.x)
+  local reach = math.min(attack.REACH, target_distance)
+  
   local newAttack = Attack(
-    self.x + self.w/2 + attack.REACH*self.facing,
+    self.x + self.w/2 + reach*self.facing,
     self.y + attack.OFFSET_Y,
     attack.W,
     attack.H,
