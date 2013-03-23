@@ -135,11 +135,9 @@ function state:keypressed(key, uni)
   
   -- player 1 attacks
   self.player.requestLightAttack 
-    = (key == "kp0" or key == "y")
-  self.player.requestHeavyAttack 
-    = (key == "kp1" or key == "u")
-  self.player.requestMagicAttack 
-    = (key == "kp2" or key == "i")
+    = (key == "kp0" or key == "y" or key =="rctrl" or key == "rctrl")
+  self.player.requestMagicAttack
+    = (key == "kp1" or key == "u" or key == "rshift" or key == "lshift")
   
 end
 

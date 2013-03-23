@@ -68,18 +68,6 @@ Player.LIGHTATTACK =
   KNOCKBACK = 300,
   reloadTime = 0
 }
--- combat - heavy attack
-Player.HEAVYATTACK = 
-{
-  REACH = 110,
-  OFFSET_Y = 32,
-  DAMAGE = 50,
-  RELOAD_TIME = 1.2,
-  W = 50,
-  H = 50,
-  KNOCKBACK = 500,
-  reloadTime = 0
-}
 -- combat - magic attack
 Player.MAGICATTACK = 
 {
@@ -161,10 +149,6 @@ function Player:update(dt, level)
     if self.requestLightAttack then
       weapon = self.LIGHTATTACK
     end
-    -- ... heavy
-    if self.requestHeavyAttack then
-      weapon = self.HEAVYATTACK
-    end
     -- ... magic
     if self.requestMagicAttack then
       weapon = self.MAGICATTACK
@@ -175,7 +159,6 @@ function Player:update(dt, level)
     
     -- reload weapons
     reload(self.LIGHTATTACK, dt)
-    reload(self.HEAVYATTACK, dt)  
     reload(self.MAGICATTACK, dt)
     
     --update animation
@@ -190,8 +173,7 @@ function Player:update(dt, level)
     self.requestJump = false
     self.requestLightAttack = false
     self.requestMagicAttack = false
-    self.requestHeavyAttack = false
-        
+
     -- base update
     Character.update(self, dt, level)
   end
@@ -208,7 +190,6 @@ function Player:draw()
   GameObject.draw(self)
   
   love.graphics.print(self.LIGHTATTACK.reloadTime, self.x, self.y)
-  love.graphics.print(self.HEAVYATTACK.reloadTime, self.x, self.y+20)
   love.graphics.print(self.MAGICATTACK.reloadTime, self.x, self.y+40)
 end
 
