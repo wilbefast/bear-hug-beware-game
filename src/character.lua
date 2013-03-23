@@ -48,7 +48,7 @@ function Character:update(dt)
 end
 
 function Character:draw()
-  love.graphics.draw(self.image, self.position.x, self.position.y)
+--  love.graphics.draw(self.image, self.position.x, self.position.y)
   love.graphics.rectangle("fill", 50, 50, 50, 50)
 end
 
