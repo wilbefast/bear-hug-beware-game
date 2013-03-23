@@ -42,7 +42,7 @@ function Level:load(filename)
   self.players = {}
   self.enemies = {}
   -- FIXME test
-  table.insert(self.enemies, Enemy(350, 250))
+  table.insert(self.enemies, Enemy(700, 250))
 end
 
 --[[------------------------------------------------------------

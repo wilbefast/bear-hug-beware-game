@@ -29,7 +29,7 @@ Initialise
 --]]
 local Enemy = Class
 {
-  type  = "enemy",
+  type = "enemy"
 }
 Enemy:include(Character)
 
@@ -38,17 +38,22 @@ function Enemy:init(x, y)
   Character.init(self, x, y, "assets/sprites/sol.png")
 end
 
-Enemy.GRAVITY = 30
+Enemy.GRAVITY         = 30
+Enemy.ATTACK_INTERVAL = 2
+Enemy.DAMAGE          = 6
 
-Enemy.w = 64
-Enemy.h = 64
+Enemy.w = 128
+Enemy.h = 128
 
 --[[------------------------------------------------------------
 Collisions
 --]]
 
 function Enemy:eventCollision(other)
-  -- TODO
+  if self.reloadTime <= 0 then
+    other:life_change(-self.DAMAGE)
+    self.reloadTime = self.ATTACK_INTERVAL
+  end
 end
 
 --[[------------------------------------------------------------

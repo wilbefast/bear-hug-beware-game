@@ -57,7 +57,10 @@ Collisions
 --]]
 
 function Player:eventCollision(other)
-  -- TODO
+  if other.reloadTime <= 0 then
+    self:life_change(-other.DAMAGE)
+    self.reloadTime = other.ATTACK_INTERVAL
+  end
 end
 
 --[[------------------------------------------------------------

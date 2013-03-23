@@ -33,10 +33,12 @@ local Character = Class{
     self.dx       = 0
     self.dy       = 0
   end,
-  life  = 100,
-  magic = 100,
-  speed = 5,
-  type  = "character",
+  life       = 100,
+  magic      = 100,
+  speed      = 5,
+  type       = "character",
+  damage     = 0,
+  reloadTime = 0,
 
   life_change = function(self,nb)
     local newLife = self.life + nb
@@ -108,6 +110,11 @@ Game loop
 --]]
 
 function Character:update(dt, tilegrid)
+  -- update reloadTime for attack
+  if self.reloadTime > 0 then
+    self.reloadTime = self.reloadTime - dt
+  end
+
   -- object may have several fisix settings
   local fisix = (self.fisix or self)
   
