@@ -19,12 +19,9 @@ IMPORTS
 
 local Class = require("hump/class")
 local TileGrid = require("TileGrid")
+local GameObject = require("GameObject")
 local Enemy = require("enemy")
 local useful = require("useful")
-
-
---FIXME
-local GameObject = require("GameObject")
 
 --[[------------------------------------------------------------
 LEVEL CLASS
@@ -64,7 +61,7 @@ end
 --[[------------------------------------------------------------
 Game loop
 --]]
-local first = true
+
 function Level:update(dt)
   
   -- for each type of object

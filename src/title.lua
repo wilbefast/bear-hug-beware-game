@@ -16,11 +16,14 @@ Lesser General Public License for more details.
 local state = GameState.new()
 
 function state:init()
+  fic = "assets/audio/bisounours.ogg"
+  bisous = love.audio.newSource(fic, "static")
+	  
 end
 
 
 function state:enter()
-
+  bisous:play()
 end
 
 
@@ -51,6 +54,10 @@ end
 
 function state:quit()
 
+end
+
+function state:leave()
+bisous:stop()
 end
 
 

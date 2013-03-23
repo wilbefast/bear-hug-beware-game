@@ -32,9 +32,11 @@ local Character = Class
     self.image    = love.graphics.newImage(imagefile)
   end,
       
-  type  = "character",
-  life  = 100,
-  magic = 100
+  type       = "character",
+  life       = 100,
+  magic      = 100,
+  damage     = 0,
+  reloadTime = 0,
 }
 Character:include(GameObject)
 
@@ -63,6 +65,11 @@ Game loop
 --]]
 
 function Character:update(dt, level)
+  -- update reloadTime for attack
+  if self.reloadTime > 0 then
+    self.reloadTime = self.reloadTime - dt
+  end
+  
   -- base update
   GameObject.update(self, dt, level)
 end

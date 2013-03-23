@@ -62,7 +62,10 @@ function Player:collidesType(type)
 end
 
 function Player:eventCollision(other)
-  -- TODO
+  if other.reloadTime <= 0 then
+    self:life_change(-other.DAMAGE)
+    self.reloadTime = other.ATTACK_INTERVAL
+  end
 end
 
 --[[------------------------------------------------------------
@@ -73,46 +76,75 @@ function Player:update(dt, level)
   -- TODO check if move is possible (stunned?)
   -- accelerate
   self.dx = self.dx + self.requestMoveX * self.MOVE_X
-  
-  -- jump
-  if self.requestJump then
-    -- check if on the ground
-    if (not self.airborne) then
-      self.dy = -Player.BOOST
+
+  --update player only if alive
+  if self.life > 0 then
+    -- jump
+    if self.requestJump then
+      -- check if on the ground
+      if (not self.airborne) then
+        self.dy = -Player.BOOST
+      end
+
+      -- reset
+      self.requestJump = false
     end
-    
-    -- reset
-    self.requestJump = false
-  end
-  
-  -- attack
-  if self.requestLightAttack then
-    print("request light attack")
-    -- TODO
-    
-    
-    -- reset
-    self.requestLightAttack = false
-  end
-  
-  if self.requestHeavyAttack then
-    print("request heavy attack")
-    -- TODO
-    
-    -- reset
-    self.requestHeavyAttack = false
+
+    -- attack
+    if self.requestLightAttack then
+      print("request light attack")
+      -- TODO
+
+
+      -- reset
+      self.requestLightAttack = false
+    end
+
+    if self.requestHeavyAttack then
+      print("request heavy attack")
+      -- TODO
+
+      -- reset
+      self.requestHeavyAttack = false
+    end
+
+    if self.requestMagicAttack then
+      print("request magic attack")
+      -- TODO
+
+      -- reset
+      self.requestMagicAttack = false
+    end
+
+    -- reset input requests to false
+    self.requestMoveX, self.requestMoveY = 0, 0
+
+    -- base update
+    Character.update(self, dt, level)
   end
 
-  if self.requestMagicAttack then
-    print("request magic attack")
-    -- TODO
-    
-    -- reset
-    self.requestMagicAttack = false
+  --[[hauteur = love.graphics.getHeight() / 2
+  largeur = love.graphics.getWidth() / 2
+
+  cam_x = self.x
+  cam_y = self.y
+
+  if self.x <= largeur then
+    cam_x = largeur
   end
-  
-  -- reset input requests to false
-  self.requestMoveX, self.requestMoveY = 0, 0
+  if( self.x >= level.tilegrid.w - largeur ) then
+    cam_x = level.tilegrid.w - largeur
+  end
+
+  if self.y <= hauteur then
+    cam_y = hauteur
+  end
+  if( self.y >= level.tilegrid.h - hauteur ) then
+    cam_y = level.tilegrid.h - hauteur
+  end
+
+  --point camera at player --]]
+  self.camera:lookAt( self.x, self.y )
 
   -- base update
   Character.update(self, dt, level)
