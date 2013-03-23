@@ -118,25 +118,37 @@ function Player:update(dt, level)
     Character.update(self, dt, level)
   end
 
-  hauteur = love.graphics.getCanvas( ):getHeight() / 2
-  largeur = love.graphics.getCanvas( ):getWidth() / 2
+  local hauteur = love.graphics.getHeight() / 2
+  local largeur = love.graphics.getWidth() / 2
 
-  cam_x = self.x
-  cam_y = self.y
+  local cam_x = self.x
+  local cam_y = self.y
+
+  print( "level.tilegrid.w"..level.tilegrid.w )
+  print( "level.tilegrid.h"..level.tilegrid.h )
+  print( "x-avant-"..cam_x )
+  print( "y-avant-"..cam_y )
+
+
+  local levelh = level.tilegrid.h  * level.tilegrid.tileh
+  local levelw = level.tilegrid.w  * level.tilegrid.tilew
 
   if self.x <= largeur then
     cam_x = largeur
   end
-  if( self.x >= level.tilegrid.w - largeur ) then
-    cam_x = level.tilegrid.w - largeur
+  if( self.x >= levelw - largeur ) then
+    cam_x = levelw - largeur
   end
 
   if self.y <= hauteur then
     cam_y = hauteur
   end
-  if( self.y >= level.tilegrid.h - hauteur ) then
-    cam_y = level.tilegrid.h - hauteur
+  if( self.y >= levelh - hauteur ) then
+    cam_y = levelh - hauteur
   end
+
+  print( "x-after-"..cam_x )
+  print( "y-after-"..cam_y )
 
   self.camera:lookAt( cam_x, cam_y )
 end
