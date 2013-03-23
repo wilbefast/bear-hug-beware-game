@@ -5,7 +5,7 @@
  </tileset>
  <layer name="Calque de Tile 1" width="500" height="20" opacity="0.99">
   <data encoding="base64" compression="zlib">
-   eJzt3UEKhDAQBEDz/08vXgVBYyZLJ1XQ7E0WMk4fPKQdx9FEREQkPgBALn0OAPn0OQDk0+cAkE+fA0A+fQ4A+fQ5AOTT5wCQT58DQD59DgD59DkAzFPVufocAOZql99Rz9TnAHO5Q4PRZ2+WAOZzP9beKs7f/ADM5+5LTiPP3czs5cm82CVQz73WnK7n+uW7ujnZx9PdYIdAvZ4+916u567Pe59lNtb3Zh/YHVDva597P9dQ0eeyX+78+3+JiEhfflO4BH0=
+   eJzt3csKhDAQBEDz/z+9eJUVfGQinVRBszcRMk4f9pC2bVsTERGR+AAAufQ5AOTT5wCQT58DQD59DgD59DkA5NPnAJBPnwNAPn0OAPn0OQDk0+cAME5V5+pzABirHX57PVOfA4zlDg16n71ZAhjP/Vhrqzh/8wMwnrsv2fU8dzOzlivzYpdAPfdaszue65v/1c3JOq7uBjsE6j3pc9/lfM76/OmzzMb87uwDuwPqve1z3+ccKvpc1suZr99LZLb88/U7yZz5AUfEBHg=
   </data>
  </layer>
  <objectgroup color="#ff0000" name="murs" width="500" height="20">
@@ -75,6 +75,19 @@
   <object x="26496" y="1088" width="64" height="128"/>
   <object x="27904" y="1088" width="64" height="128"/>
   <object x="22912" y="832" width="64" height="128"/>
+  <object x="18240" y="1088" width="64" height="128"/>
+  <object x="18816" y="1088" width="64" height="128"/>
+  <object x="19136" y="832" width="64" height="128"/>
+  <object x="19328" y="320" width="64" height="128"/>
+  <object x="19584" y="576" width="64" height="128"/>
+  <object x="19520" y="1088" width="64" height="128"/>
+  <object x="20160" y="1088" width="64" height="128"/>
+  <object x="20096" y="320" width="64" height="128"/>
+  <object x="20800" y="1088" width="64" height="128"/>
+  <object x="21760" y="1088" width="64" height="128"/>
+  <object x="21504" y="576" width="64" height="128"/>
+  <object x="11136" y="576" width="64" height="128"/>
+  <object x="25728" y="832" width="64" height="128"/>
  </objectgroup>
  <objectgroup color="#ffff00" name="death" width="500" height="20">
   <object x="8064" y="1216" width="384" height="64"/>
@@ -86,7 +99,7 @@
   <object x="8064" y="704" width="64" height="64"/>
   <object x="11456" y="576" width="64" height="64"/>
   <object x="21888" y="576" width="64" height="64"/>
-  <object x="19648" y="1024" width="64" height="64"/>
+  <object x="20544" y="960" width="64" height="64"/>
   <object x="26112" y="832" width="64" height="64"/>
   <object x="26560" y="832" width="64" height="64"/>
  </objectgroup>
