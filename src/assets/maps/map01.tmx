@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="500" height="20" tilewidth="64" tileheight="64">
  <tileset firstgid="1" name="mur" tilewidth="64" tileheight="64">
-  <image source="../sprites/mur.png" trans="ffffff" width="64" height="64"/>
+  <image source="../../../assets/sprites/mur.png" trans="ffffff" width="64" height="64"/>
  </tileset>
  <layer name="Calque de Tile 1" width="500" height="20" opacity="0.99">
   <data encoding="base64" compression="zlib">
-   eJzt1QEJADAQxLA//6anoyOBaujubpIkKR8A0OXnANDn5wDQ5+cA0OfnANDn5wDQ5+cA0OfnANDn5wDQ5+cA0OfnANDn5wDQ5+cA0OfnANDn5wDQ5+cA0OfnANDn5wDQN0mS9EUP4FwEDQ==
+   eJzt3TEKgDAABMHk/5+2F4Voo0tm4DqLFJItM8cY08zMzPIDALr0HAD69BwA+vQcAPr0HAD69BwA+vQcAPr0HAD69BwA+vQcAPr0HAD69BwA+vQcAPr0HAD69BwA+vR8Lytv5HpHF6DHvb2P1TfvV78D4D/c2Xs4N/pJz/0fAP93dXfbHrvz9bnMzOzdDqC2BB8=
   </data>
  </layer>
  <objectgroup color="#ff0000" name="murs" width="500" height="20">
   <object x="0" y="0" width="64" height="1280"/>
   <object x="64" y="0" width="31936" height="64"/>
-  <object x="64" y="1216" width="31936" height="64"/>
+  <object x="64" y="1216" width="7680" height="64"/>
   <object x="31936" y="64" width="64" height="1152"/>
+  <object x="7744" y="1152" width="320" height="128"/>
+  <object x="7808" y="1088" width="256" height="64"/>
+  <object x="7872" y="1024" width="192" height="64"/>
+  <object x="8448" y="1024" width="192" height="256"/>
+  <object x="8640" y="1088" width="64" height="192"/>
+  <object x="8704" y="1152" width="64" height="128"/>
+  <object x="8768" y="1216" width="23232" height="64"/>
  </objectgroup>
  <objectgroup color="#ffcc66" name="plateformes" width="500" height="20">
   <object x="3712" y="960" width="896" height="256"/>
@@ -29,5 +36,11 @@
   <object x="6016" y="832" width="64" height="128"/>
   <object x="6336" y="1088" width="64" height="128"/>
   <object x="7232" y="1088" width="64" height="128"/>
+  <object x="7936" y="896" width="64" height="128"/>
+  <object x="8640" y="960" width="64" height="128"/>
+  <object x="9024" y="1088" width="64" height="128"/>
+ </objectgroup>
+ <objectgroup name="death" width="500" height="20">
+  <object x="8064" y="1216" width="384" height="64"/>
  </objectgroup>
 </map>
