@@ -41,15 +41,16 @@ function state:init()
   self.xMagicBarre = 150
   self.yMagicBarre = 150
 
-  --! FIXME MP3 IS NOT SUPPORTED!
-  --path = "assets/audio/prise_de_degats.mp3"
-  --degats_subis = love.audio.newSource(path, "static")
+ 
+  path = "assets/audio/prise_de_degats.ogg"
+  degats_subis = love.audio.newSource(path, "static")
   fic="assets/audio/cri_mort.ogg"
   cri_mort = love.audio.newSource(fic,"static")
   fic_saut = "assets/audio/saut.ogg"
   saut = love.audio.newSource(fic_saut,"static")
   image_mort = love.graphics.newImage("assets/images/mort.png")
-
+  son_explosion = "assets/audio/explosion_magique.ogg"
+  explosion = love.audio.newSource(son_explosion,"static")
 end
 
 
@@ -112,6 +113,8 @@ function state:keypressed(key, uni)
     cri_mort:play()
   elseif key =="h" then 
 	saut:play()
+  elseif key == "j" then 
+    explosion:play()
   end
 -----------------------------
   
