@@ -58,9 +58,19 @@ Game loop
 --]]
 
 function Level:update(dt)
-  -- update all players
+  -- for each player
   useful.map(self.players, 
-      function (player) player:update(dt, self.tilegrid) 
+      function (player)
+        -- update the player
+        player:update(dt, self.tilegrid)
+        -- check collisions with enemies
+        useful.map(self.enemies,
+            function(enemy)
+              if player:isColliding(enemy) then
+                player:eventCollision(enemy)
+                enemy:eventCollision(player)
+              end
+            end)
   end)
   -- update all enemies
   useful.map(self.enemies, 

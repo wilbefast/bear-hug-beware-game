@@ -81,6 +81,28 @@ function Character:snap_to_collision(dx, dy, tilegrid, max)
   end
 end
 
+function Character:eventCollision(other)
+  -- override me!
+end
+
+function Character:isColliding(other)
+  -- horizontally seperate ? 
+  local v1x = (other.x + other.w) - self.x
+  local v2x = (self.x + self.w) - other.x
+  if useful.sign(v1x) ~= useful.sign(v2x) then
+    return false
+  end
+  -- vertically seperate ?
+  local v1y = (self.y + self.h) - other.y
+  local v2y = (other.y + other.h) - self.y
+  if useful.sign(v1y) ~= useful.sign(v2y) then
+    return false
+  end
+  
+  -- in every other case there is a collision
+  return true
+end
+
 --[[------------------------------------------------------------
 Game loop
 --]]

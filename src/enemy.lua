@@ -39,8 +39,17 @@ function Enemy:init(x, y)
 end
 
 Enemy.GRAVITY = 30
+
 Enemy.w = 64
 Enemy.h = 64
+
+--[[------------------------------------------------------------
+Collisions
+--]]
+
+function Enemy:eventCollision(other)
+  -- TODO
+end
 
 --[[------------------------------------------------------------
 Game loop

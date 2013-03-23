@@ -48,15 +48,23 @@ Player.MAX_DX = 512.0
 Player.BOOST = 512.0
 Player.GRAVITY = 20.0
 Player.FRICTION_X = 150
+
 Player.w = 128
 Player.h = 128
+
+--[[------------------------------------------------------------
+Collisions
+--]]
+
+function Player:eventCollision(other)
+  -- TODO
+end
 
 --[[------------------------------------------------------------
 Game loop
 --]]
 
 function Player:update(dt, tilegrid)
-
   -- TODO check if move is possible (stunned?)
   -- accelerate
   self.dx = self.dx + self.requestMoveX * self.MOVE_X
