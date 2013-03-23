@@ -13,6 +13,9 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 Lesser General Public License for more details.
 --]]
 
+Class  = require("hump/class")
+Player = require("player")
+
 local state = GameState.new()
 
 local Level = require("Level")
@@ -20,6 +23,7 @@ local level = Level()
 
 
 function state:init()
+  player = Player()
 end
 
 
@@ -75,6 +79,7 @@ end
 function state:draw()
   love.graphics.print("Game screen", 32, 32)
   level:draw()
+  player.draw()
 end
 
 return state
