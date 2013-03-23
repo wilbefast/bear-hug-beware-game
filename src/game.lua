@@ -17,6 +17,7 @@ Lesser General Public License for more details.
 IMPORTS
 --]]------------------------------------------------------------
 
+
 local Level = require("Level")
 local Camera = require("hump/camera")
 local Player = require("player")
@@ -32,13 +33,54 @@ function state:init()
   self.level = Level()
   self.camera = Camera(0, 0)
   self.player = Player()
+
+  player = Player()
+
+	love.keyboard.setKeyRepeat(0.01, 0.002)
+
+	
+	bord_gauche = 50
+	bord_haut = 50
+	bord_droit = 550
+	bord_bas = 550
+
+	c1 = {
+		x = 60,
+		y = 60,
+		th = 10,
+		tw = 10
+	}
+	c2 = {
+		x = 350,
+		y = 500,
+		th = 20,
+		tw = 20
+	}
+	c3 = {
+		x = 200,
+		y = 200,
+		th = 30,
+		tw = 30
+	}
+	player = {
+		x = 200,
+		y = 530,
+		th = 20,
+		tw = 20
+	}
+
+
 end
 
 
 function state:enter()
+
   -- reset objects
   self.level:load("../assets/maps/map01")
   self.camera:lookAt(128, 128) --FIXME look at player
+
+  level:load("..assets/maps/map01")
+
 end
 
 
@@ -73,7 +115,27 @@ end
 
 function state:keypressed(key, uni)
   if key=="escape" then
+
     GameState.switch(title)
+
+    love.event.push("quit")
+  elseif key == "right" then
+	if player.x+1 == bord_droit-100 then
+		c1.x = c1.x-1
+		c2.x = c2.x-1
+		c3.x = c3.x-1
+	else
+		player.x = player.x+1
+	end
+  elseif key == "left" then
+	if player.x-1 == bord_gauche+100 then
+		c1.x = c1.x+1
+		c2.x = c2.x+1
+		c3.x = c3.x+1
+	else
+		player.x = player.x-1
+	end
+
   end
 end
 
@@ -101,11 +163,24 @@ end
 
 function state:draw()
   love.graphics.print("Game screen", 32, 32)
+
   
   self.camera:attach()
   	self.level:draw()
   	self.player.draw()
   self.camera:detach()
+
+
+  level:draw()
+  player.draw()
+
+  love.graphics.rectangle("line",50,50,600,500)
+  love.graphics.rectangle("fill",c1.x,c1.y,c1.tw,c1.th)
+  love.graphics.rectangle("fill",c2.x,c2.y,c2.tw,c2.th)
+  love.graphics.rectangle("fill",c3.x,c3.y,c3.tw,c3.th)
+  love.graphics.rectangle("fill",player.x,player.y,5,5)
+
+
 end
 
 return state
