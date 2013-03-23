@@ -22,6 +22,7 @@ local Character   = require("character")
 local GameObject  = require("GameObject")
 local Attack      = require("Attack")
 local useful      = require("useful")
+local AnAl        = require("AnAL/AnAL")
 
 --[[------------------------------------------------------------
 CHARACTER CLASS
@@ -37,8 +38,13 @@ local Player = Class
 
   init = function(self, x, y)
     Character.init(self, x, y, 128, 128, 
-                    "assets/sprites/mur.png")
-  end,
+                    "assets/sprites/HerosCourseSprite.png")
+  	self.animation = newAnimation(self.image, 128, 128, 0.1, 0)
+    self.animation:setSpeed(1,2)
+    self.facing = 1
+
+
+end,
 }
 Player:include(Character)
 
@@ -132,6 +138,11 @@ function Player:update(dt, level)
       self.requestMagicAttack = false
     end
 
+    --update animation
+    if self.requestMoveX ~= 0 then
+      self.animation:update(dt)
+    end
+
     -- reset input requests to false
     self.requestMoveX, self.requestMoveY = 0, 0
 
@@ -141,5 +152,14 @@ function Player:update(dt, level)
 
 end
 
+function Player:draw()
+  local x = self.x
+  if self.facing < 0 then
+    x = self.x + self.w
+  end
+  self.animation:draw(x, self.y, 0, self.facing, 1)
+  -- FIXME debug
+  GameObject.draw(self)
+end
 
 return Player
