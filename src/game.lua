@@ -15,18 +15,20 @@ Lesser General Public License for more details.
 
 local state = GameState.new()
 
+local Level = require("Level")
+local level = Level()
+
 
 function state:init()
 end
 
 
 function state:enter()
-
+  -- level.load()
 end
 
 
 function state:focus()
-
 end
 
 
@@ -57,7 +59,7 @@ end
 
 function state:keypressed(key, uni)
   if key=="escape" then
-    love.event.push("quit")
+    GameState.switch(title)
   end
 end
 
@@ -72,6 +74,7 @@ end
 
 function state:draw()
   love.graphics.print("Game screen", 32, 32)
+  level:draw()
 end
 
 return state
