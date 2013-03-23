@@ -39,7 +39,7 @@ function Enemy:init(x, y)
   Character.init(self, x, y, "assets/sprites/sol.png")
 end
 
-Enemy.GRAVITY         = 30
+Enemy.GRAVITY         = 700
 Enemy.ATTACK_INTERVAL = 2
 Enemy.DAMAGE          = 6
 

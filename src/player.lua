@@ -48,7 +48,7 @@ Player.MOVE_X = 50.0
 Player.MOVE_Y = 32.0
 Player.MAX_DX = 1000.0
 Player.BOOST = 850.0
-Player.GRAVITY = 20.0
+Player.GRAVITY = 700.0
 Player.FRICTION_X = 50
 Player.w = 128
 Player.h = 128
@@ -62,10 +62,7 @@ function Player:collidesType(type)
 end
 
 function Player:eventCollision(other)
-  if other.reloadTime <= 0 then
-    self:life_change(-other.DAMAGE)
-    self.reloadTime = other.ATTACK_INTERVAL
-  end
+
 end
 
 --[[------------------------------------------------------------
