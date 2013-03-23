@@ -32,12 +32,24 @@ Initialisation
 local TileGrid = Class
 {
   init = function(self, mapfile)
+  
     -- grab the size of the map
     self.width = mapfile.width
     self.height = mapfile.height
+    
     -- grab the size of the tiles
     self.tilewidth = mapfile.tilewidth
     self.tileheight = mapfile.tileheight
+    
+    -- grab the tileset
+    self.tilesets = {}
+    for t, tileset in ipairs(mapfile.tilesets) do
+      self.tilesets[tileset.firstgid] = 
+      {
+        image = love.graphics.newImage(tileset.image)
+      }
+    end
+    
     -- create each layer
     self.layers = {}
     for z, layer in ipairs(mapfile.layers) do
@@ -85,11 +97,12 @@ function TileGrid:draw(view)
     
   for x = start_x, end_x do
     for y = start_y, end_y do
-      love.graphics.rectangle(
-        useful.tri(self.layers[1][x][y].type == 0, "line", "fill"), 
-          x * self.tilewidth, y * self.tileheight,
-          self.tilewidth, self.tileheight)
-
+      local tset_i = self.layers[1][x][y].type
+      if tset_i ~= 0 then
+        local img = self.tilesets[tset_i].image
+        love.graphics.draw(img, x * self.tilewidth, 
+                                y * self.tileheight)
+      end
     end
   end
 
