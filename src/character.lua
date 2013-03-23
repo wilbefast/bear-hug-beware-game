@@ -25,8 +25,9 @@ CHARACTER CLASS
 
 
 local Character = Class{
-  init = function(self, position, image)
-    self.position = position
+  init = function(self, x, y, image)
+    self.x        = x
+    self.y        = y
     self.image    = image
   end,
   speed = 5,
@@ -34,32 +35,11 @@ local Character = Class{
 }
 
 function Character:update(dt)
-  -- see hump.vector
-  local delta = vector(0,0)
-    if love.keyboard.isDown('left') then
-      delta.x = -1
-    elseif love.keyboard.isDown('right') then
-      delta.x =  1
-    end
-    if love.keyboard.isDown('up') then
-      delta.y = -1
-    elseif love.keyboard.isDown('down') then
-      delta.y =  1
-    end
-    delta:normalize_inplace()
-
-    player.velocity = Character.velocity + delta * Character.acceleration * dt
-
-    if Character.velocity:len() > Character.max_velocity then
-      player.velocity = Character.velocity:normalized() * Character.max_velocity
-    end
-
-    player.position = Character.position + Character.velocity * dt
 end
 
 function Character:draw()
   image = love.graphics.newImage(self.image)
-  love.graphics.draw(image, 50, 50)
+  love.graphics.draw(image, self.x, self.y)
 end
 
 return Character

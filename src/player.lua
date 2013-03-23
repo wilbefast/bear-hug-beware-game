@@ -28,8 +28,8 @@ CHARACTER CLASS
 local Player = Class
   {
   type = "player",
-  init = function(self, position, image)
-    Character.init(self, position, image)
+  init = function(self, x, y)
+    Character.init(self, x, y, "assets/sprites/mur.png")
   end
 }
 

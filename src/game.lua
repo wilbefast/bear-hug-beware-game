@@ -32,16 +32,14 @@ function state:init()
   -- create objects
   self.level = Level()
   self.camera = Camera(0, 0)
-  self.player = Player()
+  self.player = Player(100, 100)
 end
 
 
 function state:enter()
-
   -- reset objects
   self.level:load("../assets/maps/map01")
   --TODO reset player position base on level
-  self.player.x, self.player.y = 100, 100
   self.camera:lookAt(self.player.x, self.player.y)
 end
 
