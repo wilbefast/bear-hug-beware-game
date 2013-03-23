@@ -57,6 +57,9 @@ GameObject.TYPE[2] = "ATTACK"
 GameObject.TYPE.ENEMY = 3
 GameObject.TYPE[3] = "ENEMY"
 
+GameObject.TYPE.ENEMYATTACK = 4
+GameObject.TYPE[4] = "ENEMYATTACK"
+
 --[[----------------------------------------------------------------------------
 Collisions
 --]]
