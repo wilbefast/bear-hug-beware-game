@@ -57,11 +57,20 @@ GameObject.TYPE[1] = "PLAYER"
 GameObject.TYPE["ATTACK"] = 2
 GameObject.TYPE[2] = "ATTACK"
 
-GameObject.TYPE.ENEMY = 3
+GameObject.TYPE["ENEMY"] = 3
 GameObject.TYPE[3] = "ENEMY"
 
-GameObject.TYPE.ENEMYATTACK = 4
+GameObject.TYPE["ENEMYATTACK"] = 4
 GameObject.TYPE[4] = "ENEMYATTACK"
+
+GameObject.TYPE["DEADENEMY"] = 5
+GameObject.TYPE[5] = "DEADENEMY"
+
+GameObject.TYPE["DEATH"] = 6
+GameObject.TYPE[6] = "DEATH"
+
+GameObject.TYPE["BONUS"] = 7
+GameObject.TYPE[7] = "BONUS"
 
 --[[----------------------------------------------------------------------------
 Collisions
