@@ -157,6 +157,31 @@ function state:update(dt)
 	  self.level:update(dt)
 	  
 	  -- point camera at player object
+    
+    local hauteur = love.graphics.getHeight() / 2
+    local largeur = love.graphics.getWidth() / 2
+
+    local cam_x = self.player.x
+    local cam_y = self.player.y
+
+    local levelh = self.level.tilegrid.h  * self.level.tilegrid.tileh
+    local levelw = self.level.tilegrid.w  * self.level.tilegrid.tilew
+
+    if self.player.x <= largeur then
+      cam_x = largeur
+    end
+    if( self.player.x >= levelw - largeur ) then
+      cam_x = levelw - largeur
+    end
+
+    if self.player.y <= hauteur then
+      cam_y = hauteur
+    end
+    if( self.player.y >= levelh - hauteur ) then
+      cam_y = levelh - hauteur
+    end
+
+    self.camera:lookAt( cam_x, cam_y )
   end
 end
 
