@@ -34,10 +34,10 @@ function state:init()
   self.camera = Camera(0, 0)
   self.player = Player(100, 100)
 
-  x_b1 = 600
-  y_b1 = 150
-  x_b2 = 600
-  y_b2 = 200
+  self.x_b1 = 600
+  self.y_b1 = 150
+  self.x_b2 = 600
+  self.y_b2 = 200
 end
 
 
@@ -81,16 +81,20 @@ end
 function state:keypressed(key, uni)
   if key=="escape" then
     GameState.switch(title)
-    
-    
+
+  elseif key == "p" then
+    if paused then
+		paused = false
+	else 
+		paused = true
+	end
   --! TODO remove debug test when no longer needed
   -----------------------------
-  elseif key == "p" then
-    self.player:life_change(10,false)
   elseif key == "m" then
+    self.player:life_change(10,false)
     self.player:magic_change(5,false)
-  -----------------------------
   end
+-----------------------------
   
   -- player attacks
   self.player.requestLightAttack 
@@ -152,11 +156,20 @@ function state:draw()
   -- barre de magie et life :
 	love.graphics.print("life : " ,560,150)
 	love.graphics.print("magic power : " ,500,200)
-	love.graphics.rectangle("line",x_b1,y_b1,100,20)
-	love.graphics.rectangle("line",x_b2,y_b2,100,20)
-	love.graphics.rectangle("fill",x_b1,y_b1,self.player.life,20)
-	love.graphics.rectangle("fill",x_b2,y_b2,self.player.magic,20)
+	love.graphics.rectangle("line",self.x_b1,self.y_b1,100,20)
+	love.graphics.rectangle("line",self.x_b2,self.y_b2,100,20)
 
+	love.graphics.rectangle("fill",self.x_b1,self.y_b1,self.player.life,20)
+	if self.player.life == 0 then
+		love.graphics.rectangle("line",1000, 100,100,100)
+		love.graphics.print("game over ! \n t'es mauvais \n JACK",1010,110)
+	end
+	love.graphics.rectangle("fill",x_b2,y_b2,self.player.magic,20)
+	
+	if paused then 
+		love.graphics.rectangle("line",50,50, 150,100)
+		love.graphics.print(" Game Paused !! ",60,60)
+	end
 end
 
 return state
