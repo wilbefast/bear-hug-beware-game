@@ -1,6 +1,6 @@
 --[[
 (C) Copyright 2013 
-William Dyce, Maxime Ailloud, Alex Averbrugghe, Julien Deville
+William Dyce, Maxime Ailloud, Alex Verbrugghe, Julien Deville
 
 All rights reserved. This program and the accompanying materials
 are made available under the terms of the GNU Lesser General Public License
@@ -135,9 +135,6 @@ function state:draw()
   self.camera:detach()
 
 --[[
-  level:draw()
-  player.draw()
-
   love.graphics.rectangle("line",50,50,600,500)
   love.graphics.rectangle("fill",c1.x,c1.y,c1.tw,c1.th)
   love.graphics.rectangle("fill",c2.x,c2.y,c2.tw,c2.th)
