@@ -100,7 +100,8 @@ Collisions
 function Player:collidesType(type)
   return ((type == GameObject.TYPE.ENEMY)
       or (type == GameObject.TYPE.ENEMYATTACK)
-      or (type == GameObject.TYPE.DEATH))
+      or (type == GameObject.TYPE.DEATH)
+      or (type == GameObject.TYPE.BONUS))
 end
 
 function Player:eventCollision(other)
@@ -114,6 +115,11 @@ function Player:eventCollision(other)
   -- collision with "death" (bottomless pit)
   elseif other.type == GameObject.TYPE.DEATH then
     self.life = 0
+
+  -- collision with "bonus" 
+  elseif other.type == GameObject.TYPE.BONUS then
+    self.life = 100
+    other.purge = true --! FIXME
   end
 end
 
