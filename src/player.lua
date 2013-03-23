@@ -44,9 +44,9 @@ Player:include(Character)
 Constants
 --]]
 
-Player.MOVE_X = 64.0
+Player.MOVE_X = 50.0
 Player.MOVE_Y = 32.0
-Player.MAX_DX = 2000.0
+Player.MAX_DX = 1000.0
 Player.BOOST = 850.0
 Player.GRAVITY = 20.0
 Player.FRICTION_X = 50
@@ -123,31 +123,30 @@ function Player:update(dt, level)
     Character.update(self, dt, level)
   end
 
-  --[[hauteur = love.graphics.getHeight() / 2
-  largeur = love.graphics.getWidth() / 2
+  local hauteur = love.graphics.getHeight() / 2
+  local largeur = love.graphics.getWidth() / 2
 
-  cam_x = self.x
-  cam_y = self.y
+  local cam_x = self.x
+  local cam_y = self.y
+
+  local levelh = level.tilegrid.h  * level.tilegrid.tileh
+  local levelw = level.tilegrid.w  * level.tilegrid.tilew
 
   if self.x <= largeur then
     cam_x = largeur
   end
-  if( self.x >= level.tilegrid.w - largeur ) then
-    cam_x = level.tilegrid.w - largeur
+  if( self.x >= levelw - largeur ) then
+    cam_x = levelw - largeur
   end
 
   if self.y <= hauteur then
     cam_y = hauteur
   end
-  if( self.y >= level.tilegrid.h - hauteur ) then
-    cam_y = level.tilegrid.h - hauteur
+  if( self.y >= levelh - hauteur ) then
+    cam_y = levelh - hauteur
   end
 
-  --point camera at player --]]
-  self.camera:lookAt( self.x, self.y )
-
-  -- base update
-  Character.update(self, dt, level)
+  self.camera:lookAt( cam_x, cam_y )
 end
 
 
