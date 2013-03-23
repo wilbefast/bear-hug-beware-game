@@ -43,9 +43,9 @@ Player:include(Character)
 Constants
 --]]
 
-Player.MOVE_X = 64.0
+Player.MOVE_X = 50.0
 Player.MOVE_Y = 32.0
-Player.MAX_DX = 2000.0
+Player.MAX_DX = 1000.0
 Player.BOOST = 850.0
 Player.GRAVITY = 20.0
 Player.FRICTION_X = 50
@@ -114,6 +114,13 @@ function Player:update(dt, tilegrid)
 
   -- base update
   Character.update(self, dt, tilegrid)
+
+  if self.x > 0 then
+    self.camera:lookAt(self.x, self.y)
+    self.camera:lookAt(self.x, self.y)
+  else
+    self.camera:lookAt(0, self.y)
+  end
 end
 
 
