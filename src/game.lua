@@ -221,8 +221,8 @@ function state:draw()
 	end
 	
 	if paused then 
-		love.graphics.rectangle("line",50,50, 150,100)
-		love.graphics.print(" Game Paused !! ",60,60)
+		love.graphics.rectangle("line",700,50, 200,40)
+		love.graphics.print(" Game Paused !! \n Taper \"p\" pour redemarrer. ",705,55)
 	end
 end
 
