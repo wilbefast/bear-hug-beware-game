@@ -123,8 +123,8 @@ function state:draw()
                           love.graphics.getHeight())
   
   self.camera:attach()
-  	self.level:draw(view)
-  	self.player:draw(view)
+  self.level:draw(view)
+  self.player:draw(view)
   self.camera:detach()
 
   -- barre de magie et life :

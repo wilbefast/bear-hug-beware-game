@@ -18,43 +18,44 @@ IMPORTS
 --]]------------------------------------------------------------
 
 local Character = require("character")
-local Class = require("hump/class")
+local Class     = require("hump/class")
 
 --[[------------------------------------------------------------
 CHARACTER CLASS
 --]]------------------------------------------------------------
 
-
 local Player = Class
-  {
+{
   type  = "player",
   magic = 100,
+
   init = function(self, x, y)
     Character.init(self, x, y, "assets/sprites/mur.png")
   end,
+
   life_change = function(self,nb,add)
-	if add then 
-		if self.life+nb < 100 then
-			self.life = self.life + nb
-		end
-	else
-		if self.life-nb>=0 then
-			self.life = self.life - nb
-		end
-	end
+    if add then
+      if self.life+nb < 100 then
+        self.life = self.life + nb
+      end
+    else
+      if self.life-nb>=0 then
+        self.life = self.life - nb
+      end
+    end
   end,
   
   magic_change = function(self,nb,add)
-	love.graphics.print("value : "..self.magic,400,400)
-	if add then 
-		if self.magic+nb<100 then
-			self.magic = self.magic + nb
-		end
-	else
-		if self.magic-nb >= 0 then 
-			self.magic = self.magic - nb
-		end
-	end	
+    love.graphics.print("value : "..self.magic,400,400)
+    if add then
+      if self.magic+nb<100 then
+        self.magic = self.magic + nb
+      end
+    else
+      if self.magic-nb >= 0 then
+        self.magic = self.magic - nb
+      end
+    end
   end
 }
 
