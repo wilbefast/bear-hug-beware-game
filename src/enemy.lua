@@ -18,6 +18,7 @@ IMPORTS
 --]]------------------------------------------------------------
 
 local Character = require("character")
+local GameObject = require("GameObject")
 local Class     = require("hump/class")
 
 --[[------------------------------------------------------------
@@ -29,7 +30,7 @@ Initialise
 --]]
 local Enemy = Class
 {
-  type  = "enemy",
+  type  =  GameObject.TYPE["ENEMY"],
 }
 Enemy:include(Character)
 

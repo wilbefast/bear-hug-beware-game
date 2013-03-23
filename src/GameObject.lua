@@ -43,6 +43,21 @@ local GameObject = Class
 }
 
 --[[----------------------------------------------------------------------------
+Types
+--]]
+
+GameObject.TYPE = {}
+
+GameObject.TYPE["PLAYER"] = 1 
+GameObject.TYPE[1] = "PLAYER"
+
+GameObject.TYPE["ATTACK"] = 2
+GameObject.TYPE[2] = "ATTACK"
+
+GameObject.TYPE.ENEMY = 3
+GameObject.TYPE[3] = "ENEMY"
+
+--[[----------------------------------------------------------------------------
 Collisions
 --]]
 

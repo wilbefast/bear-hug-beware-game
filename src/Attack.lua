@@ -34,7 +34,7 @@ local Attack = Class
     self.h = h
   end,
       
-  type  = "attack",
+  type  =  GameObject.TYPE["ATTACK"],
 }
 Attack:include(GameObject)
 

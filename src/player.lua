@@ -19,6 +19,7 @@ IMPORTS
 
 local Class     = require("hump/class")
 local Character = require("character")
+local GameObject = require("GameObject")
 local Attack    = require("Attack")
 
 --[[------------------------------------------------------------
@@ -31,7 +32,7 @@ Initialise
 
 local Player = Class
 {
-  type  = "player",
+  type  =  GameObject.TYPE["PLAYER"],
 
   init = function(self, x, y)
     Character.init(self, x, y, "assets/sprites/mur.png")
