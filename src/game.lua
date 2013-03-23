@@ -133,6 +133,9 @@ function state:draw()
 	love.graphics.rectangle("line",x_b1,y_b1,100,20)
 	love.graphics.rectangle("line",x_b2,y_b2,100,20)
 	love.graphics.rectangle("fill",x_b1,y_b1,self.player.life,20)
+	if self.player.life == 0 then
+		love.graphics.print("game over ! ",x_b1,y_b1)
+	end
 	love.graphics.rectangle("fill",x_b2,y_b2,self.player.magic,20)
 
 end
