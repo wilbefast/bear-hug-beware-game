@@ -59,6 +59,8 @@ function state:keypressed(key, uni)
     love.event.push("quit")
   elseif key=="return" or key=="kpenter" then
     GameState.switch(game)
+  elseif key=="space" then
+    GameState.switch(histoire)
   end
 end
 
@@ -72,7 +74,7 @@ end
 
 
 function state:draw()
-  love.graphics.print("Title screen", 32, 32)
+  love.graphics.print("Press Enter to play", 32, 32)
 end
 
 return state

@@ -13,21 +13,21 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 Lesser General Public License for more details.
 --]]
 
-local game = require("game")
 
 local state = GameState.new()
 
 local histoire1
 local histoire2
+local debut
 
 function state:init()
-  histoire1 = love.graphics.newImage( "../assets/backgrounds/histoire1.jpg" )
-  histoire2 = love.graphics.newImage( "../assets/backgrounds/histoire2.jpg" )
+  histoire1 = love.graphics.newImage( "assets/backgrounds/histoire1.jpg" )
+  histoire2 = love.graphics.newImage( "assets/backgrounds/histoire2.jpg" )
 end
 
 
 function state:enter()
-
+	debut = love.timer.getTime()
 end
 
 
@@ -75,11 +75,20 @@ end
 
 
 function state:update(dt)
+
+	if( debut > love.timer.getTime() + 2 )
+    	GameState.switch(game)
+	end	
 end
 
 
 function state:draw()
-  love.graphics.print("Title screen", 32, 32)
+	if( debut > love.timer.getTime() + 2 )
+  		love.graphics.draw( histoire2 )
+	else
+  		love.graphics.draw( histoire1 )
+	end
+
 end
 
 return state

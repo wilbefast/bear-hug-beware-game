@@ -30,6 +30,7 @@ local Character = Class{
     self.y        = y
     self.image    = image
   end,
+  life  = 100,
   speed = 5,
   type  = "character"
 }
