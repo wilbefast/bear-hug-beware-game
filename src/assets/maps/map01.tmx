@@ -5,7 +5,7 @@
  </tileset>
  <layer name="Calque de Tile 1" width="500" height="20" opacity="0.99">
   <data encoding="base64" compression="zlib">
-   eJzt3TEKgDAABMHk/5+2F4Voo0tm4DqLFJItM8cY08zMzPIDALr0HAD69BwA+vQcAPr0HAD69BwA+vQcAPr0HAD69BwA+vQcAPr0HAD69BwA+vQcAPr0HAD69BwA+vR8Lytv5HpHF6DHvb2P1TfvV78D4D/c2Xs4N/pJz/0fAP93dXfbHrvz9bnMzOzdDqC2BB8=
+   eJzt3UEKhDAQBEDz/08vXgVBYyZLJ1XQ7E0WMk4fPKQdx9FEREQkPgBALn0OAPn0OQDk0+cAkE+fA0A+fQ4A+fQ5AOTT5wCQT58DQD59DgD59DkAzFPVufocAOZql99Rz9TnAHO5Q4PRZ2+WAOZzP9beKs7f/ADM5+5LTiPP3czs5cm82CVQz73WnK7n+uW7ujnZx9PdYIdAvZ4+916u567Pe59lNtb3Zh/YHVDva597P9dQ0eeyX+78+3+JiEhfflO4BH0=
   </data>
  </layer>
  <objectgroup color="#ff0000" name="murs" width="500" height="20">
@@ -19,12 +19,31 @@
   <object x="8448" y="1024" width="192" height="256"/>
   <object x="8640" y="1088" width="64" height="192"/>
   <object x="8704" y="1152" width="64" height="128"/>
-  <object x="8768" y="1216" width="23232" height="64"/>
+  <object x="8768" y="1216" width="13312" height="64"/>
+  <object x="22400" y="832" width="256" height="384"/>
+  <object x="22656" y="896" width="192" height="64"/>
+  <object x="22848" y="960" width="192" height="64"/>
+  <object x="23040" y="1024" width="192" height="64"/>
+  <object x="23232" y="1088" width="192" height="64"/>
+  <object x="23424" y="1152" width="192" height="64"/>
+  <object x="22400" y="1216" width="9600" height="64"/>
  </objectgroup>
  <objectgroup color="#ffcc66" name="plateformes" width="500" height="20">
   <object x="3712" y="960" width="896" height="256"/>
   <object x="4480" y="704" width="1216" height="512"/>
   <object x="5568" y="960" width="1024" height="256"/>
+  <object x="11008" y="704" width="576" height="512"/>
+  <object x="9536" y="960" width="1024" height="256"/>
+  <object x="14080" y="704" width="384" height="512"/>
+  <object x="15040" y="960" width="1024" height="256"/>
+  <object x="18368" y="960" width="1024" height="256"/>
+  <object x="18944" y="704" width="768" height="512"/>
+  <object x="19328" y="448" width="832" height="768"/>
+  <object x="21248" y="704" width="768" height="512"/>
+  <object x="28480" y="960" width="1536" height="256"/>
+  <object x="28608" y="704" width="1280" height="512"/>
+  <object x="28736" y="448" width="1024" height="768"/>
+  <object x="25280" y="960" width="1536" height="256"/>
  </objectgroup>
  <objectgroup color="#0000ff" name="bisounours" width="500" height="20">
   <object x="1792" y="1088" width="64" height="128"/>
@@ -39,8 +58,36 @@
   <object x="7936" y="896" width="64" height="128"/>
   <object x="8640" y="960" width="64" height="128"/>
   <object x="9024" y="1088" width="64" height="128"/>
+  <object x="9920" y="1088" width="64" height="128"/>
+  <object x="10688" y="1088" width="64" height="128"/>
+  <object x="11008" y="1088" width="64" height="128"/>
+  <object x="11392" y="1088" width="64" height="128"/>
+  <object x="11840" y="1088" width="64" height="128"/>
+  <object x="12544" y="1088" width="64" height="128"/>
+  <object x="13952" y="1088" width="64" height="128"/>
+  <object x="14656" y="1088" width="64" height="128"/>
+  <object x="14080" y="576" width="64" height="128"/>
+  <object x="15168" y="832" width="64" height="128"/>
+  <object x="15808" y="1088" width="64" height="128"/>
+  <object x="16832" y="1088" width="64" height="128"/>
+  <object x="24320" y="1088" width="64" height="128"/>
+  <object x="25472" y="1088" width="64" height="128"/>
+  <object x="26496" y="1088" width="64" height="128"/>
+  <object x="27904" y="1088" width="64" height="128"/>
+  <object x="22912" y="832" width="64" height="128"/>
  </objectgroup>
- <objectgroup name="death" width="500" height="20">
+ <objectgroup color="#ffff00" name="death" width="500" height="20">
   <object x="8064" y="1216" width="384" height="64"/>
+  <object x="22080" y="1216" width="320" height="64"/>
+ </objectgroup>
+ <objectgroup color="#ff0080" name="bonus" width="500" height="20">
+  <object x="14272" y="576" width="64" height="64"/>
+  <object x="4544" y="576" width="64" height="64"/>
+  <object x="8064" y="704" width="64" height="64"/>
+  <object x="11456" y="576" width="64" height="64"/>
+  <object x="21888" y="576" width="64" height="64"/>
+  <object x="19648" y="1024" width="64" height="64"/>
+  <object x="26112" y="832" width="64" height="64"/>
+  <object x="26560" y="832" width="64" height="64"/>
  </objectgroup>
 </map>
