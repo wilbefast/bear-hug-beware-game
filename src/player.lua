@@ -67,7 +67,7 @@ end
 Game loop
 --]]
 
-function Player:update(dt, tilegrid)
+function Player:update(dt, level)
   -- TODO check if move is possible (stunned?)
   -- accelerate
   self.dx = self.dx + self.requestMoveX * self.MOVE_X
@@ -118,12 +118,27 @@ function Player:update(dt, tilegrid)
     Character.update(self, dt, tilegrid)
   end
 
-  if self.x > 0 then
-    self.camera:lookAt(self.x, self.y)
-    self.camera:lookAt(self.x, self.y)
-  else
-    self.camera:lookAt(0, self.y)
+  hauteur = love.graphics.getCanvas( ):getHeight() / 2
+  largeur = love.graphics.getCanvas( ):getWidth() / 2
+
+  cam_x = self.x
+  cam_y = self.y
+
+  if self.x <= largeur then
+    cam_x = largeur
   end
+  if( self.x >= level.tilegrid.w - largeur ) then
+    cam_x = level.tilegrid.w - largeur
+  end
+
+  if self.y <= hauteur then
+    cam_y = hauteur
+  end
+  if( self.y >= level.tilegrid.h - hauteur ) then
+    cam_y = level.tilegrid.h - hauteur
+  end
+
+  self.camera:lookAt( cam_x, cam_y )
 end
 
 
