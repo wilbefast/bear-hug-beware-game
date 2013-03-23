@@ -19,6 +19,7 @@ function love.load(arg)
   conf = require("conf")
   title = require("title")
   game = require("game")
+  histoire = require("histoire")
   GameState.switch(title)
 end
 

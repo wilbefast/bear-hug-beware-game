@@ -76,14 +76,14 @@ end
 
 function state:update(dt)
 
-	if( debut > love.timer.getTime() + 2 )
+	if( love.timer.getTime() > debut + 4 ) then
     	GameState.switch(game)
 	end	
 end
 
 
 function state:draw()
-	if( debut > love.timer.getTime() + 2 )
+	if( love.timer.getTime() > debut + 2 ) then
   		love.graphics.draw( histoire2 )
 	else
   		love.graphics.draw( histoire1 )
