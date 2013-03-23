@@ -33,6 +33,11 @@ function state:init()
   self.level = Level()
   self.camera = Camera(0, 0)
   self.player = Player()
+
+  x_b1 = 600
+	y_b1 = 150
+	x_b2 = 600
+	y_b2 = 200
 end
 
 
@@ -79,6 +84,14 @@ end
 function state:keypressed(key, uni)
   if key=="escape" then
     GameState.switch(title)
+  elseif key == "p" then
+    if self.player.life >0 then
+      self.player.life = self.player.life -1
+    end
+  elseif key == "m" then
+    if self.player.magie > 0 then
+      self.player.magie = self.player.magie -1
+    end
   end
 end
 
@@ -126,6 +139,14 @@ function state:draw()
   love.graphics.rectangle("fill",c3.x,c3.y,c3.tw,c3.th)
   love.graphics.rectangle("fill",player.x,player.y,5,5)
 --]]
+
+  -- barre de magie et life :
+	love.graphics.print("life : " ,560,150)
+	love.graphics.print("magic power : " ,500,200)
+	love.graphics.rectangle("line",x_b1,y_b1,100,20)
+	love.graphics.rectangle("line",x_b2,y_b2,100,20)
+	love.graphics.rectangle("fill",x_b1,y_b1,self.player.life,20)
+	love.graphics.rectangle("fill",x_b2,y_b2,self.player.magie,20)
 
 end
 

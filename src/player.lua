@@ -27,9 +27,10 @@ CHARACTER CLASS
 
 local Player = Class
   {
-  type = "player",
-  init = function(self, position, image)
-    Character.init(self, position, image)
+  type  = "player",
+  magie = 100,
+  init = function(self, x, y, image)
+    Character.init(self, x, y, image)
   end
 }
 

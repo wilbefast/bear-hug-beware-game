@@ -25,10 +25,12 @@ CHARACTER CLASS
 
 
 local Character = Class{
-  init = function(self, position, image)
-    self.position = position
+  init = function(self, x, y, image)
+    self.x        = x
+    self.y        = y
     self.image    = image
   end,
+  life  = 100,
   speed = 5,
   type  = "character"
 }
@@ -59,7 +61,7 @@ end
 
 function Character:draw()
   image = love.graphics.newImage(self.image)
-  love.graphics.draw(image, 50, 50)
+  love.graphics.draw(image, self.x, self.y)
 end
 
 return Character
