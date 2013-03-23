@@ -137,6 +137,8 @@ function Player:update(dt, level)
     --update animation
     if self.requestMoveX ~= 0 then
       self.animation:update(dt)
+    else
+      self.animation:seek(1)
     end
 
     -- reset input requests to false
