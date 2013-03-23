@@ -42,15 +42,21 @@ function state:init()
  
   path = "assets/audio/prise_de_degats.ogg"
   degats_subis = love.audio.newSource(path, "static")
+  
   fic="assets/audio/cri_mort.ogg"
   cri_mort = love.audio.newSource(fic,"static")
+  
   fic_saut = "assets/audio/saut.ogg"
   saut = love.audio.newSource(fic_saut,"static")
+  
   image_mort = love.graphics.newImage("assets/images/mort.png")
+  
   son_explosion = "assets/audio/explosion_magique.ogg"
   explosion = love.audio.newSource(son_explosion,"static")
+  
   son_jeu = "assets/audio/themejeu.ogg"
   jeu_son = love.audio.newSource(son_jeu)
+  
   happy_tree = "assets/audio/happy.ogg"
   happy = love.audio.newSource(happy_tree,"static")
   
@@ -64,8 +70,6 @@ function state:enter()
   self.player = Player(300, 300)
   self.level:load("../assets/maps/map01")
   self.level:addObject(self.player)
-  
-  
   --TODO reset player position base on level
 end
 
@@ -96,6 +100,10 @@ end
 
 function state:quit()
   
+end
+
+function state:leave()
+	happy:stop()
 end
 
 
@@ -134,11 +142,9 @@ function state:keypressed(key, uni)
   
   -- player 1 attacks
   self.player.requestLightAttack 
-    = (key == "kp0" or key == "y")
-  self.player.requestHeavyAttack 
-    = (key == "kp1" or key == "u")
-  self.player.requestMagicAttack 
-    = (key == "kp2" or key == "i")
+    = (key == "kp0" or key == "y" or key =="rctrl" or key == "rctrl")
+  self.player.requestMagicAttack
+    = (key == "kp1" or key == "u" or key == "rshift" or key == "lshift")
   
 end
 
@@ -208,7 +214,7 @@ function state:draw()
                           love.graphics.getHeight())
   
   self.camera:attach()
-    self.level:draw(view)
+  self.level:draw(view)
   self.camera:detach()
 
   -- barre de magie et life :
