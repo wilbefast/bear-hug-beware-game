@@ -33,11 +33,19 @@ function state:init()
   self.level = Level()
   self.camera = Camera(0, 0)
   self.player = Player(100, 100)
+<<<<<<< HEAD
 
   self.x_b1 = 600
   self.y_b1 = 150
   self.x_b2 = 600
   self.y_b2 = 200
+=======
+	paused = false
+  x_b1 = 600
+  y_b1 = 150
+  x_b2 = 600
+  y_b2 = 200
+>>>>>>> paused
 end
 
 
@@ -82,8 +90,13 @@ function state:keypressed(key, uni)
   if key=="escape" then
     GameState.switch(title)
   elseif key == "p" then
-    self.player:life_change(10,false)
+    if paused then
+		paused = false
+	else 
+		paused = true
+	end
   elseif key == "m" then
+    self.player:life_change(10,false)
     self.player:magic_change(5,false)
   end
 end
@@ -96,20 +109,22 @@ end
 function state:update(dt)
   --FIXME 
   -- move player
-  if love.keyboard.isDown("left") then
-    self.player.x = self.player.x - dt*512
+  if not paused then 
+	  if love.keyboard.isDown("left") then
+		self.player.x = self.player.x - dt*512
+	  end
+	  if love.keyboard.isDown("right") then
+		self.player.x = self.player.x + dt*512
+	  end
+	  if love.keyboard.isDown("down") then
+		self.player.y = self.player.y + dt*512
+	  end
+	  if love.keyboard.isDown("up") then
+		self.player.y = self.player.y - dt*512
+	  end
+	  -- point camera at player
+	  self.camera:lookAt(self.player.x, self.player.y)
   end
-  if love.keyboard.isDown("right") then
-    self.player.x = self.player.x + dt*512
-  end
-  if love.keyboard.isDown("down") then
-    self.player.y = self.player.y + dt*512
-  end
-  if love.keyboard.isDown("up") then
-    self.player.y = self.player.y - dt*512
-  end
-  -- point camera at player
-  self.camera:lookAt(self.player.x, self.player.y)
 end
 
 
@@ -135,9 +150,22 @@ function state:draw()
 
 	love.graphics.rectangle("fill",self.x_b1,self.y_b1,self.player.life,20)
 	if self.player.life == 0 then
+<<<<<<< HEAD
 		love.graphics.print("game over ! ",self.x_b1,self.y_b1)
 	end
 	love.graphics.rectangle("fill",self.x_b2,self.y_b2,self.player.magic,20)
+=======
+		love.graphics.rectangle("line",1000, 100,100,100)
+		love.graphics.print("game over ! \n t'es mauvais \n JACK",1010,110)
+	end
+	love.graphics.rectangle("fill",x_b2,y_b2,self.player.magic,20)
+	
+	if paused then 
+		love.graphics.rectangle("line",50,50, 150,100)
+		love.graphics.print(" Game Paused !! ",60,60)
+	end
+
+>>>>>>> paused
 end
 
 return state
