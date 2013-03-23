@@ -151,30 +151,32 @@ end
 Basic collision tests
 --]]--
 
-function TileGrid:gridCollision(x, y)
-  local type = self:gridToTile(x, y).isWall()
+function TileGrid:gridCollision(x, y, type)
+  type = (type or Tile.TYPE.WALL)
+  return (self:gridToTile(x, y).type == type)
 end
 
-function TileGrid:pixelCollision(x, y, oneSidedWalls)
+function TileGrid:pixelCollision(x, y, type)
+  type = (type or Tile.TYPE.WALL)
   local tile = self:pixelToTile(x, y)
-  return ((not tile) or tile.type == Tile.TYPE.WALL
-          or (oneSidedWalls and tile.type == Tile.TYPE.ONESIDED))
+  return ((not tile) or ((tile.type > 0) 
+                        and (tile.type <= type)))
 end
 
 --[[----------------------------------------------------------------------------
 GameObject collision tests
 --]]--
 
-function TileGrid:collision(go, x, y, oneSidedWalls)
+function TileGrid:collision(go, x, y, type)
   -- x & y are optional: leave them out to test the object where it actually is
   x = (x or go.x)
   y = (y or go.y)
   
   -- rectangle collision mask, origin is at the top-left
-  return (self:pixelCollision(x,         y,         oneSidedWalls) 
-      or  self:pixelCollision(x + go.w,  y,         oneSidedWalls) 
-      or  self:pixelCollision(x,         y + go.h,  oneSidedWalls)
-      or  self:pixelCollision(x + go.w,  y + go.h, oneSidedWalls))
+  return (self:pixelCollision(x,         y,        type) 
+      or  self:pixelCollision(x + go.w,  y,         type) 
+      or  self:pixelCollision(x,         y + go.h,  type)
+      or  self:pixelCollision(x + go.w,  y + go.h, type))
 end
 
 function TileGrid:collision_next(go, dt)

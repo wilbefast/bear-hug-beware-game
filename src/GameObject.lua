@@ -18,6 +18,7 @@ IMPORTS
 --]]------------------------------------------------------------
 
 local Class = require("hump/class")
+local Tile = require("Tile")
 local useful = require("useful")
 
 --[[------------------------------------------------------------
@@ -35,6 +36,8 @@ local GameObject = Class
     self.h        = (h or 0)
     self.x        = x - w/2
     self.y        = y - h/2
+    self.prevx    = self.x
+    self.prevy    = self.y
   end,
   
   -- default attribute values
@@ -69,18 +72,19 @@ function GameObject:centreY()
   return self.x + self.h/2
 end
 
-function GameObject:snap_from_collision(dx, dy, tilegrid, max)
+function GameObject:snap_from_collision(dx, dy, tilegrid, max, type)
   local i = 0
-  while tilegrid:collision(self) and (not max or i < max)  do
+  while tilegrid:collision(self, self.x, self.y, type) 
+  and (not max or i < max)  do
     self.x = self.x + dx
     self.y = self.y + dy
     i = i + 1
   end
 end
 
-function GameObject:snap_to_collision(dx, dy, tilegrid, max)
+function GameObject:snap_to_collision(dx, dy, tilegrid, max, type)
   local i = 0
-  while not tilegrid:collision(self, self.x + dx, self.y + dy) 
+  while not tilegrid:collision(self, self.x + dx, self.y + dy, type) 
         and (not max or i < max)  do
     self.x = self.x + dx
     self.y = self.y + dy
@@ -159,14 +163,21 @@ function GameObject:update(dt, level)
   if math.abs(self.dx) < 0.01 then self.dx = 0 end
   if math.abs(self.dy) < 0.01 then self.dy = 0 end
   
+  -- collide with one-way platforms?
+  local collide_type
+  if (not tilegrid:collision(self, self.x, self.prevy, Tile.TYPE.ONESIDED)) then
+    collide_type = Tile.TYPE.ONESIDED
+  else
+    collide_type = Tile.TYPE.WALL
+  end
   
   -- check if we're on the ground
   self.airborne = 
-    ((not tilegrid:pixelCollision(self.x, self.y + self.h + 1, true)
-    and (not tilegrid:pixelCollision(self.x + self.w, self.y + self.h + 1, true))))
+    ((not tilegrid:pixelCollision(self.x, self.y + self.h + 1, collide_type)
+    and (not tilegrid:pixelCollision(self.x + self.w, self.y + self.h + 1, collide_type))))
   if not self.airborne and self.dy > 0 then
-    if tilegrid:collision(self) then
-      self:snap_from_collision(0, -1, tilegrid, math.abs(self.dy))
+    if tilegrid:collision(self, collide_type) then
+      self:snap_from_collision(0, -1, tilegrid, math.abs(self.dy), collide_type)
     end
     self.dy = 0
   end 
@@ -175,7 +186,7 @@ function GameObject:update(dt, level)
   if self.dx ~= 0 then
     local move_x = self.dx * dt
     local new_x = self.x + move_x
-  
+    self.prevx = self.x
     -- is new x in collision ?
     if tilegrid:collision(self, new_x, self.y) then
       -- move as far as possible towards new position
@@ -192,6 +203,7 @@ function GameObject:update(dt, level)
   if self.dy ~= 0 then
     local move_y = self.dy*dt
     local new_y = self.y + move_y
+    self.prevy = self.y
     -- is new y position free ?
     if tilegrid:collision(self, self.x, new_y) then
       -- if not move as far as possible
