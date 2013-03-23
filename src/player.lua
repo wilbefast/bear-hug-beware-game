@@ -31,14 +31,14 @@ local Player = Class
   magie = 100,
   init = function(self, x, y, image)
     Character.init(self, x, y, image)
-  end
+  end,
   life = function(self,nb,bool)
 	if bool then 
 		self.life = self.life + 1
 	else
 		self.life = self.life - 1
 	end
-  end 
+  end,
   
   magic = function(self,nb,bool)
 	if bool then 
