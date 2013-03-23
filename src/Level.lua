@@ -33,9 +33,11 @@ local Level = Class
 }
 
 function Level:load(filename)
-  local map = require(filename)
-  print(map, map.width, map.height)
-  self.tilegrid = TileGrid(map.width, map.height)
+  local mapfile = require(filename)
+  -- load tiles
+  self.tilegrid = TileGrid(mapfile)
+  -- load objects
+  --self.objectholder = ObjectHolder(mapfile)
 end
 
 --[[------------------------------------------------------------

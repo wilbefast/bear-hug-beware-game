@@ -26,9 +26,9 @@ TILEGRID CLASS
 
 local TileGrid = Class
 {
-  init = function(self, width, height)
-    self.width = width
-    self.height = height
+  init = function(self, mapfile)
+    self.width = mapfile.width
+    self.height = mapfile.height
   end
 }
 
