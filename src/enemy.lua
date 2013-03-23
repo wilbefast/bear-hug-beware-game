@@ -70,7 +70,7 @@ function Enemy:life_change(nb, level)
   if newLife <= 0 then
     newLife = 0
     self.purge = true
-    local deadEnemy = DeadEnemy(self.x, self.y, 128, 128)
+    local deadEnemy = DeadEnemy(self.x, self.y, 64, 128)
     deadEnemy.dx, deadEnemy.dy = self.dx, self.dy
     level:addObject(deadEnemy)
   end
