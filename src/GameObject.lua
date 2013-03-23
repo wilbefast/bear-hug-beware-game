@@ -30,14 +30,14 @@ Initialisation
 
 local GameObject = Class
 {
-  init = function(self, x, y)
-    self.x        = x
-    self.y        = y
+  init = function(self, x, y, w, h)
+    self.w        = (w or 0)
+    self.h        = (h or 0)
+    self.x        = x - w/2
+    self.y        = y - h/2
   end,
   
   -- default attribute values
-  w = 0,
-  h = 0,
   dx = 0,
   dy = 0
 }

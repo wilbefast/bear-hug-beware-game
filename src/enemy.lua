@@ -34,17 +34,14 @@ local Enemy = Class
 }
 Enemy:include(Character)
 
-function Enemy:init(x, y)
+function Enemy:init(x, y, w, h)
   -- base constructor
-  Character.init(self, x, y, "assets/sprites/sol.png")
+  Character.init(self, x, y, w, h, "assets/sprites/sol.png")
 end
 
 Enemy.GRAVITY         = 700
 Enemy.ATTACK_INTERVAL = 2
 Enemy.DAMAGE          = 6
-
-Enemy.w = 128
-Enemy.h = 128
 
 --[[------------------------------------------------------------
 Collisions

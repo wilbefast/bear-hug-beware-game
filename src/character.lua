@@ -27,12 +27,11 @@ CHARACTER CLASS
 
 local Character = Class
 {
-  init = function(self, x, y, imagefile)
-    GameObject.init(self, x, y)
+  init = function(self, x, y, w, h, imagefile)
+    GameObject.init(self, x, y, w, h)
     self.image    = love.graphics.newImage(imagefile)
   end,
-      
-  type       = "character",
+
   life       = 100,
   magic      = 100,
   damage     = 0,

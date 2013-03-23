@@ -27,11 +27,9 @@ CHARACTER CLASS
 
 local Attack = Class
 {
-  init = function(self, x, y, damage, w, h)
-    GameObject.init(self, x, y)
+  init = function(self, x, y, w, h, damage)
+    GameObject.init(self, x, y, w, h)
     self.damage = damage
-    self.w = w
-    self.h = h
   end,
       
   type  =  GameObject.TYPE["ATTACK"],
@@ -45,10 +43,10 @@ Game loop
 
 function Attack:update(dt, tilegrid)
   -- destroy self
-  self.purge = true
+  --self.purge = true
 end
 
-function Attack:draw(view)
+function Attack:draw()
   -- FIXME debug
   GameObject.draw(self)
 end

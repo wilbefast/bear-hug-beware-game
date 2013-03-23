@@ -43,7 +43,7 @@ function Level:load(filename)
   self.object_types = {}
   -- TODO load objects
   -- FIXME test
-  self:addObject(Enemy(350, 250))
+  self:addObject(Enemy(350, 250, 128, 128))
 end
 
 --[[------------------------------------------------------------
