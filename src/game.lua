@@ -38,7 +38,6 @@ function state:init()
   self.y_b1 = 150
   self.x_b2 = 600
   self.y_b2 = 200
-
 end
 
 
@@ -82,7 +81,6 @@ end
 function state:keypressed(key, uni)
   if key=="escape" then
     GameState.switch(title)
-
   elseif key == "p" then
     if paused then
 		paused = false
@@ -95,8 +93,8 @@ function state:keypressed(key, uni)
   --! TODO remove debug test when no longer needed
   -----------------------------
   elseif key == "m" then
-    self.player:life_change(10,false)
-    self.player:magic_change(5,false)
+    self.player:life_change(-10)
+    self.player:magic_change(-5)
   end
 -----------------------------
   
@@ -154,8 +152,8 @@ function state:draw()
                           love.graphics.getHeight())
   
   self.camera:attach()
-  	self.level:draw(view)
-  	self.player:draw(view)
+  self.level:draw(view)
+  self.player:draw(view)
   self.camera:detach()
 
   -- barre de magie et life :

@@ -17,52 +17,22 @@ Lesser General Public License for more details.
 IMPORTS
 --]]------------------------------------------------------------
 
-local Class = require("hump/class")
+local Character = require("character")
+local Class     = require("hump/class")
 
 --[[------------------------------------------------------------
 CHARACTER CLASS
 --]]------------------------------------------------------------
 
+local Ennemy = Class
+{
+  type  = "ennemy",
 
-local Character = Class{
-  init = function(self, x, y, image)
-    self.x        = x
-    self.y        = y
-    self.image    = image
-    self.dx       = 0
-    self.dy       = 0
+  init = function(self, x, y)
+    Character.init(self, x, y, "assets/sprites/sol.png")
   end,
-  life  = 100,
-  magic = 100,
-  speed = 5,
-  type  = "character",
-
-  life_change = function(self,nb)
-    local newLife = self.life + nb
-    if newLife < 0 then
-      newLife = 0
-    end
-    self.life = newLife
-  end,
-
-  magic_change = function(self,nb)
-    local newMagic = self.magic + nb
-    if newMagic < 0 then
-      newMagic = 0
-    end
-    self.magic = newMagic
-  end
 }
 
-function Character:update(dt)
-  -- move based on speed
-  self.x = self.x + self.dx
-  self.y = self.y + self.dy
-end
+Ennemy:include(Character)
 
-function Character:draw(view)
-  image = love.graphics.newImage(self.image)
-  love.graphics.draw(image, self.x, self.y)
-end
-
-return Character
+return Ennemy

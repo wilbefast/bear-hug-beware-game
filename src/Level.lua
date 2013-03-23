@@ -19,6 +19,7 @@ IMPORTS
 
 local Class = require("hump/class")
 local TileGrid = require("TileGrid")
+local Ennemy = require("ennemy")
 
 --[[------------------------------------------------------------
 LEVEL CLASS
@@ -38,6 +39,8 @@ function Level:load(filename)
   self.tilegrid = TileGrid(mapfile)
   -- load objects
   --self.objectholder = ObjectHolder(mapfile)
+
+  self.ennemy = Ennemy(350, 250)
 end
 
 --[[------------------------------------------------------------
@@ -48,8 +51,9 @@ function Level:update(dt)
 end
 
 function Level:draw(view)
-    love.graphics.print("I am a Level", 32, 32)
-    self.tilegrid:draw(view)
+  love.graphics.print("I am a Level", 32, 32)
+  self.tilegrid:draw(view)
+  self.ennemy:draw()
 end
 
 --[[------------------------------------------------------------
