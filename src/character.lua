@@ -70,6 +70,8 @@ end
 function Character:draw(view)
   -- FIXME animation
   love.graphics.draw(self.image, self.x, self.y)
+  -- FIXME debug
+  GameObject.draw(self)
 end
 
 return Character
