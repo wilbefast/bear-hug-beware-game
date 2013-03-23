@@ -51,6 +51,13 @@ function state:init()
   image_mort = love.graphics.newImage("assets/images/mort.png")
   son_explosion = "assets/audio/explosion_magique.ogg"
   explosion = love.audio.newSource(son_explosion,"static")
+  son_jeu = "assets/audio/themejeu.ogg"
+  jeu_son = love.audio.newSource(son_jeu)
+  happy_tree = "assets/audio/happy.ogg"
+  happy = love.audio.newSource(happy_tree,"static")
+  
+  jeu_son:play()
+  jeu_son:setLooping(true)
 end
 
 
@@ -58,6 +65,8 @@ function state:enter()
   -- reset objects
   self.level:load("../assets/maps/map01")
   self.level:addObject(self.player)
+  
+  
   --TODO reset player position base on level
 end
 
@@ -107,7 +116,9 @@ function state:keypressed(key, uni)
     self.player:magic_change(-5)
 	-- TEST DE SONS :
   elseif key =="f" then
+    degats_subis:stop()
     degats_subis:play()
+    print("fuck")
   elseif key =="g" then
     cri_mort:play()
   elseif key =="h" then 
@@ -216,11 +227,14 @@ function state:draw()
 		love.graphics.rectangle("line",1000, 100,100,100)
 		love.graphics.print("game over ! \n t'es mauvais \n JACK",1010,110)
 		love.graphics.draw(image_mort, 10, 10)
+		jeu_son:setLooping(false)
+		jeu_son:stop()
+		happy:play()
 	end
 	
 	if paused then 
-		love.graphics.rectangle("line",50,50, 150,100)
-		love.graphics.print(" Game Paused !! ",60,60)
+		love.graphics.rectangle("line",700,50, 200,40)
+		love.graphics.print(" Game Paused !! \n Taper \"p\" pour redemarrer. ",705,55)
 	end
 end
 

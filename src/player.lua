@@ -41,9 +41,6 @@ local Player = Class
                     "assets/sprites/HerosCourseSprite.png")
   	self.animation = newAnimation(self.image, 128, 128, 0.1, 0)
     self.animation:setSpeed(1,2)
-    self.facing = 1
-
-
 end,
 }
 Player:include(Character)
@@ -101,11 +98,18 @@ Collisions
 --]]
 
 function Player:collidesType(type)
-  return (type == GameObject.TYPE.ENEMY)
+  return ((type == GameObject.TYPE.ENEMY)
+      or (type == GameObject.TYPE.ENEMYATTACK))
 end
 
 function Player:eventCollision(other)
-
+  -- collision with attack
+  if other.type == GameObject.TYPE.ENEMYATTACK then
+    self:life_change(-other.damage)
+    -- knock-back
+    push = useful.sign(self:centreX() - other.launcher:centreX())
+    self.dx = self.dx + push * other.knockback
+  end
 end
 
 --[[------------------------------------------------------------

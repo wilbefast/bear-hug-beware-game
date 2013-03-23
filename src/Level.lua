@@ -82,7 +82,7 @@ function Level:update(dt)
                 function(otherobject)
                   -- check collisions between objects
                   if object:isColliding(otherobject) then
-                    object:eventCollision(otherobject)
+                    object:eventCollision(otherobject, self)
                   end
                 end)
           end

@@ -36,6 +36,7 @@ local Character = Class
   magic      = 100,
   damage     = 0,
   reloadTime = 0,
+  facing     = 1
 }
 Character:include(GameObject)
 
