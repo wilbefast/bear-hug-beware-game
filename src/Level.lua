@@ -19,7 +19,7 @@ IMPORTS
 
 local Class = require("hump/class")
 local TileGrid = require("TileGrid")
-local Ennemy = require("ennemy")
+local Enemy = require("enemy")
 
 --[[------------------------------------------------------------
 LEVEL CLASS
@@ -40,7 +40,7 @@ function Level:load(filename)
   -- load objects
   --self.objectholder = ObjectHolder(mapfile)
 
-  self.ennemy = Ennemy(350, 250)
+  self.ennemy = Enemy(350, 250)
 end
 
 --[[------------------------------------------------------------

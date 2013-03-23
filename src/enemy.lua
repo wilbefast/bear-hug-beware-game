@@ -24,15 +24,15 @@ local Class     = require("hump/class")
 CHARACTER CLASS
 --]]------------------------------------------------------------
 
-local Ennemy = Class
+local Enemy = Class
 {
-  type  = "ennemy",
+  type  = "enemy",
 
   init = function(self, x, y)
     Character.init(self, x, y, "assets/sprites/sol.png")
   end,
 }
 
-Ennemy:include(Character)
+Enemy:include(Character)
 
-return Ennemy
+return Enemy

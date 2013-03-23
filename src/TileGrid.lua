@@ -171,13 +171,13 @@ function TileGrid:collision(self, go, x, y)
   
   -- rectangle collision mask, origin is at the top-left
   return (self:pixelCollision(x,         y) 
-          or self:pixelCollision(x + go.w,  y) 
-          or self:pixelCollision(x,         y + go.h)
-          or self:pixelCollision(x + go.w,  y + go.h))
+      or  self:pixelCollision(x + go.w,  y) 
+      or  self:pixelCollision(x,         y + go.h)
+      or  self:pixelCollision(x + go.w,  y + go.h))
 end
 
 function TileGrid:collision_next(self, go, dt)
-  return self:collision(go, go.pos.x + go.inertia.x*dt, go.pos.y + go.inertia.y*dt)
+  return self:collision(go, go.x + go.dx*dt, go.y + go.dy*dt)
 end
 
 
