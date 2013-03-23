@@ -34,10 +34,10 @@ function state:init()
   self.camera = Camera(0, 0)
   self.player = Player(100, 100)
 
-  x_b1 = 600
-  y_b1 = 150
-  x_b2 = 600
-  y_b2 = 200
+  self.x_b1 = 600
+  self.y_b1 = 150
+  self.x_b2 = 600
+  self.y_b2 = 200
 end
 
 
@@ -130,10 +130,10 @@ function state:draw()
   -- barre de magie et life :
 	love.graphics.print("life : " ,560,150)
 	love.graphics.print("magic power : " ,500,200)
-	love.graphics.rectangle("line",x_b1,y_b1,100,20)
-	love.graphics.rectangle("line",x_b2,y_b2,100,20)
-	love.graphics.rectangle("fill",x_b1,y_b1,self.player.life,20)
-	love.graphics.rectangle("fill",x_b2,y_b2,self.player.magic,20)
+	love.graphics.rectangle("line",self.x_b1,self.y_b1,100,20)
+	love.graphics.rectangle("line",self.x_b2,self.y_b2,100,20)
+	love.graphics.rectangle("fill",self.x_b1,self.y_b1,self.player.life,20)
+	love.graphics.rectangle("fill",self.x_b2,self.y_b2,self.player.magic,20)
 
 end
 
