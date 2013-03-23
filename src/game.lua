@@ -30,6 +30,7 @@ local state = GameState.new()
 
 function state:init()
   -- create objects
+
   self.level         = Level()
   self.camera        = Camera(0, 0)
   self.player        = Player(300, 300)
@@ -39,6 +40,16 @@ function state:init()
   self.yLifeBarre  = 100
   self.xMagicBarre = 150
   self.yMagicBarre = 150
+
+
+  path = "assets/audio/prise_de_degats.mp3"
+  degats_subis = love.audio.newSource(path, "static")
+  fic="assets/audio/cri_mort.ogg"
+  cri_mort = love.audio.newSource(fic,"static")
+  fic_saut = "assets/audio/saut.ogg"
+  saut = love.audio.newSource(fic_saut,"static")
+  image_mort = love.graphics.newImage("assets/images/mort.png")
+
 end
 
 
@@ -85,9 +96,6 @@ function state:keypressed(key, uni)
   elseif key == "p" then
     if paused then
 		paused = false
-		--[[ ogg = love.sound.newSoundData("assets/audio/chaconne.ogg")
-		ogg:setVolume(0.9)
-		love.audio.play(ogg) ]]
 	else 
 		paused = true
 	end
@@ -96,6 +104,13 @@ function state:keypressed(key, uni)
   elseif key == "m" then
     self.player:life_change(-10)
     self.player:magic_change(-5)
+	-- TEST DE SONS :
+  elseif key =="f" then
+	degats_subis:play()
+  elseif key =="g" then
+  cri_mort:play()
+  elseif key =="h" then 
+	saut:play()
   end
 -----------------------------
   
@@ -166,13 +181,15 @@ function state:draw()
 	love.graphics.rectangle("line",self.xMagicBarre,self.yMagicBarre,100,20)
 
 	love.graphics.rectangle("fill",self.xLifeBarre,self.yLifeBarre,self.player.life,20)
+	love.graphics.rectangle("fill",self.xMagicBarre,self.yMagicBarre,self.player.magic,20)
+
 	if self.player.life == 0 then
 		love.graphics.print("game over ! ",self.xLifeBarre,self.yLifeBarre)
 		love.graphics.rectangle("fill",self.xMagicBarre,self.yMagicBarre,self.player.magic,20)
 		love.graphics.rectangle("line",1000, 100,100,100)
 		love.graphics.print("game over ! \n t'es mauvais \n JACK",1010,110)
+		love.graphics.draw(image_mort, 10, 10)
 	end
-	love.graphics.rectangle("fill",self.xMagicBarre,self.yMagicBarre,self.player.magic,20)
 	
 	if paused then 
 		love.graphics.rectangle("line",50,50, 150,100)
