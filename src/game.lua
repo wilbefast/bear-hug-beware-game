@@ -51,6 +51,13 @@ function state:init()
   image_mort = love.graphics.newImage("assets/images/mort.png")
   son_explosion = "assets/audio/explosion_magique.ogg"
   explosion = love.audio.newSource(son_explosion,"static")
+  son_jeu = "assets/audio/themejeu.ogg"
+  jeu_son = love.audio.newSource(son_jeu)
+  happy_tree = "assets/audio/happy.ogg"
+  happy = love.audio.newSource(happy_tree,"static")
+  
+  jeu_son:play()
+  jeu_son:setLooping(true)
 end
 
 
@@ -58,6 +65,8 @@ function state:enter()
   -- reset objects
   self.level:load("../assets/maps/map01")
   self.level:addObject(self.player)
+  
+  
   --TODO reset player position base on level
 end
 
@@ -218,6 +227,9 @@ function state:draw()
 		love.graphics.rectangle("line",1000, 100,100,100)
 		love.graphics.print("game over ! \n t'es mauvais \n JACK",1010,110)
 		love.graphics.draw(image_mort, 10, 10)
+		jeu_son:setLooping(false)
+		jeu_son:stop()
+		happy:play()
 	end
 	
 	if paused then 
