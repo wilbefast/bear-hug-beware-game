@@ -16,6 +16,7 @@ Lesser General Public License for more details.
 
 function love.load(arg)
   GameState = require("hump/gamestate")
+  conf = require("conf")
   title = require("title")
   game = require("game")
   GameState.switch(title)
