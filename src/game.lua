@@ -38,7 +38,9 @@ end
 function state:enter()
   -- reset objects
   self.level:load("../assets/maps/map01")
-  self.camera:lookAt(128, 128) --FIXME look at player
+  --TODO reset player position base on level
+  self.player.x, self.player.y = 100, 100
+  self.camera:lookAt(self.player.x, self.player.y)
 end
 
 
@@ -84,18 +86,21 @@ end
 
 function state:update(dt)
   --FIXME 
+  -- move player
   if love.keyboard.isDown("left") then
-    self.camera.x = self.camera.x - dt*512
+    self.player.x = self.player.x - dt*512
   end
   if love.keyboard.isDown("right") then
-    self.camera.x = self.camera.x + dt*512
+    self.player.x = self.player.x + dt*512
   end
   if love.keyboard.isDown("down") then
-    self.camera.y = self.camera.y + dt*512
+    self.player.y = self.player.y + dt*512
   end
   if love.keyboard.isDown("up") then
-    self.camera.y = self.camera.y - dt*512
+    self.player.y = self.player.y - dt*512
   end
+  -- point camera at player
+  self.camera:lookAt(self.player.x, self.player.y)
 end
 
 
@@ -104,7 +109,7 @@ function state:draw()
   
   self.camera:attach()
   	self.level:draw()
-  	self.player.draw()
+  	self.player:draw()
   self.camera:detach()
 end
 

@@ -25,7 +25,8 @@ CHARACTER CLASS
 --]]------------------------------------------------------------
 
 
-local Player = Class{
+local Player = Class 
+{
     type = "player"
 }
 
