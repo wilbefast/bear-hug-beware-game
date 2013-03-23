@@ -40,13 +40,13 @@ local TileGrid = Class
     -- create each layer
     self.layers = {}
     for z, layer in ipairs(mapfile.layers) do
-      if type == "tilelayer" then
+      if layer.type == "tilelayer" then
         self.layers[z] = {}
         local data_i = 1
-        for x = 1, self.width do
-          self.layers[z][x] = {}
-          for y = 1, self.height do
-            self.layers[z][x][y] = Tile(layer.data[data_i])
+        for y = 1, self.height do
+          self.layers[z][y] = {}
+          for x = 1, self.width do
+            self.layers[z][y][x] = Tile(layer.data[data_i])
             data_i = data_i + 1
           end
         end
@@ -60,9 +60,13 @@ Game loop
 --]]
 
 function TileGrid:draw()
-    love.graphics.print("I am a TileGrid", 256, 256)
-    love.graphics.print(self.width, 256, 300)
-    love.graphics.print(self.height, 300, 300)
+   
+    for x = 1, self.width do
+      for y = 1, self.height do
+        love.graphics.print(self.layers[1][y][x].type, x*6, y*10 + 200)
+      end
+    end
+    
     --TODO use sprite batches
 end
 
