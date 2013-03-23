@@ -99,16 +99,21 @@ Collisions
 
 function Player:collidesType(type)
   return ((type == GameObject.TYPE.ENEMY)
-      or (type == GameObject.TYPE.ENEMYATTACK))
+      or (type == GameObject.TYPE.ENEMYATTACK)
+      or (type == GameObject.TYPE.DEATH))
 end
 
 function Player:eventCollision(other)
-  -- collision with attack
+  -- collision with enemy attack
   if other.type == GameObject.TYPE.ENEMYATTACK then
     self:life_change(-other.damage)
     -- knock-back
     push = useful.sign(self:centreX() - other.launcher:centreX())
     self.dx = self.dx + push * other.knockback
+  
+  -- collision with "death" (bottomless pit)
+  elseif other.type == GameObject.TYPE.DEATH then
+    self.life = 0
   end
 end
 
