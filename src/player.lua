@@ -42,9 +42,9 @@ Player:include(Character)
 Constants
 --]]
 
-Player.SPEED_X = 0.4
-Player.SPEED_Y = 0.4
-Player.GRAVITY = 0.1
+Player.SPEED_X = 32.0
+Player.SPEED_Y = 32.0
+Player.GRAVITY = 20.0
 Player.w = 128
 Player.h = 128
 

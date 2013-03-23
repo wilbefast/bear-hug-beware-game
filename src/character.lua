@@ -18,6 +18,7 @@ IMPORTS
 --]]------------------------------------------------------------
 
 local Class = require("hump/class")
+local useful = require("useful")
 
 --[[------------------------------------------------------------
 CHARACTER CLASS
@@ -91,21 +92,47 @@ function Character:update(dt, tilegrid)
     self.dy = self.dy + self.GRAVITY
   end
   
-  -- move based on speed
-  self.x = self.x + self.dx
-  self.y = self.y + self.dy
-  
   -- check if we're on the ground
   self.airborne = 
     (not tilegrid:pixelCollision(self.x, self.y + self.h + 1))
   if not self.airborne and self.dy > 0 then
     if tilegrid:collision(self) then
-      self:snap_from_collision(0, -1, tilegrid, dy)
+      self:snap_from_collision(0, -1, tilegrid, math.abs(self.dy))
     end
     self.dy = 0
   end 
   
   -- move HORIZONTALLY FIRST
+  if self.dx ~= 0 then
+    local move_x = self.dx * dt
+    local new_x = self.x + move_x
+  
+    -- is new x in collision ?
+    if tilegrid:collision(self, new_x, self.y) then
+      -- move as far as possible towards new position
+      self:snap_to_collision(useful.sign(self.dx), 0, 
+                        tilegrid, math.abs(self.dx))
+      self.dx = 0
+    else
+      -- if not move to new position
+      self.x = new_x
+    end
+  end
+  
+  -- move the object VERTICALLY SECOND
+  if self.dy ~= 0 then
+    local move_y = self.dy*dt
+    local new_y = self.y + move_y
+    -- is new y position free ?
+    if tilegrid:collision(self, self.x, new_y) then
+      -- if not move as far as possible
+      self:snap_to_collision(0, useful.sign(self.dy), tilegrid, math.abs(self.dy))
+      self.dy = 0
+    else
+      -- if so move to new position
+      self.y = new_y
+    end
+  end
   
 end
 
