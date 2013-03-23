@@ -24,6 +24,9 @@ local Class = require("hump/class")
 CHARACTER CLASS
 --]]------------------------------------------------------------
 
+--[[------------------------------------------------------------
+Initialise
+--]]
 
 local Player = Class
   {
@@ -57,7 +60,57 @@ local Player = Class
 	end	
   end
 }
-
 Player:include(Character)
+
+--[[------------------------------------------------------------
+Constants
+--]]
+
+Player.SPEED_X = 8
+Player.SPEED_Y = 8
+
+--[[------------------------------------------------------------
+Game loop
+--]]
+
+function Player:update(dt)
+
+  -- TODO check if move is possible (stunned?)
+  -- accelerate
+  self.dx = self.requestMoveX * self.SPEED_X
+  self.dy = self.requestMoveY * self.SPEED_Y
+  
+  -- attack
+  if self.requestLightAttack then
+    print("request light attack")
+    -- TODO
+    
+    -- reset
+    self.requestLightAttack = false
+  end
+  
+  if self.requestHeavyAttack then
+    print("request heavy attack")
+    -- TODO
+    
+    -- reset
+    self.requestHeavyAttack = false
+  end
+
+  if self.requestMagicAttack then
+    print("request magic attack")
+    -- TODO
+    
+    -- reset
+    self.requestMagicAttack = false
+  end
+  
+  -- reset input requests to false
+  self.requestMoveX, self.requestMoveY = 0, 0
+
+  -- base update
+  Character.update(self, dt)
+end
+
 
 return Player

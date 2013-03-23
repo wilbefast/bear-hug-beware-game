@@ -29,6 +29,8 @@ local Character = Class{
     self.x        = x
     self.y        = y
     self.image    = image
+    self.dx       = 0
+    self.dy       = 0
   end,
   life  = 100,
   speed = 5,
@@ -36,6 +38,9 @@ local Character = Class{
 }
 
 function Character:update(dt)
+  -- move based on speed
+  self.x = self.x + self.dx
+  self.y = self.y + self.dy
 end
 
 function Character:draw(view)

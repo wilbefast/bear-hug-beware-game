@@ -81,11 +81,25 @@ end
 function state:keypressed(key, uni)
   if key=="escape" then
     GameState.switch(title)
+    
+    
+  --! TODO remove debug test when no longer needed
+  -----------------------------
   elseif key == "p" then
     self.player:life_change(10,false)
   elseif key == "m" then
     self.player:magic_change(5,false)
+  -----------------------------
   end
+  
+  -- player attacks
+  self.player.requestLightAttack 
+    = (key == "kp0" or key == "y")
+  self.player.requestHeavyAttack 
+    = (key == "kp1" or key == "u")
+  self.player.requestMagicAttack 
+    = (key == "kp2" or key == "i")
+  
 end
 
 
@@ -94,21 +108,29 @@ end
 
 
 function state:update(dt)
-  --FIXME 
-  -- move player
-  if love.keyboard.isDown("left") then
-    self.player.x = self.player.x - dt*512
+  
+  -- deal with input
+  local kx, ky = 0, 0
+  if love.keyboard.isDown("left", "q", "a") then
+    kx = kx - 1 
   end
-  if love.keyboard.isDown("right") then
-    self.player.x = self.player.x + dt*512
+  if love.keyboard.isDown("right", "d") then
+    kx = kx + 1 
   end
-  if love.keyboard.isDown("down") then
-    self.player.y = self.player.y + dt*512
+  if love.keyboard.isDown("up", "z", "w") then
+    ky = ky - 1 
   end
-  if love.keyboard.isDown("up") then
-    self.player.y = self.player.y - dt*512
+  if love.keyboard.isDown("down", "s") then 
+    ky = ky + 1 
   end
-  -- point camera at player
+  self.player.requestMoveX = kx
+  self.player.requestMoveY = ky
+
+  -- update the objects in the Level
+  self.player:update(dt)
+  self.level:update(dt)
+  
+  -- point camera at player object
   self.camera:lookAt(self.player.x, self.player.y)
 end
 
