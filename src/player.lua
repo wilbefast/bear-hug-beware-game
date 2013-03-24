@@ -62,6 +62,10 @@ local Player = Class
     --attaque self.animation:setAnimation({ 17, 18, 19 })
     --touched self.animation:setAnimation({ 20 })
     --self.animation:setSpeed(1,2)
+	
+	  fic_saut = "assets/audio/saut.ogg"
+  saut = love.audio.newSource(fic_saut,"static")
+  
 end,
 }
 Player:include(Character)
@@ -177,6 +181,7 @@ function Player:update(dt, level)
       -- check if on the ground
       if (not self.airborne) then
         self.dy = -Player.BOOST
+		saut:play()
       end
     end
 
