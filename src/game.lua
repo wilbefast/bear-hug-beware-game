@@ -39,9 +39,6 @@ function state:init()
   self.xMagicBarre = 150
   self.yMagicBarre = 150
 
-  bord_droit = (love.graphics.getWidth() / 2) + (love.graphics.getWidth() / 4)
-  bord_gauche = (love.graphics.getWidth() / 2) - (love.graphics.getWidth() / 4)
- 
   path = "assets/audio/prise_de_degats.ogg"
   degats_subis = love.audio.newSource(path, "static")
   
@@ -70,6 +67,12 @@ function state:enter()
   self.level:load("../assets/maps/map01")
   self.level:addObject(self.player)
   --TODO reset player position base on level
+
+  self.CAMERA_AREA_WIDTH = (love.graphics.getWidth() / 2)
+
+  self.cameraAreaLeft = self.player.x - (self.CAMERA_AREA_WIDTH / 2) + (love.graphics.getWidth() / 2)
+  self.cameraAreaRight = self.player.x + (self.CAMERA_AREA_WIDTH / 2) + (love.graphics.getWidth() / 2)
+
 end
 
 
@@ -180,16 +183,24 @@ function state:update(dt)
     local hauteur = love.graphics.getHeight() / 2
     local largeur = love.graphics.getWidth() / 2
 
-    local cam_x = self.player.x
+    local cam_x = self.player:centreX()
     local cam_y = self.player.y
 
     local levelh = (self.level.tilegrid.h) * self.level.tilegrid.tileh
     local levelw = (self.level.tilegrid.w) * self.level.tilegrid.tilew
 
-    if self.player.x <= largeur then
+    if self.player:centreX() < self.cameraAreaLeft then
+      self.cameraAreaLeft = self.player:centreX()
+      self.cameraAreaRight = self.cameraAreaLeft + self.CAMERA_AREA_WIDTH
+    elseif self.player:centreX() > self.cameraAreaRight then
+      self.cameraAreaRight = self.player:centreX()
+      self.cameraAreaLeft = self.cameraAreaRight - self.CAMERA_AREA_WIDTH
+    end
+
+    if self.player:centreX() <= largeur then
       cam_x = largeur
     end
-    if( self.player.x >= levelw - largeur ) then
+    if(self.player:centreX() >= levelw - largeur ) then
       cam_x = levelw - largeur
     end
 
@@ -200,6 +211,7 @@ function state:update(dt)
       cam_y = levelh - hauteur
     end
 
+    cam_x = (self.cameraAreaLeft + self.cameraAreaRight) / 2
     self.camera:lookAt( cam_x + self.level.tilegrid.tilew, cam_y + self.level.tilegrid.tileh )
   end
 end
@@ -214,11 +226,10 @@ function state:draw()
                           love.graphics.getWidth(), 
                           love.graphics.getHeight())
 	
-	cam = self.player.x<bord_gauche and self.player.x > bord_droit
 
-	self.camera:attach()
-	self.level:draw(view)
-	self.camera:detach()
+  self.camera:attach()
+    self.level:draw(view)
+  self.camera:detach()
 
 
   -- barre de magie et life :
@@ -244,7 +255,7 @@ function state:draw()
 	if paused then 
 		love.graphics.rectangle("line",700,50, 200,40)
 		love.graphics.print(" Game Paused !! \n Taper \"p\" pour redemarrer. ",705,55)
-	end
+  end
 end
 
 return state

@@ -241,7 +241,7 @@ function Player:update(dt, level)
 
       else
         self.animationcurrent = self.animationmarche
-        self.animationcurrent:seek(1)
+        self.animationcurrent:seek(8)
       end
     end
 
@@ -250,15 +250,6 @@ function Player:update(dt, level)
     reload(self.LIGHTATTACK, dt)
     reload(self.MAGICATTACK, dt)
     
-    --[[update animation
-    if self.requestMoveX ~= 0 then
-      self.animationcurrent:update(dt)
-    else
-      self.animationcurrent = self.animationmarche
-      self.animationcurrent:seek(1)
-    end
-    ]]--
-
     -- reset input requests to false
     self.requestMoveX, self.requestMoveY = 0, 0
     self.requestJump = false
