@@ -45,7 +45,7 @@ function state:init()
   plan1 = love.graphics.newImage(plan_1)
    
   path = "assets/audio/prise_de_degats.ogg"
-  degats_subis = love.audio.newSource(path, "static")
+  baffe= love.audio.newSource(path, "static")
   
   fic="assets/audio/cri_mort.ogg"
   cri_mort = love.audio.newSource(fic,"static")
@@ -68,7 +68,7 @@ end
 
 function state:enter()
   -- reset objects
-  self.player = Player(300, 800)
+  self.player = Player(300, 1000)
   self.level:load("../assets/maps/map01")
   self.level:addObject(self.player)
   --TODO reset player position base on level

@@ -58,13 +58,22 @@ local Player = Class
     self.animationattaque:setMode("once")
     self.animationtouched = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 20 })
     self.animationtouched:setSpeed(1,2)
+    self.animationattaquemagic = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 17, 18, 19 })
+    self.animationattaquemagic:setSpeed(1,2)
+    self.animationattaquemagic:setMode("once")
 
 	fond = love.image.newImageData("assets/decors/horizon.png")
    horizon = love.graphics.newImage(fond)
    plan_1 = love.image.newImageData("assets/decors/plan1.png")
    plan1 = love.graphics.newImage(plan_1)
-   
+   fichier="assets/audio/calin.ogg"
+  calin = love.audio.newSource(fichier,"static")
+   son_explosion = "assets/audio/explosion_magique.ogg"
+  explosion = love.audio.newSource(son_explosion,"static")
     self.animationcurrent = self.animationmarche
+	path = "assets/audio/prise_de_degats.ogg"
+  baffe= love.audio.newSource(path, "static")
+  
     --marche self.animation:setAnimation({ 1, 3, 5, 7, 9, 11, 13, 15 })
     --saut self.animation:setAnimation({ 21, 22, 23, 24, 26 })
     --attaque self.animation:setAnimation({ 17, 18, 19 })
@@ -92,14 +101,16 @@ Player.FRICTION_X = 50
 -- combat - light attack
 Player.LIGHTATTACK = 
 {
-  REACH = 80,
-  OFFSET_Y = 32,
-  DAMAGE = 30,
+  REACH = 32,
+  OFFSET_Y = 74,
+  OFFSET_X = 0,
+  DAMAGE = 35,
   MANA = 0,
-  RELOAD_TIME = 0.5,
-  W = 40,
-  H = 40,
-  KNOCKBACK = 300,
+  RELOAD_TIME = 0,
+  STUN_TIME = 0.5,
+  W = 118,
+  H = 108,
+  KNOCKBACK = 1700,
   KNOCKUP = 150,
   
   reloadTime = 0
@@ -107,14 +118,16 @@ Player.LIGHTATTACK =
 -- combat - magic attack
 Player.MAGICATTACK = 
 {
-  REACH = 32,
-  OFFSET_Y = 32,
-  DAMAGE = 10,
+  REACH = 0,
+  OFFSET_Y = 64,
+  OFFSET_X = -32,
+  DAMAGE = 0,
   MANA = 10,
-  RELOAD_TIME = 4.0,
+  RELOAD_TIME = 0,
+  STUN_TIME = 1,
   W = 256,
   H = 256,
-  KNOCKBACK = 600,
+  KNOCKBACK = 1700,
   KNOCKUP = 300,
   
   reloadTime = 0
@@ -137,6 +150,7 @@ function Player:eventCollision(other)
   -- collision with enemy attack
   if other.type == GameObject.TYPE.ENEMYATTACK then
     self:life_change(-other.weapon.DAMAGE)
+	calin:play()
     -- knock-back
     push = useful.sign(self:centreX() - other.launcher:centreX())
     self.dx = self.dx + push * other.weapon.KNOCKBACK
@@ -163,7 +177,7 @@ function Player:attack(weapon)
   self:magic_change(-weapon.MANA)
 
   return (Attack(
-    self.x + self.w/2 + weapon.REACH*self.facing,
+    self.x + self.w/2 + weapon.REACH*self.facing ,
     self.y + weapon.OFFSET_Y, weapon, self))
 end
 
@@ -191,7 +205,7 @@ function Player:update(dt, level)
       -- check if on the ground
       if (not self.airborne) then
         self.dy = -Player.BOOST
-		saut:play()
+		    saut:play()
       end
     end
 
@@ -224,30 +238,37 @@ function Player:update(dt, level)
       self.animationcurrent = self.animationsautfin
       self.animationsautfin:play()
     end
-	
 
     -- attack
     local weapon = nil
     -- ... light
     if self.requestLightAttack then
       weapon = self.LIGHTATTACK
-
+      baffe:play()
     end
     -- ... magic
     if self.requestMagicAttack then
       weapon = self.MAGICATTACK
+	  explosion:play()
     end
 
-	if self.animationcurrent == self.animationattaque and not self.animationattaque:isPlaying() then
-	  self.animationcurrent = self.animationmarche
-	  self.animationcurrent:play()
-	end
+
+    if self.animationcurrent == self.animationattaque and not self.animationattaque:isPlaying() then
+      self.animationcurrent = self.animationmarche
+      self.animationcurrent:play()
+    end
+
 	if weapon and (weapon.reloadTime <= 0) then
       level:addObject(self:attack(weapon))
-	  	  self.animationcurrent = self.animationattaque
-        self.animationcurrent:reset()
-	  self.animationcurrent:play()
-	elseif( not self.airborne and self.animationcurrent ==  self.animationmarche )then
+      if self.requestLightAttack then
+        self.animationcurrent = self.animationattaque
+      elseif self.requestMagicAttack then
+        self.animationcurrent = self.animationattaquemagic
+      end
+      self.animationcurrent = self.animationattaque
+      self.animationcurrent:reset()
+      self.animationcurrent:play()
+    elseif( not self.airborne and self.animationcurrent ==  self.animationmarche )then
       if self.requestMoveX ~= 0 then
 
       else
@@ -258,8 +279,6 @@ function Player:update(dt, level)
 	
     self.animationcurrent:update(dt)
 
-
-    
     -- reload weapons
     reload(self.LIGHTATTACK, dt)
     reload(self.MAGICATTACK, dt)

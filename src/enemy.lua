@@ -42,12 +42,18 @@ function Enemy:init(x, y, w, h)
   Character.init(self, x, y, w, h, "assets/sprites/sol.png")
   self.requestJump = false
   self.requestMoveX = 0
+
+  self.stunned = false
+  fic="assets/audio/cri_mort.ogg"
+  cri_mort = love.audio.newSource(fic,"static")
+
 end
 
 -- fisix
-Enemy.GRAVITY    = 700
-Enemy.MOVE_X     = 50.0
-Enemy.MAX_DX     = 1000.0
+Enemy.GRAVITY    = 1200
+Enemy.BOOST    = 700
+Enemy.MOVE_X     = 30.0
+Enemy.MAX_DX     = 500.0
 Enemy.FRICTION_X = 50
 
 -- combat
@@ -55,6 +61,7 @@ Enemy.ATTACK =
 {
   REACH = 80,
   OFFSET_Y = 32,
+  OFFSET_X = 0,
   DAMAGE = 6,
   RELOAD_TIME = 2,
   W = 40,
@@ -77,6 +84,7 @@ function Enemy:life_change(nb, level)
     local deadEnemy = DeadEnemy(self.x, self.y, 64, 128)
     deadEnemy.dx, deadEnemy.dy = self.dx, self.dy
     level:addObject(deadEnemy)
+	cri_mort:play()
   end
   self.life = newLife
 end
@@ -97,6 +105,8 @@ function Enemy:eventCollision(other, level)
     push = useful.sign(self:centreX() - other.launcher:centreX())
     self.dx = self.dx + push * other.weapon.KNOCKBACK
     self.dy = self.dy - other.weapon.KNOCKUP
+
+    self.stunnedTime = other.weapon.STUN_TIME
     
     -- lost life
     self:life_change(-other.weapon.DAMAGE, level)
@@ -120,7 +130,7 @@ function Enemy:attack(attack, target)
   local reach = math.min(attack.REACH, target_distance)
   
   local newAttack = Attack(
-    self.x + self.w/2 + reach*self.facing,
+    self.x + self.w/2 + reach*self.facing + attack.OFFSET_X,
     self.y + attack.OFFSET_Y,
     attack,
     self)
@@ -133,24 +143,50 @@ Game loop
 --]]
 
 function Enemy:update(dt, level)
+
   
-  -- AI
-  local player = level:getObject(GameObject.TYPE.PLAYER)
-  
-  -- desire jump?
-  if player.y + player.h < self.y then
-    requestJump = true
-  end
-  
-  -- desire move?
-  local player_side = player:centreX() - self:centreX()
-  -- ... left
-  if player_side < -self.w then
-    self.requestMoveX = -1
-  end
-  -- ... right
-  if player_side > self.w then
-    self.requestMoveX = 1
+  if( self.stunnedTime <= 0 ) then
+    -- AI
+    local player = level:getObject(GameObject.TYPE.PLAYER)
+    local ecart = player:centreX() - self:centreX()
+      -- desire move?
+    if math.abs( ecart ) < 800 and math.abs( ecart ) > 30 then
+      -- ... left
+
+      -- desire jump?
+      if math.abs( player.y - self.y ) > 63 then
+        self.requestJump = true
+      end
+
+      if ecart < 1 then
+        self.requestMoveX = -1
+      end
+      -- ... right
+      if ecart > 1 then
+        self.requestMoveX = 1
+      end
+    else
+      self.requestMoveX = 0
+    end
+
+
+    local moveDir = useful.sign(self.requestMoveX)
+    if moveDir ~= 0 then
+      self.dx = self.dx + moveDir*self.MOVE_X
+      self.facing = moveDir
+    end
+
+    -- jump
+    if self.requestJump then
+      -- check if on the ground
+      if (not self.airborne) then
+        self.dy = -Enemy.BOOST
+        saut:play()
+      end
+    end
+
+    self.requestJump = false
+
   end
   
   -- base update

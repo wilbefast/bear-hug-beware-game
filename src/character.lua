@@ -37,6 +37,7 @@ local Character = Class
   magic      = 100,
   damage     = 0,
   reloadTime = 0,
+  stunnedTime = 0,
   facing     = 1
 }
 Character:include(GameObject)
@@ -77,6 +78,9 @@ function Character:update(dt, level)
   -- update reloadTime for attack
   if self.reloadTime > 0 then
     self.reloadTime = self.reloadTime - dt
+  end
+  if self.stunnedTime > 0 then
+    self.stunnedTime = self.stunnedTime - dt
   end
   
   -- base update
