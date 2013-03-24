@@ -73,7 +73,7 @@ function state:enter()
   self.level:addObject(self.player)
   --TODO reset player position base on level
 
-  self.CAMERA_AREA_WIDTH = (love.graphics.getWidth() / 2)
+  self.CAMERA_AREA_WIDTH = (love.graphics.getWidth() / 4)
 
   self.cameraAreaLeft = self.player.x - (self.CAMERA_AREA_WIDTH / 2) + (love.graphics.getWidth() / 2)
   self.cameraAreaRight = self.player.x + (self.CAMERA_AREA_WIDTH / 2) + (love.graphics.getWidth() / 2)

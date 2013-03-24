@@ -59,13 +59,15 @@ Enemy.FRICTION_X = 50
 -- combat
 Enemy.ATTACK =
 {
-  REACH = 80,
-  OFFSET_Y = 32,
+  REACH = 32,
+  OFFSET_Y = 74,
   OFFSET_X = 0,
-  DAMAGE = 6,
-  RELOAD_TIME = 2,
-  W = 40,
-  H = 40,
+  DAMAGE = 10,
+  MANA = 0,
+  RELOAD_TIME = 1,
+  STUN_TIME = 0.5,
+  W = 118,
+  H = 108,
   KNOCKBACK = 300
 }
 

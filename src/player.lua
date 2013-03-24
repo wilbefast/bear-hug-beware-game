@@ -39,26 +39,26 @@ local Player = Class
   init = function(self, x, y)
     Character.init(self, x, y, 64, 128, 
                     "assets/sprites/HerosSprite.png")
-    self.animationmarche = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 1, 3, 5, 7, 9, 11, 13, 15 })
+    self.animationmarche = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 1, 2, 3, 4, 5, 6, 7, 8 })
     self.animationmarche:setSpeed(1,2)
-    self.animationsautdebut = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 21, 22 })
+    self.animationsautdebut = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 17, 18 })
     self.animationsautdebut:setSpeed(1,2)
     self.animationsautdebut:setMode("once")
-    self.animationsautmilieumontee = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 23 })
+    self.animationsautmilieumontee = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 19 })
     self.animationsautmilieumontee:setSpeed(1,2)
     self.animationsautmilieumontee:setMode("once")
-    self.animationsautmilieudescente = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 24 })
+    self.animationsautmilieudescente = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 20 })
     self.animationsautmilieudescente:setSpeed(1,2)
     self.animationsautmilieudescente:setMode("once")
-    self.animationsautfin = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 25, 26 })
+    self.animationsautfin = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 21, 22 })
     self.animationsautfin:setSpeed(1,2)
     self.animationsautfin:setMode("once")
-    self.animationattaque = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 17, 18, 19 })
+    self.animationattaque = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 25, 26, 27 })
     self.animationattaque:setSpeed(1,2)
     self.animationattaque:setMode("once")
-    self.animationtouched = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 20 })
+    self.animationtouched = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 28 })
     self.animationtouched:setSpeed(1,2)
-    self.animationattaquemagic = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 17, 18, 19 })
+    self.animationattaquemagic = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 23, 24 })
     self.animationattaquemagic:setSpeed(1,2)
     self.animationattaquemagic:setMode("once")
 
@@ -110,7 +110,7 @@ Player.LIGHTATTACK =
   STUN_TIME = 0.5,
   W = 118,
   H = 108,
-  KNOCKBACK = 1700,
+  KNOCKBACK = 3000,
   KNOCKUP = 150,
   
   reloadTime = 0
@@ -127,7 +127,7 @@ Player.MAGICATTACK =
   STUN_TIME = 1,
   W = 256,
   H = 256,
-  KNOCKBACK = 1700,
+  KNOCKBACK = 6000,
   KNOCKUP = 300,
   
   reloadTime = 0
@@ -248,12 +248,15 @@ function Player:update(dt, level)
     end
     -- ... magic
     if self.requestMagicAttack then
-      weapon = self.MAGICATTACK
-	  explosion:play()
+      if (self.magic - self.MAGICATTACK.MANA) >= 0 then
+        weapon = self.MAGICATTACK
+	    explosion:play()
+      end
     end
 
-
-    if self.animationcurrent == self.animationattaque and not self.animationattaque:isPlaying() then
+    if self.animationcurrent == self.animationattaque and not self.animationattaque:isPlaying()
+      or self.animationcurrent == self.animationattaquemagic and not self.animationattaquemagic:isPlaying()
+    then
       self.animationcurrent = self.animationmarche
       self.animationcurrent:play()
     end
@@ -265,7 +268,6 @@ function Player:update(dt, level)
       elseif self.requestMagicAttack then
         self.animationcurrent = self.animationattaquemagic
       end
-      self.animationcurrent = self.animationattaque
       self.animationcurrent:reset()
       self.animationcurrent:play()
     elseif( not self.airborne and self.animationcurrent ==  self.animationmarche )then
