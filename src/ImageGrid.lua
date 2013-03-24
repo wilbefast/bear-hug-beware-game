@@ -38,23 +38,33 @@ local TileSet = Class
     self.n_down = math.floor(tileset.imageheight 
                           / tileset.tileheight)
     self.n_total = self.n_down*self.n_across
+    -- ... first tile identifier
+    self.first_id = tileset.firstgid
         
     -- create quads
     self.quads = {}
     for x = 1, self.n_across do
-      self.quads[x] = {}
       for y = 1, self.n_down do
-        self.quads[x][y] = love.graphics.newQuad(
-          x*self.quadw, y*self.quadh, self.quadw, self.quadh,
-          tileset.imagewidth, tileset.imageheight)
+        table.insert(self.quads, love.graphics.newQuad(
+          x*self.quadw, y*self.quadh, 
+          self.quadw, self.quadh,
+          tileset.imagewidth, tileset.imageheight))
       end
     end
-
-    --! FIXME remove debug
-    print("tileset", tileset.name, "n_total tiles =",
-        self.n_total)
   end
 }
+
+function TileSet:tryDraw(id, x, y)
+  -- offset id and check if it's one of this tileset's
+  id = id - self.first_id + 1
+  if (id < 1) or (id > self.n_total) then
+    return false -- fail!
+  end
+  -- draw using the appropriate quad and report success
+  love.graphics.drawq(self.image, self.quads[id], 
+      x*self.quadw, y*self.quadh)
+  return true -- success!
+end
 
 --[[------------------------------------------------------------
 IMAGEGRID CLASS
@@ -83,48 +93,56 @@ local ImageGrid = Class
       table.insert(self.tilesets, TileSet(tileset))
     end
 
-    -- for each layer
+    -- create graphics layers
+    self.layers = {}
+    local z = 1
+    -- ... for each layer
     for _, layer in ipairs(mapfile.layers) do
       
       --! GENERATE IMAGE GRID
       if layer.type == "tilelayer" then
+        if layer.type == "tilelayer" then
+          -- the mapfile stores tiles in [row, col] format
+          local temp_layer = {}
+          local data_i = 1
+          for row = 1, self.h do
+            temp_layer[row] = {}
+            for col = 1, self.w do
+              temp_layer[row][col] = layer.data[data_i]
+              data_i = data_i + 1
+            end
+          end
+            
+          -- we want them in [x, y] format, so we transpose
+          self.layers[z] = {}
+          for x = 1, self.w do
+            self.layers[z][x] = {}
+            for y = 1, self.h do
+              self.layers[z][x][y] = temp_layer[y][x]
+            end
+          end
+          
+          -- increment the layer counter
+          z = z + 1
+        end
       end
     end
-    
-    --[[
-    for z, layer in ipairs(mapfile.layers) do
-      
-      
-      if layer.type == "tilelayer" then
-
-        -- the mapfile stores tiles in [row, col] format
-        local temp_layer = {}
-        local data_i = 1
-        for row = 1, self.h do
-          temp_layer[row] = {}
-          for col = 1, self.w do
-            temp_layer[row][col] = Tile(layer.data[data_i])
-            data_i = data_i + 1
-          end
-        end
-          
-        -- we want them in [x, y] format, so we transpose
-        self.layers[z] = {}
-        for x = 1, self.w do
-          self.layers[z][x] = {}
-          for y = 1, self.h do
-            self.layers[z][x][y] = temp_layer[y][x]
-          end
-        end
-      end
-    end 
-    --]]
   end
 }
 
 --[[------------------------------------------------------------
 Game Loop
 --]]
+
+function ImageGrid:tryDraw(id, x, y)
+  for _, tileset in ipairs(self.tilesets) do
+    if tileset:tryDraw(id, x, y) then
+      return true -- success!
+    end
+  end
+  return false -- failure!
+end
+
 
 function ImageGrid:draw(view)
   local start_x = math.max(1, 
@@ -137,8 +155,11 @@ function ImageGrid:draw(view)
   local end_y = math.min(self.h, 
               start_y + math.ceil(view.h / self.quadh))
   
-  for x = start_x, end_x do
-    for y = start_y, end_y do
+  for z, layer in ipairs(self.layers) do
+    for x = start_x, end_x do
+      for y = start_y, end_y do
+        self:tryDraw(layer[x][y], x, y)
+      end
     end
   end
 
