@@ -37,7 +37,7 @@ DeadEnemy:include(Character)
 
 function DeadEnemy:init(x, y, w, h)
   -- base constructor
-  Character.init(self, x, y, w, h, "assets/sprites/EnnemiWalkerSprite.png")
+  Character.init(self, x, y, w, h, "assets/sprites/EnnemiWalkerSpriteBlood.png")
 
   self.animationdead = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 7 })
   self.animationdead:setSpeed(1,2)

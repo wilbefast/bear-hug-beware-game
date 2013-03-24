@@ -64,6 +64,9 @@ local Player = Class
     self.animationattaquemagic:setMode("once")
     self.animationwaiting = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 9, 10, 11, 12, 13, 14, 15, 16 })
     self.animationwaiting:setSpeed(1,2)
+    self.animationdead = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 29 })
+    self.animationdead:setSpeed(1,2)
+    self.animationdead:setMode("once")
 
 	fond = love.image.newImageData("assets/decors/horizon.png")
    horizon = love.graphics.newImage(fond)
@@ -171,7 +174,7 @@ function Player:eventCollision(other)
   -- collision with "death" (bottomless pit)
   elseif other.type == GameObject.TYPE.DEATH then
     self.life = 0
-	
+
   -- collision with "bonus" 
   elseif other.type == GameObject.TYPE.BONUS then
     self.life = 90
@@ -323,6 +326,10 @@ function Player:update(dt, level)
 
     -- base update
     Character.update(self, dt, level)
+  else
+    self.animationcurrent = self.animationdead
+    self.animationcurrent:reset()
+    self.animationcurrent:play()
   end
 
 end
