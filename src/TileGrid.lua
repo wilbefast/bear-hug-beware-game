@@ -94,14 +94,18 @@ function TileGrid:draw(view)
               math.floor(view.y / self.tileh))
   local end_y = math.min(self.h, 
               start_y + math.ceil(view.h / self.tileh))
-    
-  for x = start_x, end_x do
-    for y = start_y, end_y do
-      local tset_i = self.layers[1][x][y].type
-      if tset_i ~= 0 then
-        local img = self.tilesets[tset_i].image
-        love.graphics.draw(img, x * self.tilew, 
-                                y * self.tileh)
+  
+  for i = 1, #self.layers do
+    if( self.layers[i].type =="tilelayer") then
+      for x = start_x, end_x do
+        for y = start_y, end_y do
+          local tset_i = self.layers[1][x][y].type
+          if tset_i ~= 0 then
+            local img = self.tilesets[tset_i].image
+            love.graphics.draw(img, x * self.tilew, 
+                                    y * self.tileh)
+          end
+        end
       end
     end
   end
