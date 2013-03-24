@@ -62,10 +62,10 @@ local Player = Class
     self.animationattaquemagic:setSpeed(1,2)
     self.animationattaquemagic:setMode("once")
 
-	fond = love.image.newImageData("assets/decors/horizon.png")
-   horizon = love.graphics.newImage(fond)
-   plan_1 = love.image.newImageData("assets/decors/plan1.png")
-   plan1 = love.graphics.newImage(plan_1)
+	  fond = love.image.newImageData("assets/decors/horizon.png")
+    horizon = love.graphics.newImage(fond)
+    plan_1 = love.image.newImageData("assets/decors/plan1.png")
+    plan1 = love.graphics.newImage(plan_1)
    
     self.animationcurrent = self.animationmarche
     --marche self.animation:setAnimation({ 1, 3, 5, 7, 9, 11, 13, 15 })
@@ -241,7 +241,9 @@ function Player:update(dt, level)
     end
     -- ... magic
     if self.requestMagicAttack then
-      weapon = self.MAGICATTACK
+      if (self.magic - self.MAGICATTACK.MANA) >= 0 then
+        weapon = self.MAGICATTACK
+      end
     end
 
     if self.animationcurrent == self.animationattaque and not self.animationattaque:isPlaying() then
