@@ -41,7 +41,7 @@ local TileGrid = Class
     self.w = mapfile.width
     self.h = mapfile.height
     
-    -- create the map
+    -- create the collision map
     self.tiles = {}
     for x = 1, self.w do
       self.tiles[x] = {}
