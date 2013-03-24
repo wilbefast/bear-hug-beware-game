@@ -83,7 +83,7 @@ Constants
 --]]
 
 -- physics
-Player.MOVE_X = 50.0
+Player.MOVE_X = 3000.0
 Player.MAX_DX = 1000.0
 Player.BOOST = 1000.0
 Player.GRAVITY = 1500.0
@@ -182,7 +182,7 @@ function Player:update(dt, level)
     -- accelerate
     local moveDir = useful.sign(self.requestMoveX)
     if moveDir ~= 0 then
-      self.dx = self.dx + moveDir*self.MOVE_X
+      self.dx = self.dx + moveDir*self.MOVE_X*dt
       self.facing = moveDir
     end
 

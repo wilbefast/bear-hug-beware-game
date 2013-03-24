@@ -151,6 +151,16 @@ function Level:draw(view)
         end
     end)
   end
+  
+  
+  
+  for x = 0, 10000, 100 do
+    love.graphics.print(x, x, 
+        self:getObject(GameObject.TYPE.PLAYER).y - 250)
+  end
+  
+  
+  
 end
 
 --[[------------------------------------------------------------
