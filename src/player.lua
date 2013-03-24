@@ -104,6 +104,7 @@ Player.FRICTION_X = 50
 -- combat - light attack
 Player.LIGHTATTACK = 
 {
+  TYPE = "light",
   REACH = 32,
   OFFSET_Y = 74,
   OFFSET_X = 0,
@@ -122,6 +123,7 @@ Player.LIGHTATTACK =
 -- combat - magic attack
 Player.MAGICATTACK = 
 {
+  TYPE = "magic",
   REACH = 0,
   OFFSET_Y = 64,
   OFFSET_X = -32,
