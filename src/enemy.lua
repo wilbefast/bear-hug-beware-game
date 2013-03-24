@@ -212,7 +212,6 @@ function Enemy:update(dt, level)
   end
 
   if self.baffed then
-    print('pouet')
     self.animationcurrent = self.animationtouched
     self.animationcurrent:reset()
     self.animationcurrent:play()
@@ -228,15 +227,15 @@ end
 
 
 function Enemy:draw()
-  local x = self.x - 32*self.facing
+  local x = self.x + 96 * self.facing
   if self.facing < 0 then
     x = x + self.w
   end
-  self.animationcurrent:draw(x, self.y + 16, 0, self.facing, 1)
+  self.animationcurrent:draw(x, self.y + 16, 0, -self.facing, 1)
 
 
   -- FIXME debug
-  --GameObject.draw(self)
+--  GameObject.draw(self)
 
   --love.graphics.print(self.LIGHTATTACK.reloadTime, self.x, self.y)
   --love.graphics.print(self.MAGICATTACK.reloadTime, self.x, self.y+40)
