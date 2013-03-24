@@ -174,32 +174,6 @@ function Player:eventCollision(other)
 end
 
 --[[------------------------------------------------------------
-Combat
---]]
-
-function Player:startAttack(weapon)
-  
-  self.deferred_attack = weapon
-  self.warmupTime = useful.tri(weapon.WARMUP_TIME > 0, 
-                              weapon.WARMUP_TIME, 0.01)
-  
-end
-
-function Player:attack(weapon)
-  weapon.reloadTime = weapon.RELOAD_TIME
-
-  self:magic_change(-weapon.MANA)
-
-  return (Attack(
-    self.x + self.w/2 + weapon.REACH*self.facing ,
-    self.y + weapon.OFFSET_Y, weapon, self))
-end
-
-function reload(weapon, dt)
-  weapon.reloadTime = math.max(0, weapon.reloadTime - dt)
-end
-
---[[------------------------------------------------------------
 Game loop
 --]]
 
@@ -330,6 +304,9 @@ function Player:update(dt, level)
     self.animationcurrent:update(dt)
 
     -- reload weapons
+    function reload(weapon, dt)
+      weapon.reloadTime = math.max(0, weapon.reloadTime - dt)
+    end
     reload(self.LIGHTATTACK, dt)
     reload(self.MAGICATTACK, dt)
     

@@ -19,6 +19,8 @@ IMPORTS
 
 local Class      = require("hump/class")
 local GameObject = require("GameObject")
+local useful      = require("useful")
+local Attack      = require("Attack")
 
 --[[------------------------------------------------------------
 CHARACTER CLASS
@@ -44,7 +46,28 @@ local Character = Class
 Character:include(GameObject)
 
 
---function Character
+--[[------------------------------------------------------------
+Combat
+--]]
+
+function Character:startAttack(weapon, target)
+  
+  self.deferred_attack = weapon
+  self.deferred_target = target
+  self.warmupTime = useful.tri(weapon.WARMUP_TIME > 0, 
+                              weapon.WARMUP_TIME, 0.01)
+  
+end
+
+function Character:attack(weapon)
+  weapon.reloadTime = weapon.RELOAD_TIME
+
+  self:magic_change(-weapon.MANA)
+
+  return (Attack(
+    self.x + self.w/2 + weapon.REACH*self.facing ,
+    self.y + weapon.OFFSET_Y, weapon, self))
+end
 
 
 --[[------------------------------------------------------------
@@ -80,7 +103,8 @@ function Character:update(dt, level)
   if self.warmupTime > 0 then
     self.warmupTime = self.warmupTime - dt
     if (self.warmupTime <= 0) and self.deferred_attack then
-      level:addObject(self:attack(self.deferred_attack))
+      level:addObject(self:attack(self.deferred_attack,
+                                  self.deferred_target))
     end
   end
   
