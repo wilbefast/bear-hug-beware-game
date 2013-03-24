@@ -51,8 +51,8 @@ end
 
 -- fisix
 Enemy.GRAVITY    = 1200
-Enemy.BOOST    = 700
-Enemy.MOVE_X     = 30.0
+Enemy.BOOST      = 700
+Enemy.MOVE_X     = 4000.0
 Enemy.MAX_DX     = 500.0
 Enemy.FRICTION_X = 50
 
@@ -97,7 +97,8 @@ Collisions
 
 function Enemy:collidesType(type)
   return ((type == GameObject.TYPE.PLAYER)
-      or (type == GameObject.TYPE.ATTACK))
+      or (type == GameObject.TYPE.ATTACK)
+      or (type == GameObject.TYPE.DEATH))
 end
 
 function Enemy:eventCollision(other, level)
@@ -119,6 +120,10 @@ function Enemy:eventCollision(other, level)
     if self.reloadTime <= 0 then
       level:addObject(self:attack(self.ATTACK, other))
     end
+  
+  -- collision with death
+  elseif other.type == GameObject.TYPE.DEATH then
+    self:life_change(-math.huge, level)
   end
 end
 
@@ -174,7 +179,7 @@ function Enemy:update(dt, level)
 
     local moveDir = useful.sign(self.requestMoveX)
     if moveDir ~= 0 then
-      self.dx = self.dx + moveDir*self.MOVE_X
+      self.dx = self.dx + moveDir*self.MOVE_X*dt
       self.facing = moveDir
     end
 
