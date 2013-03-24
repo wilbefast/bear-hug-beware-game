@@ -82,6 +82,9 @@ Enemy.ATTACK =
   reloadTime = 0
 }
 
+-- ai
+Enemy.PERCENT_JUMPING = 0.1
+
 --[[------------------------------------------------------------
 Resources
 --]]
@@ -173,12 +176,6 @@ function Enemy:update(dt, level)
       -- desire move?
     if math.abs( ecart ) < 800 and math.abs( ecart ) > 30 then
       -- ... left
-
-      -- desire jump?
-      if math.abs( player.y - self.y ) > 63 then
-        self.requestJump = true
-      end
-
       if ecart < 1 then
         self.requestMoveX = -1
       end
@@ -189,6 +186,17 @@ function Enemy:update(dt, level)
     else
       self.requestMoveX = 0
     end
+    
+    -- desire jump?
+    local delta_y = self.y - player.y
+    if delta_y > 0 then
+      if (delta_y > player.h*2) 
+      or ((delta_y / player.h / 2 * self.PERCENT_JUMPING) > math.random() ) then
+        self.requestJump = true
+      end
+    end
+
+
 
     local moveDir = useful.sign(self.requestMoveX)
     if moveDir ~= 0 then
@@ -239,9 +247,9 @@ function Enemy:draw()
 
 
   -- FIXME debug
---  GameObject.draw(self)
+  --GameObject.draw(self)
   
---  love.graphics.print(self.warmupTime, self.x, self.y)
+  --love.graphics.print(self.warmupTime, self.x, self.y)
 
   --love.graphics.print(self.LIGHTATTACK.reloadTime, self.x, self.y)
   --love.graphics.print(self.MAGICATTACK.reloadTime, self.x, self.y+40)
