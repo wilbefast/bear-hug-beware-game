@@ -35,6 +35,11 @@ local Bonus = Class
 }
 Bonus:include(GameObject)
 
+function Bonus:draw()
+  
+  --TODO
+end
+
 
 --[[------------------------------------------------------------
 EXPORT
