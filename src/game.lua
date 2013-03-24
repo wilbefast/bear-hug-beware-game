@@ -39,6 +39,8 @@ function state:init()
   self.xMagicBarre = 150
   self.yMagicBarre = 150
 
+  bord_droit = (love.graphics.getWidth() / 2) + (love.graphics.getWidth() / 4)
+  bord_gauche = (love.graphics.getWidth() / 2) - (love.graphics.getWidth() / 4)
  
   path = "assets/audio/prise_de_degats.ogg"
   degats_subis = love.audio.newSource(path, "static")
@@ -67,7 +69,7 @@ end
 
 function state:enter()
   -- reset objects
-  self.player = Player(300, 300)
+  self.player = Player(300, 800)
   self.level:load("../assets/maps/map01")
   self.level:addObject(self.player)
   --TODO reset player position base on level
@@ -212,10 +214,11 @@ function state:draw()
   view.w, view.h = self.camera:worldCoords(
                           love.graphics.getWidth(), 
                           love.graphics.getHeight())
-  
-  self.camera:attach()
-  self.level:draw(view)
-  self.camera:detach()
+	
+	cam = self.player.x<bord_gauche and self.player.x > bord_droit
+	self.camera:attach()
+    self.level:draw(view)
+	self.camera:detach()
 
   -- barre de magie et life :
 	love.graphics.print("life : ",50,100)
