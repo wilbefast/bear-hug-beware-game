@@ -195,20 +195,6 @@ function Player:update(dt, level)
       end
     end
 
-    -- attack
-    local weapon = nil
-    -- ... light
-    if self.requestLightAttack then
-      weapon = self.LIGHTATTACK
-    end
-    -- ... magic
-    if self.requestMagicAttack then
-      weapon = self.MAGICATTACK
-    end
-    if weapon and (weapon.reloadTime <= 0) then
-      level:addObject(self:attack(weapon))
-    end
-
     if self.airborne then
       if( useful.sign(self.dy) > 0 ) then
         self.animationcurrent = self.animationsautmilieudescente
@@ -238,10 +224,30 @@ function Player:update(dt, level)
       self.animationcurrent = self.animationsautfin
       self.animationsautfin:play()
     end
+	
 
-    self.animationcurrent:update(dt)
+    -- attack
+    local weapon = nil
+    -- ... light
+    if self.requestLightAttack then
+      weapon = self.LIGHTATTACK
 
-    if( not self.airborne and self.animationcurrent ==  self.animationmarche )then
+    end
+    -- ... magic
+    if self.requestMagicAttack then
+      weapon = self.MAGICATTACK
+    end
+
+	if self.animationcurrent == self.animationattaque and not self.animationattaque:isPlaying() then
+	  self.animationcurrent = self.animationmarche
+	  self.animationcurrent:play()
+	end
+	if weapon and (weapon.reloadTime <= 0) then
+      level:addObject(self:attack(weapon))
+	  	  self.animationcurrent = self.animationattaque
+        self.animationcurrent:reset()
+	  self.animationcurrent:play()
+	elseif( not self.airborne and self.animationcurrent ==  self.animationmarche )then
       if self.requestMoveX ~= 0 then
 
       else
@@ -249,6 +255,9 @@ function Player:update(dt, level)
         self.animationcurrent:seek(8)
       end
     end
+	
+    self.animationcurrent:update(dt)
+
 
     
     -- reload weapons

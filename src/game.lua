@@ -242,24 +242,22 @@ function state:draw()
 
 
   -- barre de magie et life :
-  love.graphics.print("life : ",50,100)
-  love.graphics.print("magic power : ",50,150)
-  love.graphics.rectangle("line",self.xLifeBarre,self.yLifeBarre,100,20)
-  love.graphics.rectangle("line",self.xMagicBarre,self.yMagicBarre,100,20)
 
-  love.graphics.rectangle("fill",self.xLifeBarre,self.yLifeBarre,self.player.life,20)
-  love.graphics.rectangle("fill",self.xMagicBarre,self.yMagicBarre,self.player.magic,20)
-
-  if self.player.life == 0 then
-    love.graphics.print("game over ! ",self.xLifeBarre,self.yLifeBarre)
-    love.graphics.rectangle("fill",self.xMagicBarre,self.yMagicBarre,self.player.magic,20)
-    love.graphics.rectangle("line",1000, 100,100,100)
-    love.graphics.print("game over ! \n t'es mauvais \n JACK",1010,110)
-    love.graphics.draw(image_mort, 10, 10)
-    jeu_son:setLooping(false)
-    jeu_son:stop()
-    happy:play()
+  if self.player.life>0 then
+	love.graphics.print("life : ",50,100)
+	love.graphics.print("magic power : ",50,150)
+	love.graphics.rectangle("line",self.xLifeBarre,self.yLifeBarre,100,20)
+	love.graphics.rectangle("line",self.xMagicBarre,self.yMagicBarre,100,20)
+	love.graphics.rectangle("fill",self.xLifeBarre,self.yLifeBarre,self.player.life,20)
+	love.graphics.rectangle("fill",self.xMagicBarre,self.yMagicBarre,self.player.magic,20)
   end
+
+	if self.player.life == 0 then
+		love.graphics.draw(image_mort, 10, 10)
+		jeu_son:setLooping(false)
+		jeu_son:stop()
+		happy:play()
+	end
 	
   if paused then 
     love.graphics.rectangle("line",700,50, 200,40)
