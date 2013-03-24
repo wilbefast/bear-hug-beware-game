@@ -120,7 +120,7 @@ function TileGrid:draw(view)
           love.graphics.setColor(0,0,255)
         end
         
-        love.graphics.rectangle("line", x*self.tilew,
+        love.graphics.rectangle("line", (x-1)*self.tilew,
             y*self.tileh, self.tilew, self.tileh)
 
         --local img = self.tilesets[tset_i].image
@@ -141,7 +141,7 @@ Accessors
 
 function TileGrid:gridToTile(x, y, z)
   if self:validGridPos(x, y, z) then
-    return self.tiles[x][y]
+    return self.tiles[x+1][y] --FIXME
   else
     return nil --FIXME
   end
