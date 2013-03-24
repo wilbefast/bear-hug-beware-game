@@ -45,7 +45,7 @@ function state:init()
   plan1 = love.graphics.newImage(plan_1)
    
   path = "assets/audio/prise_de_degats.ogg"
-  degats_subis = love.audio.newSource(path, "static")
+  baffe= love.audio.newSource(path, "static")
   
   fic="assets/audio/cri_mort.ogg"
   cri_mort = love.audio.newSource(fic,"static")

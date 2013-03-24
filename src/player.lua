@@ -66,8 +66,14 @@ local Player = Class
    horizon = love.graphics.newImage(fond)
    plan_1 = love.image.newImageData("assets/decors/plan1.png")
    plan1 = love.graphics.newImage(plan_1)
-   
+   fichier="assets/audio/calin.ogg"
+  calin = love.audio.newSource(fichier,"static")
+   son_explosion = "assets/audio/explosion_magique.ogg"
+  explosion = love.audio.newSource(son_explosion,"static")
     self.animationcurrent = self.animationmarche
+	path = "assets/audio/prise_de_degats.ogg"
+  baffe= love.audio.newSource(path, "static")
+  
     --marche self.animation:setAnimation({ 1, 3, 5, 7, 9, 11, 13, 15 })
     --saut self.animation:setAnimation({ 21, 22, 23, 24, 26 })
     --attaque self.animation:setAnimation({ 17, 18, 19 })
@@ -144,6 +150,7 @@ function Player:eventCollision(other)
   -- collision with enemy attack
   if other.type == GameObject.TYPE.ENEMYATTACK then
     self:life_change(-other.weapon.DAMAGE)
+	calin:play()
     -- knock-back
     push = useful.sign(self:centreX() - other.launcher:centreX())
     self.dx = self.dx + push * other.weapon.KNOCKBACK
@@ -237,18 +244,21 @@ function Player:update(dt, level)
     -- ... light
     if self.requestLightAttack then
       weapon = self.LIGHTATTACK
-
+      baffe:play()
     end
     -- ... magic
     if self.requestMagicAttack then
       weapon = self.MAGICATTACK
+	  explosion:play()
     end
+
 
     if self.animationcurrent == self.animationattaque and not self.animationattaque:isPlaying() then
       self.animationcurrent = self.animationmarche
       self.animationcurrent:play()
     end
-    if weapon and (weapon.reloadTime <= 0) then
+
+	if weapon and (weapon.reloadTime <= 0) then
       level:addObject(self:attack(weapon))
       if self.requestLightAttack then
         self.animationcurrent = self.animationattaque

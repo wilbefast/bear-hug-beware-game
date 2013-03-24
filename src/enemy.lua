@@ -42,7 +42,11 @@ function Enemy:init(x, y, w, h)
   Character.init(self, x, y, w, h, "assets/sprites/sol.png")
   self.requestJump = false
   self.requestMoveX = 0
+
   self.stunned = false
+  fic="assets/audio/cri_mort.ogg"
+  cri_mort = love.audio.newSource(fic,"static")
+
 end
 
 -- fisix
@@ -80,6 +84,7 @@ function Enemy:life_change(nb, level)
     local deadEnemy = DeadEnemy(self.x, self.y, 64, 128)
     deadEnemy.dx, deadEnemy.dy = self.dx, self.dy
     level:addObject(deadEnemy)
+	cri_mort:play()
   end
   self.life = newLife
 end
