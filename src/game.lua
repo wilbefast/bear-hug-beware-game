@@ -140,7 +140,7 @@ function state:keypressed(key, uni)
   elseif key =="f" then
     degats_subis:stop()
     degats_subis:play()
-    print("fuck")
+    --print("fuck")
   elseif key =="g" then
     cri_mort:play()
   elseif key =="h" then 
@@ -241,7 +241,7 @@ end
 
 function state:draw()
 
-  love.graphics.print("Game screen", 32, 32)
+  --love.graphics.print("Game screen", 32, 32)
   
   local view = {}
   view.x, view.y = self.camera:worldCoords(0, 0)

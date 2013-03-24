@@ -112,7 +112,7 @@ end
 
 
 function state:draw()
-  love.graphics.print("Press Enter to play", 32, 32)
+  --love.graphics.print("Press Enter to play", 32, 32)
 
 
   love.graphics.draw( current )
