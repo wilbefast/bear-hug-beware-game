@@ -29,12 +29,17 @@ local Bonus = Class
 {
   init = function(self, x, y, w, h)
     GameObject.init(self, x, y, w, h)
+    self.image     = love.graphics.newImage("assets/sprites/bonus.png")
   end,
       
   type  =  GameObject.TYPE["BONUS"],
 }
 Bonus:include(GameObject)
 
+
+function Bonus:draw()
+  love.graphics.draw(self.image, self.x, self.y, 64, 64)
+end
 
 --[[------------------------------------------------------------
 EXPORT
