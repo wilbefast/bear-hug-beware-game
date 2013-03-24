@@ -33,26 +33,63 @@ local TileGrid = Class
 {
   init = function(self, mapfile)
   
+    -- grab the size of the tiles
+    self.tilew = mapfile.tilewidth
+    self.tileh = mapfile.tileheight
+  
     -- grab the size of the map
     self.w = mapfile.width
     self.h = mapfile.height
     
-    -- grab the size of the tiles
-    self.tilew = mapfile.tilewidth
-    self.tileh = mapfile.tileheight
+    -- create the map
+    self.tiles = {}
+    for x = 1, self.w do
+      self.tiles[x] = {}
+      for y = 1, self.h do
+        self.tiles[x][y] = Tile()
+      end
+    end
+    
+    -- for each layer
+    for z, layer in ipairs(mapfile.layers) do
+      -- only consider tile types (walls and platforms)
+      if layer.type == "objectgroup" then
+        local type
+        if layer.name == "murs" then
+          type = Tile.TYPE.WALL
+        elseif layer.name == "plateformes" then
+          type = Tile.TYPE.ONESIDED
+        end
+      
+        if type then
+          function setType(tile) 
+            if (tile.type == Tile.TYPE.EMPTY) or (tile.type > type) then
+              tile.type = type
+            end
+          end
+          for i, object in ipairs(layer.objects) do
+            local x, y = self:pixelToGrid(object.x, object.y)
+            local w, h = self:pixelToGrid(object.width, 
+                                          object.height)
+            self:mapRectangle(x, y, w, h, setType)
+          end
+        end
+      end
+    end
     
     -- grab the tileset
-    self.tilesets = {}
+    --[[self.tilesets = {}
     for t, tileset in ipairs(mapfile.tilesets) do
       self.tilesets[tileset.firstgid] = 
       {
         image = love.graphics.newImage(tileset.image)
       }
-    end
+    end --]]
     
-    -- create each layer
-    self.layers = {}
+    --[[
     for z, layer in ipairs(mapfile.layers) do
+      
+      
       if layer.type == "tilelayer" then
 
         -- the mapfile stores tiles in [row, col] format
@@ -75,9 +112,25 @@ local TileGrid = Class
           end
         end
       end
-    end
+    end 
+    --]]
   end
 }
+
+
+--[[----------------------------------------------------------------------------
+Map functions to all or part of the grid
+--]]--
+
+function TileGrid:mapRectangle(startx, starty, w, h, f)
+  for x = startx, startx + w do
+    for y = starty, starty + h do
+      if self:validGridPos(x, y) then
+        f(self.tiles[x][y])
+      end
+    end
+  end
+end
 
 --[[------------------------------------------------------------
 Game loop
@@ -95,17 +148,24 @@ function TileGrid:draw(view)
   local end_y = math.min(self.h, 
               start_y + math.ceil(view.h / self.tileh))
   
-  for i = 1, #self.layers do
-    if( self.layers[i].type =="tilelayer") then
-      for x = start_x, end_x do
-        for y = start_y, end_y do
-          local tset_i = self.layers[1][x][y].type
-          if tset_i ~= 0 then
-            local img = self.tilesets[tset_i].image
-            love.graphics.draw(img, x * self.tilew, 
-                                    y * self.tileh)
-          end
+  for x = start_x, end_x do
+    for y = start_y, end_y do
+      local type = self.tiles[x][y].type
+      if type > 1 then
+        
+        
+        if type == 2 then
+          love.graphics.setColor(0,0,255)
         end
+        
+        love.graphics.rectangle("line", x*self.tilew,
+            y*self.tileh, self.tilew, self.tileh)
+
+        --local img = self.tilesets[tset_i].image
+        --love.graphics.draw(img, x * self.tilew, 
+          --                      y * self.tileh)
+        
+        love.graphics.setColor(255,255,255)
       end
     end
   end
@@ -118,9 +178,8 @@ Accessors
 --]]--
 
 function TileGrid:gridToTile(x, y, z)
-  z = (z or 1)
   if self:validGridPos(x, y, z) then
-    return self.layers[z][x][y]
+    return self.tiles[x][y]
   else
     return nil --FIXME
   end
@@ -131,10 +190,23 @@ function TileGrid:pixelToTile(x, y, z)
                          math.floor(y / self.tileh), z)
 end
 
+
+--[[----------------------------------------------------------------------------
+Conversion
+--]]--
+
+function TileGrid:pixelToGrid(x, y)
+  return math.floor(x / self.tilew), math.floor(y / self.tileh)
+end
+
+function TileGrid:gridToPixel(x, y)
+  return x * self.tilew, y * self.tileh
+end
+
+
 --[[----------------------------------------------------------------------------
 Avoid array out-of-bounds exceptions
 --]]--
-
 
 function TileGrid:validGridPos(x, y)
   return (x >= 1 
@@ -163,7 +235,7 @@ end
 function TileGrid:pixelCollision(x, y, type)
   type = (type or Tile.TYPE.WALL)
   local tile = self:pixelToTile(x, y)
-  return ((not tile) or ((tile.type > 0) 
+  return ((not tile) or ((tile.type > 1) 
                         and (tile.type <= type)))
 end
 

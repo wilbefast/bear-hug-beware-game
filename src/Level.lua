@@ -48,8 +48,8 @@ function Level:load(filename)
   function parse_objects(table, constructor)
     for i, object in ipairs(table.objects) do
       self:addObject(constructor(
-        object.x + self.tilegrid.tilew, 
-        object.y + self.tilegrid.tileh - 1, 
+        object.x, 
+        object.y - 1, 
         object.width, object.height))
     end
   end
