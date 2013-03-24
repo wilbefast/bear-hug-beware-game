@@ -5,22 +5,22 @@
  </tileset>
  <layer name="niveau" width="500" height="20" opacity="0.99">
   <data encoding="base64" compression="zlib">
-   eJzt3W1LVEEYBuAps6zMtLL3rL+TZlF9kCyIyur//4PuYTk4ggtuHj07cl1ww4HnLMzCnpkz83zYg1LK3+RH8jP5lRwlv5M/ampqampqaktf+5h8LwBAz76U2boOAPSr7t0/TD0IAOBc3iYHUw8CADgX/XMA6J/+OQD0T/8cAPqnfw4A/dM/B4D+6Z8DQP/0zwGgf/rnANA//XOAy1f3UrvJXnFGyjj0zwEuX91LfUo+l9kZ6bC+W9v5X0P//FpyPVlJbiSryc3kVrI22egArqa6lzpMvpbZGemwvrdr+95ko6NHQ//8dnInuZusJ/eSjeR+sjnZ6BjbWeYJcwlcvPZ/rOsZ6bC+t2t73bvbt3NWQ/98K3mQPEweJdvJ4+RJ8nSy0TGmOi+088Q87T3mELgY7XvzoteeS04z9M+fJc+TF8nL5FWyk7xO3kw1OEZT54Jv5eQZ3zztPfUz5g4YX/vevOj1cCb/vng+OVbPfNr3vnfJfjn+nahdndpROXnGN097zzKNX02tp1p7fZr2vXnR62X5jmrLV/sHCH+B5A==
+   eJzt3elqFEEYBdBy35e47/F1sqioP4ILiBr1/d/AWwxNKpCBjEmnu5xz4ELD1wPVMFPVVd+P2Sul/Em+Jz+Sn8l+8iv5raampqampjb72vvkWwEAevapLNZ1AKBfde/+bupBAAAnspXsTT0IAOBE9M8BoH/65wDQP/1zAOif/jkA9E//HAD6p38OAP3TPweA/umfA0D/9M8Bzl7dS20nO8UZKadD/xzg7NW91IfkY1mckQ7ru7WdfzX0z88l55MLycXkUnI5uZJcnWx041rHZwbmoe6lPidfyuKMdFjf27V9Z7LR0aOhf34tuZ7cSG4mt5LbyZ3k7mSjG9c6PvNx5glzCYyv/R/rekY6rO/t2l737vbtHNfQP99I7iX3kwfJw+RR8jh5MtnoxrVuz1znhXaeWKa9xxwC42jfm1e99rvkKEP//GnyLHmevEheJq+SzeT1VIMb2To9c50LvpbDZ3zLtPfUz5g74PS1782rXg9n8m+L3ycH6plP+963m7wpB98Ttf+ntl8On/Et094zp/GrqfVUa6+P0r43r3o9l2dUm1/tL42Tg/Q=
   </data>
  </layer>
  <layer name="plateforme3" width="500" height="20">
   <data encoding="base64" compression="zlib">
-   eJzt2ddJBlEUhVFbMWPGjBkzZsyYMfffgbuB4eJwGf6HteB72hUcTl8fAAAAAAAAAAAAAAAA8F/9aSANpqE0nEbSaGEDAHrHWBpPE2kyTaXpNFPYoMlROk4n6TSdpfN0UdgAaG82zaX5tJAW01JaLmzQ5DJdpet0k27TXbovbAC0t5JW01paTxtpM20VNmjykB7TU3pOL+k1vRU2ANpzn1Pbe/pIn+krfaef9FvYAGjPfU5t/ucA3XOfU5v/OUD33OfU5n8O0D33ObX5nwN0z31Obf7nAN1zn1Ob/zlA99zn1OZ/DtC97bSTdtNe2k8H6bCwQRP/cwCgF/wBcyJgeQ==
+   eJzt18dpA0AARFG1IlkBK6KMolHuvyNNB4tvu/Ae/NNUMJ0OAAAAAAAAAAAAAAAA8F/d1Es/qZ8GaZhGhQ0AqMdvGqdJmqZZmqdFYQMA6rFMq7ROm7RNu7QvbABAPQ7pmE7pnC7pmv4KGwBQD/8cANrnnwNA+/xzAGiffw4A7fPPAaB9/jkAtM8/B4D2+ecA0L5buqdHeqZXeqdPYQMAgJp9ASAKJrk=
   </data>
  </layer>
  <layer name="plateforme2" width="500" height="20">
   <data encoding="base64" compression="zlib">
-   eJzt19lOFUEUhlFmZAZBZBCUOUwSBDEMQkCQ938j/kfopCvpyum1ku9q3+yrnaqhIQAAAAAAAAAAAAAAAAAAAAAAAACo107aTXtpPx2kw3TUYgZA99z3fjlOJ+k0naXz9DNdtJgBzQynkTSaxtJ4mkiT6VOD+aDuQhnue79cpl/pKl2n3+km/WkxA5qZStNpJs2muTSfFtJig/mg7kIZ7nu/3Ka7dJ8e0t/0mJ5azIBmltLntJxW0pe0mr6mtQbzQd2FMtz3fvF+g+6sp420mb6lrbSdvqcfDeaDugtluO/94v0G3anpT1zTLpThvveL9xt0p6Y/cU27UIb73i/eb9Cdmv7ENe1CGe57vzynl/Qvvaa39D+9t5gBzdT0J65pF8pw3wGAWn0Ar8Zj6Q==
+   eJzt10VOBGEUhdHG3V0bJ3jw4MH3vyPuEiqpDj8Vzkm+0Zu86W21AAAAAAAAAAAAAAAAAAAAAAAAAODv2kxbaTvtpN20l/Zr3ACA33WQDtNROk4n6TSd1bgB1XSl7tSTelNf6k8DabDgX0DznKeLdJmu0nW6Sbc1bkA1Q2k4jaTRNJbG00SaLPgX0Dx36T49pMf0lJ7TS40bUM1Umk4zaTbNpfm0kBYL/gU0j30O5Syl5bSSVtNaWk/ttFHuLaCB7HMoxz4HOsU+h3Lsc6BT7HMoxz4HOuU1vaX39JE+01f6rnEDqrHPAQD4j34ArmQs1Q==
   </data>
  </layer>
  <layer name="plateforme1" width="500" height="20">
   <data encoding="base64" compression="zlib">
-   eJzt2elO1kAYQOHPBRGQVUV2lM2gAkG2sIdNImtAkagIQQXv/w44N0CpKU07850nOb8mTeftj0kmrVQkSZIkSZIkSZIkSZIkSZIkSZIkSZIkSZIkSZIkSZIkSVK1+Uw7tEt7tE8HdFjkpiRJ0n85omP6Ql/phL7RaZGbSukNDdAgDdEwjdDbIjclSVIBvtMP+kln9IvO6aLITaU0Su/oPX2gMRqniSI3JUnSLZLuoVnvqJf0m/7QX7qia/p3f9vPzSR9pCmaphmapbkiNyVJgXlAD+kRPaYaekK19DTFeijvLIOke2jWO2rI/8/naYEWaYmWaYVWUz6fNHuI3yW2eWKX9Twry3kXyxzVrI7qqYGeUSM1UTO1pFgP5Z1lkHQPzXpHDfn/eZ6zh/hdYpsndlnPs7Kcd7HMUc1aqY2e0wt6Se30ijpSrIfyzjJIuodmvaOG/P88z9lD/C6xzRO7rOdZWc67WOaoZp3URd3UQ73UR/30OsV6KO8sgzVapw3apC36RNt3rKUR8v/zPGcP8bvENk/ssp5nZTnvYplDkiTF6Qb+9mbF
+   eJzt2VdPFUEcQHEQUBAVFZFioViICBp6AEuUYgRLLECkxsr3/wac+3gfdpm43OydnfNLztPkJv+dZDd3Mi0tkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiQpNe9pk7boA32kT/S5zKFUSa10gdqonTroIl2izoB1SVK2L/SVvtF32qYd2i1zqECjNEYP6CE9osc0XuZQytRFl6mbrtBVukY9dD1gXZKU7Qft0T4d0CEd0XGZQwV6QhP0lCZpip7R8zKHUqYbdJN66Rb10W3qp4GAdUmKXd45tOgZ9Sf9ot/0h/7SPzo5v/EbZppmaJbmaJ4WaLHMoZRpkIboDt2le3SfhmkkYF1SdaVyH5d3Di16Ro35/nyJlmmFXtBLekWvA3+f9+wx7kuzz+z5vF7R71dVvm9STSr3cXnn0KJn1Jjvzxv57DHuS7PP7Pm8XtHvV1W+b1JNKv/3886hRc+oMd+fN/LZY9yXZp85lfc1VNH9SG2/VG2p/N9/Q29pldZonTbo3RlrIWK+P2/ks8e4L80+cyrva6ii+5HafkmSJP2PUyPUXRU=
   </data>
  </layer>
  <objectgroup color="#ff0000" name="murs" width="500" height="20">
@@ -44,20 +44,17 @@
   <object x="22400" y="1216" width="9600" height="64"/>
  </objectgroup>
  <objectgroup color="#ffcc66" name="plateformes" width="500" height="20">
-  <object x="3712" y="960" width="1024" height="256"/>
+  <object x="3968" y="960" width="512" height="256"/>
   <object x="4480" y="704" width="1344" height="512"/>
-  <object x="5568" y="960" width="1024" height="256"/>
+  <object x="5824" y="960" width="1024" height="256"/>
   <object x="11008" y="704" width="448" height="512"/>
   <object x="9536" y="960" width="896" height="256"/>
   <object x="14016" y="832" width="448" height="384"/>
   <object x="15040" y="960" width="896" height="256"/>
   <object x="18368" y="960" width="896" height="256"/>
-  <object x="18816" y="704" width="1024" height="512"/>
+  <object x="18816" y="704" width="512" height="512"/>
   <object x="19328" y="448" width="896" height="768"/>
-  <object x="21056" y="704" width="1024" height="512"/>
-  <object x="28480" y="960" width="1536" height="256"/>
-  <object x="28544" y="704" width="1344" height="512"/>
-  <object x="28864" y="448" width="896" height="768"/>
+  <object x="20928" y="704" width="1024" height="512"/>
   <object x="25280" y="960" width="1536" height="256"/>
   <object x="64" y="960" width="512" height="256"/>
  </objectgroup>

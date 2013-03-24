@@ -67,8 +67,8 @@ function state:init()
   self.barre_mana = newAnimation(im, 186, 62, 0.1, 0, 0, 0, {10})
   self.barre_mana:setMode("once")
   
-    jeu_son:play()
-    jeu_son:setLooping(true)
+  jeu_son:play()
+  jeu_son:setLooping(true)
 end
 
 
@@ -140,7 +140,7 @@ function state:keypressed(key, uni)
   elseif key =="f" then
     degats_subis:stop()
     degats_subis:play()
-    print("fuck")
+    --print("fuck")
   elseif key =="g" then
     cri_mort:play()
   elseif key =="h" then 
@@ -209,7 +209,13 @@ function state:update(dt)
       self.cameraAreaRight = self.player:centreX()
       self.cameraAreaLeft = self.cameraAreaRight - self.CAMERA_AREA_WIDTH
     end
-
+    
+    -- LEFT BOUNDS OF CAMERA
+    if self.cameraAreaLeft < 176 then
+      self.cameraAreaLeft = 176
+      self.cameraAreaRight = self.cameraAreaLeft + self.CAMERA_AREA_WIDTH
+    end
+    
     if self.player:centreX() <= largeur then
       cam_x = largeur
     end
@@ -241,7 +247,7 @@ end
 
 function state:draw()
 
-  love.graphics.print("Game screen", 32, 32)
+  --love.graphics.print("Game screen", 32, 32)
   
   local view = {}
   view.x, view.y = self.camera:worldCoords(0, 0)

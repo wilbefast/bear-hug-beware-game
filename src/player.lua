@@ -211,7 +211,7 @@ function Player:update(dt, level)
     end
 
     if self.airborne then
-      if( useful.sign(self.dy) > 0 ) then
+      if( useful.sign(self.dy) > 0 ) and (self.warmupTime <= 0) then
         self.animationcurrent = self.animationsautmilieudescente
         self.animationsautmilieudescente:play()
       end
@@ -344,6 +344,11 @@ function Player:draw()
   if self.facing < 0 then
     x = x + self.w
   end
+
+  if( x > 28000 ) then
+    GameState.switch(fin)
+  end
+  
   self.animationcurrent:draw(x, self.y + 16, 0, self.facing, 1)
 
   if self.animationlaunchedMagicAttack:isPlaying() then
