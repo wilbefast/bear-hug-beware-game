@@ -302,15 +302,7 @@ function Player:update(dt, level)
         self.baffed = false
       end
     end
-<<<<<<< HEAD
-    
-    ----------------------------------
-    
-    -- UPDATE ANIMATION
-=======
-	
-	
->>>>>>> barre life plus mana
+
     self.animationcurrent:update(dt)
 
     -- reload weapons
