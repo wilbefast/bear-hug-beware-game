@@ -62,6 +62,10 @@ function Character:magic_change(nb)
   if newMagic <= 0 then
     newMagic = 0
   end
+  if newMagic > self.MAXMANA then
+    newMagic = self.MAXMANA
+  end
+
   self.magic = newMagic
 end
 

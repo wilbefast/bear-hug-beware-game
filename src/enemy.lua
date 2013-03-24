@@ -69,6 +69,9 @@ Resources
 function Enemy:life_change(nb, level)
   local newLife = self.life + nb
   if newLife <= 0 then
+    local player = level:getObject(GameObject.TYPE["PLAYER"])
+    player:magic_change(player.MAXMANA*0.2)
+    
     newLife = 0
     self.purge = true
     local deadEnemy = DeadEnemy(self.x, self.y, 64, 128)
