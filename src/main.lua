@@ -17,6 +17,7 @@ Lesser General Public License for more details.
 function love.load(arg)
   GameState = require("hump/gamestate")
   conf = require("conf")
+	love.graphics.setMode(1280, 720, true, true)
   title = require("title")
   game = require("game")
   fin = require("end")
