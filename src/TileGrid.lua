@@ -51,8 +51,9 @@ local TileGrid = Class
     end
     
     -- for each layer
-    for z, layer in ipairs(mapfile.layers) do
-      -- only consider tile types (walls and platforms)
+    for _, layer in ipairs(mapfile.layers) do
+      
+      --! GENERATE *COLLISION* GRID
       if layer.type == "objectgroup" then
         local type
         if layer.name == "murs" then
@@ -76,44 +77,6 @@ local TileGrid = Class
         end
       end
     end
-    
-    -- grab the tileset
-    --[[self.tilesets = {}
-    for t, tileset in ipairs(mapfile.tilesets) do
-      self.tilesets[tileset.firstgid] = 
-      {
-        image = love.graphics.newImage(tileset.image)
-      }
-    end --]]
-    
-    --[[
-    for z, layer in ipairs(mapfile.layers) do
-      
-      
-      if layer.type == "tilelayer" then
-
-        -- the mapfile stores tiles in [row, col] format
-        local temp_layer = {}
-        local data_i = 1
-        for row = 1, self.h do
-          temp_layer[row] = {}
-          for col = 1, self.w do
-            temp_layer[row][col] = Tile(layer.data[data_i])
-            data_i = data_i + 1
-          end
-        end
-          
-        -- we want them in [x, y] format, so we transpose
-        self.layers[z] = {}
-        for x = 1, self.w do
-          self.layers[z][x] = {}
-          for y = 1, self.h do
-            self.layers[z][x][y] = temp_layer[y][x]
-          end
-        end
-      end
-    end 
-    --]]
   end
 }
 
@@ -136,8 +99,7 @@ end
 Game loop
 --]]
 
-function TileGrid:draw(view)
-  
+function TileGrid:draw(view) 
   local start_x = math.max(1, 
               math.floor(view.x / self.tilew))
   local end_x = math.min(self.w, 

@@ -19,6 +19,7 @@ IMPORTS
 
 local Class = require("hump/class")
 local TileGrid = require("TileGrid")
+local ImageGrid = require("ImageGrid")
 local GameObject = require("GameObject")
 local Enemy = require("enemy")
 local Death = require("Death")
@@ -39,8 +40,12 @@ local Level = Class
 
 function Level:load(filename)
   local mapfile = require(filename)
-  -- load tiles
+  
+  -- load collision grid
   self.tilegrid = TileGrid(mapfile)
+  
+  -- load graphics tile grid
+  self.imagegrid = ImageGrid(mapfile)
   
   -- load objects
   self.object_types = {}
@@ -121,8 +126,11 @@ function Level:update(dt)
 end
 
 function Level:draw(view)
+  
   -- draw the tiles
-  self.tilegrid:draw(view)
+  self.imagegrid:draw(view)
+  self.tilegrid:draw(view) --FIXME
+  
   
   -- for each type of object
   for t, object_type in pairs(self.object_types) do

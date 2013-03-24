@@ -52,7 +52,7 @@ Accessors
 --]]
 
 function Tile:isWall()
-  return (self.type == 1) --FIXME
+  return (self.type == Tile.TYPE.WALL) --FIXME
 end
 
 --[[------------------------------------------------------------
