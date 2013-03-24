@@ -240,6 +240,9 @@ if self.player.life~=0 then
 end
 self.barre_mana:update(dt)
 	self.barre_life:update(dt)
+
+
+  if cam_y < 700 then cam_y = 700 end
 	
   
   
