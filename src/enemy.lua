@@ -109,7 +109,8 @@ Collisions
 function Enemy:collidesType(type)
   return ((type == GameObject.TYPE.PLAYER)
       or (type == GameObject.TYPE.ATTACK)
-      or (type == GameObject.TYPE.DEATH))
+      or (type == GameObject.TYPE.DEATH)
+      or (type == GameObject.TYPE.ENEMY))
 end
 
 function Enemy:eventCollision(other, level)
@@ -129,15 +130,25 @@ function Enemy:eventCollision(other, level)
   
   -- collision with player
   elseif other.type == GameObject.TYPE.PLAYER then
-    self.facing = useful.tri(other:centreX() > self:centreX(), 1, -1)
-    if self.reloadTime <= 0 and self.warmupTime <= 0 then
-      self:startAttack(self.ATTACK, other)
+    if (not self.baffed) then
+      self.facing = useful.tri(other:centreX() > self:centreX(), 1, -1)
+      if (self.reloadTime <= 0) and (-self.warmupTime <= 0) then
+        self:startAttack(self.ATTACK, other)
+      end
     end
   
-  -- collision with death
+  -- a brush with death
   elseif other.type == GameObject.TYPE.DEATH then
     self:life_change(-math.huge, level)
+  
+  -- collision with other enemies
+  elseif other.type == GameObject.TYPE.ENEMY then
+    -- enemies push eachother away
+    push = (self.w+other.w)
+      /(self:centreX() - other:centreX())
+    self.dx = self.dx + push*7
   end
+  
 end
 
 --[[------------------------------------------------------------
@@ -240,7 +251,7 @@ function Enemy:draw()
   -- FIXME debug
   --GameObject.draw(self)
   
-  love.graphics.print(self.warmupTime, self.x, self.y)
+  --love.graphics.print(self.warmupTime, self.x, self.y)
 
   --love.graphics.print(self.LIGHTATTACK.reloadTime, self.x, self.y)
   --love.graphics.print(self.MAGICATTACK.reloadTime, self.x, self.y+40)
