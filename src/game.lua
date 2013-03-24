@@ -211,8 +211,8 @@ function state:update(dt)
     end
     
     -- LEFT BOUNDS OF CAMERA
-    if self.cameraAreaLeft < 176 then
-      self.cameraAreaLeft = 176
+    if self.cameraAreaLeft < 415 then
+      self.cameraAreaLeft = 415
       self.cameraAreaRight = self.cameraAreaLeft + self.CAMERA_AREA_WIDTH
     end
     
@@ -229,6 +229,8 @@ function state:update(dt)
     if( self.player.y >= levelh - hauteur ) then
       cam_y = levelh - hauteur
     end
+    
+    
 if self.player.life~=0 then
 	nb = ((90-self.player.life)/10)+1
 	self.barre_life:seek(nb)
