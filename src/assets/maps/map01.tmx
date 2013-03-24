@@ -6,9 +6,27 @@
  <tileset firstgid="2" name="sol" tilewidth="64" tileheight="64">
   <image source="../sprites/sol.png" trans="ffffff" width="64" height="64"/>
  </tileset>
- <layer name="Calque de Tile 1" width="500" height="20" opacity="0.99">
+ <tileset firstgid="3" name="plateformes_1" tilewidth="64" tileheight="64">
+  <image source="../sprites/plateformes_1.png" trans="ffffff" width="513" height="833"/>
+ </tileset>
+ <layer name="niveau" width="500" height="20" opacity="0.99">
   <data encoding="base64" compression="zlib">
-   eJzt3UFqwzAQBdC49z90CaGbEENijaL56nswdBUseaT5iy583G63QymllFLxBQDkkucAkE+eA0A+eQ4A+eQ5AOST5wCQT54DiX4uFLxy5Sx1PFfyHEiUPHfpRZ4DrJM8d+lFngOskzx36UWe72+0xx37vYP095245pW63UN3fx+VZ+uTXs/KXHl+rtsc4SH9fSeueaVu99Dd38eqPL87nv5WkOfnus0RHtLfd+KaV+p2D6ue6Rsa663M87vq3jtL57rNER7S33fimlfqdg9n5bls/76VeT6j/3+/T56P76ru3Tcq1cx9p7+3kTXvdp4S71PVMxO/fZnQn7R9VPZdnveuau+cl4pZMnPfnebCFSNr7naeRiXep6pnJn7XOqE/aft47uvI/9Xlee+q9O5sqJghM/fdaS5cMbLmTuepQuJ9qnrmlTxfne0J/Unbx1meXyHPe1eVT+ZBxeyYue9Oc+GKkTV3OU9VEu9T1TNH83xFtif0J20fM/Jc/b86s3pdSu1Wr6xek9qzfgGa/g3o
+   eJztnVlP21AQRp2WlkJboC3QQinbK13FWnUBROny//9QvygKsoItJfbYd+bmHOmIp8hzfefOJwvFGRRFMUBERMTwAgAAQFzIcwAAgPiQ5wAAAPEhzwGgjodyQT6Sj+WifCKX5HLCugDgPuQ5AJQ5ku/lB/lRfpKf5Re5KtfkC/kyVYEAUAl5DgBljuWJPJVn8lxeyK/ytXwjt+R2qgIBoBLyHADKfJPf5Q/5U17KK3kt9+S+PJCHacq740EDAapo0kse+4o8B4AyUZ7PI89d8AV5DgA5wvM5zBvkOQDkCM/nMG+Q5/nTdo897ncORL/f3mv29nzu7Rxy9vPBsrdm2euuMpc8r8fbHIER0e+395pv5C95K3/LP/Kv/JeoHm/nkLOfD6nyfMhg4q8F5Hk93uYIjIh+vyPWnBJv59DqmvyGRnpS5vkQ672nl+rxNkdgRPT7HbHmlHg7h13lOdnePynzvIv9H39+Ht7raL13fRiVLtcd/b61qTm3fop4nqyuGfG3LyPsT7R1WO77+LNP5TP5XK4Ueb7Xse/Z4bG/p+kXi1nS5bo9zYUmtKnZWz+1JeJ5srpmxN+1jrA/0dYxua9t/q8+7pNXcl1uyM3C1/dSrOh7dnjr72lng8UM6XLdnuZCE9rU7KmfLIh4nqyu2STPU2d7hP2Jto66PG/CuDfeyh35Tu4Wvt4bYUXfs8NTf88yDyxmR5fr9jQXmtCmZi/9ZEXE82R1zbZ5niLbI+xPtHV0kec4f9aRui7E3KwidU2Yp/8BroMfyg==
+  </data>
+ </layer>
+ <layer name="plateforme3" width="500" height="20">
+  <data encoding="base64" compression="zlib">
+   eJztwTEBAAAAwqD1T+1lC6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAbnEAAAQ==
+  </data>
+ </layer>
+ <layer name="plateforme2" width="500" height="20">
+  <data encoding="base64" compression="zlib">
+   eJztwTEBAAAAwqD1T+1lC6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAbnEAAAQ==
+  </data>
+ </layer>
+ <layer name="plateforme1" width="500" height="20">
+  <data encoding="base64" compression="zlib">
+   eJztwTEBAAAAwqD1T+1lC6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAbnEAAAQ==
   </data>
  </layer>
  <objectgroup color="#ff0000" name="murs" width="500" height="20">

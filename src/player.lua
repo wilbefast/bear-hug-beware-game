@@ -41,12 +41,15 @@ local Player = Class
                     "assets/sprites/HerosSprite.png")
     self.animationmarche = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 1, 3, 5, 7, 9, 11, 13, 15 })
     self.animationmarche:setSpeed(1,2)
-    self.animationsautdebut = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 21, 22, 23 })
+    self.animationsautdebut = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 21, 22 })
     self.animationsautdebut:setSpeed(1,2)
     self.animationsautdebut:setMode("once")
-    self.animationsautmilieu = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 24 })
-    self.animationsautmilieu:setSpeed(1,2)
-    self.animationsautmilieu:setMode("once")
+    self.animationsautmilieumontee = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 23 })
+    self.animationsautmilieumontee:setSpeed(1,2)
+    self.animationsautmilieumontee:setMode("once")
+    self.animationsautmilieudescente = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 24 })
+    self.animationsautmilieudescente:setSpeed(1,2)
+    self.animationsautmilieudescente:setMode("once")
     self.animationsautfin = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 25, 26 })
     self.animationsautfin:setSpeed(1,2)
     self.animationsautfin:setMode("once")
@@ -200,13 +203,23 @@ function Player:update(dt, level)
     end
 
     if self.airborne then
+      if( useful.sign(self.dy) > 0 ) then
+        self.animationcurrent = self.animationsautmilieudescente
+        self.animationsautmilieudescente:play()
+      end
+
       if( self.animationcurrent ==  self.animationsautdebut and not self.animationsautdebut:isPlaying() ) then
-        self.animationcurrent = self.animationsautmilieu
-        self.animationsautmilieu:play()
+        self.animationcurrent = self.animationsautmilieumontee
+        self.animationsautmilieumontee:play()
       end
       if( self.animationcurrent ==  self.animationmarche) then
-        self.animationcurrent = self.animationsautdebut
-        self.animationsautdebut:play()
+        if( useful.sign(self.requestMoveY) < 0 ) then
+          self.animationcurrent = self.animationsautdebut
+          self.animationsautdebut:play()
+        else
+          self.animationcurrent = self.animationsautmilieudescente
+          self.animationsautmilieudescente:play()
+        end
       end
 
     end
@@ -214,13 +227,13 @@ function Player:update(dt, level)
       self.animationcurrent = self.animationmarche
       self.animationmarche:play()
     end
-    if( not self.airborne and self.animationcurrent ==  self.animationsautmilieu) then
+    if( not self.airborne and self.animationcurrent ==  self.animationsautmilieudescente) then
       self.animationcurrent = self.animationsautfin
       self.animationsautfin:play()
     end
 
     self.animationcurrent:update(dt)
-    
+
     if( not self.airborne and self.animationcurrent ==  self.animationmarche )then
       if self.requestMoveX ~= 0 then
 
