@@ -93,7 +93,7 @@ function Enemy:eventCollision(other, level)
     -- knock-back
     push = useful.sign(self:centreX() - other.launcher:centreX())
     self.dx = self.dx + push * other.knockback
-
+    
     -- lost life
     self:life_change(-other.damage, level)
   
