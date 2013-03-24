@@ -276,10 +276,10 @@ function Player:draw()
   
   
   -- FIXME debug
-  GameObject.draw(self)
+  --GameObject.draw(self)
   
-  love.graphics.print(self.LIGHTATTACK.reloadTime, self.x, self.y)
-  love.graphics.print(self.MAGICATTACK.reloadTime, self.x, self.y+40)
+  --love.graphics.print(self.LIGHTATTACK.reloadTime, self.x, self.y)
+  --love.graphics.print(self.MAGICATTACK.reloadTime, self.x, self.y+40)
 end
 
 return Player

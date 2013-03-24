@@ -136,7 +136,7 @@ function Level:draw(view)
  
   -- draw the tiles
   self.imagegrid:draw(view)
-  self.tilegrid:draw(view) --FIXME
+  --self.tilegrid:draw(view) --FIXME
   
   
   -- for each type of object
