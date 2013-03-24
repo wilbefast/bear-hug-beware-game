@@ -244,7 +244,7 @@ self.barre_mana:update(dt)
   
   
     if cam_y < 700 then cam_y = 700 end
-    print(cam_y)
+
   
     cam_x = (self.cameraAreaLeft + self.cameraAreaRight) / 2
     self.camera:lookAt( cam_x + self.level.tilegrid.tilew, cam_y + self.level.tilegrid.tileh )
