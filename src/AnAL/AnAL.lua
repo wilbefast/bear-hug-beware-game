@@ -57,7 +57,6 @@ function newAnimation(image, fw, fh, delay, frames, x, y, t)
   if frames == 0 then
     frames = imgw / fw * imgh / fh
   end
-  print( )
   local rowsize = imgw/fw
   for i = 1, frames do
     local row = math.floor((i-1)/rowsize)
@@ -69,7 +68,6 @@ function newAnimation(image, fw, fh, delay, frames, x, y, t)
   end
 
   if( t ) then
-    print("good")
     a.framesAnim = {}
     for i = 1, #t do
       table.insert(a.framesAnim, t[i] )
@@ -77,6 +75,14 @@ function newAnimation(image, fw, fh, delay, frames, x, y, t)
   end
 
   return setmetatable(a, animation)
+end
+
+
+function animation:setAnimation(t)
+    self.framesAnim = {}
+    for i = 1, #t do
+      table.insert(self.framesAnim, t[i] )
+    end
 end
 
 
@@ -88,8 +94,6 @@ function animation:update(dt)
   if self.timer > self.delays[self.framesAnim[self.position]] then
     self.timer = self.timer - self.delays[self.framesAnim[self.position]]
     self.position = self.position + 1 * self.direction
-    print( self.position )
-    print( #self.framesAnim )
     if self.position > #self.framesAnim then --frames then
       if self.mode == 1 then
         self.position = 1
@@ -109,10 +113,6 @@ end
 
 --- Draw the animation
 function animation:draw(...)
-  print(self.position)
-  print(self.framesAnim[self.position])
-  print(#self.frames)
-  print(self.frames[self.framesAnim[self.position]])
   love.graphics.drawq(self.img, self.frames[self.framesAnim[self.position]], ...)
 end
 
@@ -139,6 +139,11 @@ end
 --- Stop the animation
 function animation:stop()
   self.playing = false
+end
+
+--- Stop the animation
+function animation:isPlaying()
+  return self.playing
 end
 
 --- Reset

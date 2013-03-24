@@ -39,9 +39,29 @@ local Player = Class
   init = function(self, x, y)
     Character.init(self, x, y, 128, 128, 
                     "assets/sprites/HerosSprite.png")
-  	self.animation = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 1, 3, 5, 7, 9, 11, 13, 15 })
-    --saut { 21, 22, 23, 24, 25, 26 }
-    self.animation:setSpeed(1,2)
+    self.animationmarche = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 1, 3, 5, 7, 9, 11, 13, 15 })
+    self.animationmarche:setSpeed(1,2)
+    self.animationsautdebut = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 21, 22, 23 })
+    self.animationsautdebut:setSpeed(1,2)
+    self.animationsautdebut:setMode("once")
+    self.animationsautmilieu = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 24 })
+    self.animationsautmilieu:setSpeed(1,2)
+    self.animationsautmilieu:setMode("once")
+    self.animationsautfin = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 25, 26 })
+    self.animationsautfin:setSpeed(1,2)
+    self.animationsautfin:setMode("once")
+    self.animationattaque = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 17, 18, 19 })
+    self.animationattaque:setSpeed(1,2)
+    self.animationattaque:setMode("once")
+    self.animationtouched = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 20 })
+    self.animationtouched:setSpeed(1,2)
+
+    self.animationcurrent = self.animationmarche
+    --marche self.animation:setAnimation({ 1, 3, 5, 7, 9, 11, 13, 15 })
+    --saut self.animation:setAnimation({ 21, 22, 23, 24, 26 })
+    --attaque self.animation:setAnimation({ 17, 18, 19 })
+    --touched self.animation:setAnimation({ 20 })
+    --self.animation:setSpeed(1,2)
 end,
 }
 Player:include(Character)
@@ -53,13 +73,8 @@ Constants
 -- physics
 Player.MOVE_X = 50.0
 Player.MAX_DX = 1000.0
-<<<<<<< HEAD
 Player.BOOST = 1000.0
 Player.GRAVITY = 1500.0
-=======
-Player.BOOST = 850.0
-Player.GRAVITY = 1200.0
->>>>>>> animation
 Player.FRICTION_X = 50
 
 -- combat - light attack
@@ -173,17 +188,51 @@ function Player:update(dt, level)
     if weapon and (weapon.reloadTime <= 0) then 
       level:addObject(self:attack(weapon))
     end
+
+    if self.airborne then
+      if( self.animationcurrent ==  self.animationsautdebut and not self.animationsautdebut:isPlaying() ) then
+        self.animationcurrent = self.animationsautmilieu
+        self.animationsautmilieu:play()
+      end
+      if( self.animationcurrent ==  self.animationmarche) then
+        self.animationcurrent = self.animationsautdebut
+        self.animationsautdebut:play()
+      end
+
+    end
+    if( self.animationcurrent ==  self.animationsautfin and not self.animationsautfin:isPlaying() ) then
+      self.animationcurrent = self.animationmarche
+      self.animationmarche:play()
+    end
+    if( not self.airborne and self.animationcurrent ==  self.animationsautmilieu) then
+      self.animationcurrent = self.animationsautfin
+      self.animationsautfin:play()
+    end
+
+    self.animationcurrent:update(dt)
+    
+    if( not self.airborne and self.animationcurrent ==  self.animationmarche )then
+      if self.requestMoveX ~= 0 then
+
+      else
+        self.animationcurrent = self.animationmarche
+        self.animationcurrent:seek(1)
+      end
+    end
+
     
     -- reload weapons
     reload(self.LIGHTATTACK, dt)
     reload(self.MAGICATTACK, dt)
     
-    --update animation
+    --[[update animation
     if self.requestMoveX ~= 0 then
-      self.animation:update(dt)
+      self.animationcurrent:update(dt)
     else
-      self.animation:seek(1)
+      self.animationcurrent = self.animationmarche
+      self.animationcurrent:seek(1)
     end
+    ]]--
 
     -- reset input requests to false
     self.requestMoveX, self.requestMoveY = 0, 0
@@ -202,7 +251,7 @@ function Player:draw()
   if self.facing < 0 then
     x = x + self.w
   end
-  self.animation:draw(x, self.y + 16, 0, self.facing, 1)
+  self.animationcurrent:draw(x, self.y + 16, 0, self.facing, 1)
   -- FIXME debug
   GameObject.draw(self)
   
