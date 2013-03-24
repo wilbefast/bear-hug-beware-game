@@ -69,6 +69,11 @@ end
 Objects
 --]]
 
+function Level:getObject(type, i)
+  i = (i or 1)
+  return (self.object_types[type][i])
+end
+
 function Level:addObject(object)
   -- are there other objects of this type?
   if (not self.object_types[object.type]) then

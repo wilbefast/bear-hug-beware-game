@@ -37,7 +37,7 @@ local Player = Class
   type  =  GameObject.TYPE["PLAYER"],
 
   init = function(self, x, y)
-    Character.init(self, x, y, 128, 128, 
+    Character.init(self, x, y, 64, 128, 
                     "assets/sprites/HerosSprite.png")
     self.animationmarche = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 1, 3, 5, 7, 9, 11, 13, 15 })
     self.animationmarche:setSpeed(1,2)

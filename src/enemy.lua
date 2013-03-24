@@ -40,7 +40,8 @@ Enemy:include(Character)
 function Enemy:init(x, y, w, h)
   -- base constructor
   Character.init(self, x, y, w, h, "assets/sprites/sol.png")
-  self.requestLightAttack = true
+  self.requestJump = false
+  self.requestMoveX = 0
 end
 
 -- fisix
@@ -49,8 +50,8 @@ Enemy.MOVE_X     = 50.0
 Enemy.MAX_DX     = 1000.0
 Enemy.FRICTION_X = 50
 
--- combat - light attack
-Enemy.LIGHTATTACK =
+-- combat
+Enemy.ATTACK =
 {
   REACH = 80,
   OFFSET_Y = 32,
@@ -99,10 +100,8 @@ function Enemy:eventCollision(other, level)
   -- collision with player
   elseif other.type == GameObject.TYPE.PLAYER then
     self.facing = useful.tri(other:centreX() > self:centreX(), 1, -1)
-    if self.requestLightAttack then
-      if self.reloadTime <= 0 then
-        level:addObject(self:attack(self.LIGHTATTACK, other))
-      end
+    if self.reloadTime <= 0 then
+      level:addObject(self:attack(self.ATTACK, other))
     end
   end
 end
@@ -133,6 +132,26 @@ Game loop
 --]]
 
 function Enemy:update(dt, level)
+  
+  -- AI
+  local player = level:getObject(GameObject.TYPE.PLAYER)
+  
+  -- desire jump?
+  if player.y + player.h < self.y then
+    requestJump = true
+  end
+  
+  -- desire move?
+  local player_side = player:centreX() - self:centreX()
+  -- ... left
+  if player_side < -self.w then
+    self.requestMoveX = -1
+  end
+  -- ... right
+  if player_side > self.w then
+    self.requestMoveX = 1
+  end
+  
   -- base update
   Character.update(self, dt, level)
 end
