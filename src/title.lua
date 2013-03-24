@@ -18,11 +18,20 @@ local state = GameState.new()
 function state:init()
   fic = "assets/audio/bisounours.ogg"
   bisous = love.audio.newSource(fic)
+
+  debut = love.timer.getTime()
+  bg1 = love.graphics.newImage( "assets/backgrounds/accueilTitre.jpg" )
+  bg2 = love.graphics.newImage( "assets/backgrounds/accueilPlay.jpg" )
+  bgcredits = love.graphics.newImage( "assets/backgrounds/accueilPlaySurvolCredit.jpg" )
+  bgplay = love.graphics.newImage( "assets/backgrounds/accueilPlaySurvolPlay.jpg" )
+  current = bg1
 	  
 end
 
 
 function state:enter()
+
+  love.mouse.setVisible( true )
   bisous:play()
   bisous:setLooping(true)
 end
@@ -79,11 +88,34 @@ end
 
 
 function state:update(dt)
+  local x, y = love.mouse.getPosition()
+
+  if( love.timer.getTime() > debut + 1 ) then
+      current=  bg2
+  end
+
+  if( x > 344 and y > 348 and x < 720 and y < 600) then
+      current=  bgplay
+      if( love.mouse.isDown("r","l") ) then
+        GameState.switch(histoire)
+      end
+  end
+
+  if( x > 805 and y > 600 and x < 1135 and y < 679) then
+      current=  bgcredits
+      if( love.mouse.isDown("r","l") ) then
+        GameState.switch(credits)
+      end
+  end
+
 end
 
 
 function state:draw()
   love.graphics.print("Press Enter to play", 32, 32)
+
+
+  love.graphics.draw( current )
 end
 
 return state

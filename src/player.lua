@@ -77,15 +77,20 @@ local Player = Class
 	path = "assets/audio/prise_de_degats.ogg"
   baffe= love.audio.newSource(path, "static")
   
+  im = love.graphics.newImage("assets/hud/spriteVie.png")
+  self.barre_life = newAnimation(im, 186, 62, 0.1, 0, 0, 0, {1,2,3,4,5,6,7,8,9})
+  self.barre_life:setMode("once")
+  self.barre_mana = newAnimation(im, 186, 62, 0.1, 0, 0, 0, {10})
+  self.barre_mana:setMode("once")
     --marche self.animation:setAnimation({ 1, 3, 5, 7, 9, 11, 13, 15 })
     --saut self.animation:setAnimation({ 21, 22, 23, 24, 26 })
     --attaque self.animation:setAnimation({ 17, 18, 19 })
     --touched self.animation:setAnimation({ 20 })
     --self.animation:setSpeed(1,2)
-	
+	self.barre_life:seek(1)
 	  fic_saut = "assets/audio/saut.ogg"
   saut = love.audio.newSource(fic_saut,"static")
-  
+  self.life=90
 end,
 }
 Player:include(Character)
@@ -104,6 +109,7 @@ Player.FRICTION_X = 50
 -- combat - light attack
 Player.LIGHTATTACK = 
 {
+  TYPE = "light",
   REACH = 32,
   OFFSET_Y = 74,
   OFFSET_X = 0,
@@ -114,7 +120,7 @@ Player.LIGHTATTACK =
   STUN_TIME = 0.5,
   W = 118,
   H = 108,
-  KNOCKBACK = 3000,
+  KNOCKBACK = 1000,
   KNOCKUP = 150,
   
   reloadTime = 0
@@ -122,6 +128,7 @@ Player.LIGHTATTACK =
 -- combat - magic attack
 Player.MAGICATTACK = 
 {
+  TYPE = "magic",
   REACH = 0,
   OFFSET_Y = 64,
   OFFSET_X = -32,
@@ -132,8 +139,8 @@ Player.MAGICATTACK =
   STUN_TIME = 1,
   W = 256,
   H = 256,
-  KNOCKBACK = 7000,
-  KNOCKUP = 400,
+  KNOCKBACK = 2000,
+  KNOCKUP = 300,
   
   reloadTime = 0
 }
@@ -164,10 +171,10 @@ function Player:eventCollision(other)
   -- collision with "death" (bottomless pit)
   elseif other.type == GameObject.TYPE.DEATH then
     self.life = 0
-
+	
   -- collision with "bonus" 
   elseif other.type == GameObject.TYPE.BONUS then
-    self.life = 100
+    self.life = 90
 	self.magic = self.MAXMANA
     other.purge = true --! FIXME
   end
@@ -193,6 +200,7 @@ function Player:update(dt, level)
       -- check if on the ground
       if (not self.airborne) then
         self.dy = -Player.BOOST
+		saut:setVolume(0.1)
 		    saut:play()
       end
     end
@@ -297,10 +305,7 @@ function Player:update(dt, level)
         self.baffed = false
       end
     end
-    
-    ----------------------------------
-    
-    -- UPDATE ANIMATION
+
     self.animationcurrent:update(dt)
 
     -- reload weapons
@@ -328,8 +333,6 @@ function Player:draw()
     x = x + self.w
   end
   self.animationcurrent:draw(x, self.y + 16, 0, self.facing, 1)
-  
-  
   -- FIXME debug
   --GameObject.draw(self)
   

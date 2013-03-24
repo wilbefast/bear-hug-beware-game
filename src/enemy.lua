@@ -112,8 +112,7 @@ Collisions
 function Enemy:collidesType(type)
   return ((type == GameObject.TYPE.PLAYER)
       or (type == GameObject.TYPE.ATTACK)
-      or (type == GameObject.TYPE.DEATH)
-      or (type == GameObject.TYPE.ENEMY))
+      or (type == GameObject.TYPE.DEATH))
 end
 
 function Enemy:eventCollision(other, level)
@@ -133,25 +132,15 @@ function Enemy:eventCollision(other, level)
   
   -- collision with player
   elseif other.type == GameObject.TYPE.PLAYER then
-    if (not self.baffed) then
-      self.facing = useful.tri(other:centreX() > self:centreX(), 1, -1)
-      if (self.reloadTime <= 0) and (-self.warmupTime <= 0) then
-        self:startAttack(self.ATTACK, other)
-      end
+    self.facing = useful.tri(other:centreX() > self:centreX(), 1, -1)
+    if self.reloadTime <= 0 and self.warmupTime <= 0 then
+      self:startAttack(self.ATTACK, other)
     end
   
-  -- a brush with death
+  -- collision with death
   elseif other.type == GameObject.TYPE.DEATH then
     self:life_change(-math.huge, level)
-  
-  -- collision with other enemies
-  elseif other.type == GameObject.TYPE.ENEMY then
-    -- enemies push eachother away
-    push = (self.w+other.w)
-      /(self:centreX() - other:centreX())
-    self.dx = self.dx + push*7
   end
-  
 end
 
 --[[------------------------------------------------------------
@@ -233,7 +222,6 @@ function Enemy:update(dt, level)
   end
 
   if self.baffed then
-    print('pouet')
     self.animationcurrent = self.animationtouched
     self.animationcurrent:reset()
     self.animationcurrent:play()
@@ -249,11 +237,11 @@ end
 
 
 function Enemy:draw()
-  local x = self.x - 32*self.facing
+  local x = self.x + 96 * self.facing
   if self.facing < 0 then
     x = x + self.w
   end
-  self.animationcurrent:draw(x, self.y + 16, 0, self.facing, 1)
+  self.animationcurrent:draw(x, self.y + 16, 0, -self.facing, 1)
 
 
   -- FIXME debug

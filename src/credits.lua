@@ -1,3 +1,4 @@
+
 --[[
 (C) Copyright 2013 
 William Dyce, Maxime Ailloud, Alex Verbrugghe, Julien Deville
@@ -16,18 +17,12 @@ Lesser General Public License for more details.
 
 local state = GameState.new()
 
-local histoire1
-local histoire2
-local debut
-
 function state:init()
-  histoire1 = love.graphics.newImage( "assets/backgrounds/accueilTitre.jpg" )
-  histoire2 = love.graphics.newImage( "assets/backgrounds/histoire2.jpg" )
+  credits = love.graphics.newImage( "assets/backgrounds/credits.jpg" )
 end
 
 
 function state:enter()
-	debut = love.timer.getTime()
 end
 
 
@@ -64,8 +59,6 @@ end
 function state:keypressed(key, uni)
 	if key=="escape" then
 		love.event.push("quit")
-  elseif key=="return" or key=="kpenter" then
-    GameState.switch(game)
   end
 end
 
@@ -76,18 +69,11 @@ end
 
 function state:update(dt)
 
-	if( love.timer.getTime() > debut + 4 ) then
-    	GameState.switch(game)
-	end	
 end
 
 
 function state:draw()
-	if( love.timer.getTime() > debut + 2 ) then
-  		love.graphics.draw( histoire2 )
-	else
-  		love.graphics.draw( histoire1 )
-	end
+		love.graphics.draw( credits )
 
 end
 
