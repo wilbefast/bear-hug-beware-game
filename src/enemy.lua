@@ -73,8 +73,8 @@ Enemy.ATTACK =
   OFFSET_X = 0,
   DAMAGE = 10,
   MANA = 0,
-  WARMUP_TIME = 0.5,
-  RELOAD_TIME = 1,
+  WARMUP_TIME = 0.4,
+  RELOAD_TIME = 0.3,
   STUN_TIME = 0.5,
   W = 118,
   H = 108,
@@ -114,7 +114,8 @@ Collisions
 function Enemy:collidesType(type)
   return ((type == GameObject.TYPE.PLAYER)
       or (type == GameObject.TYPE.ATTACK)
-      or (type == GameObject.TYPE.DEATH))
+      or (type == GameObject.TYPE.DEATH)
+      or (type == GameObject.TYPE.ENEMY))
 end
 
 function Enemy:eventCollision(other, level)
@@ -142,6 +143,11 @@ function Enemy:eventCollision(other, level)
   -- collision with death
   elseif other.type == GameObject.TYPE.DEATH then
     self:life_change(-math.huge, level)
+  
+  -- collision with other enemy
+  elseif other.type == GameObject.TYPE.ENEMY then
+    push = (self.w+other.w)/(self:centreX() - other:centreX())
+    self.dx = self.dx + push * 10
   end
 end
 
