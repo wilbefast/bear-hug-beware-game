@@ -38,7 +38,12 @@ function state:init()
   self.yLifeBarre  = 100
   self.xMagicBarre = 150
   self.yMagicBarre = 150
-
+  
+   fond = love.image.newImageData("assets/decors/horizon.png")
+   horizon = love.graphics.newImage(fond)
+   plan_1 = love.image.newImageData("assets/decors/plan1.png")
+   plan1 = love.graphics.newImage(plan_1)
+   
   bord_droit = (love.graphics.getWidth() / 2) + (love.graphics.getWidth() / 4)
   bord_gauche = (love.graphics.getWidth() / 2) - (love.graphics.getWidth() / 4)
  
@@ -190,13 +195,17 @@ function state:update(dt)
       cam_x = largeur
     end
     if( self.player.x >= levelw - largeur ) then
+
       cam_x = levelw - largeur
     end
 
     if self.player.y <= hauteur then
+		  
       cam_y = hauteur
+
     end
     if( self.player.y >= levelh - hauteur ) then
+		
       cam_y = levelh - hauteur
     end
 
@@ -214,12 +223,16 @@ function state:draw()
                           love.graphics.getWidth(), 
                           love.graphics.getHeight())
 	
-	cam = self.player.x<bord_gauche and self.player.x > bord_droit
 
 	self.camera:attach()
+
+   for i=0,26 do
+	love.graphics.draw(horizon,0+i*(1280),400-((1280-self.camera.y)/40))
+	love.graphics.draw(plan1,0+i*(1280),580-((1280-self.camera.y)/40))
+  end
+  
 	self.level:draw(view)
 	self.camera:detach()
-
 
   -- barre de magie et life :
 	love.graphics.print("life : ",50,100)
