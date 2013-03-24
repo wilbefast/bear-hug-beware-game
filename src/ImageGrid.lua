@@ -30,6 +30,7 @@ local TileSet = Class
   
     -- read the Tile.d exported Lua tileset object
     self.image = love.graphics.newImage(tileset.image)
+    self.name = tileset.name
     self.quadw = tileset.tilewidth
     self.quadh = tileset.tileheight
     -- ... number of tiles
@@ -43,10 +44,10 @@ local TileSet = Class
         
     -- create quads
     self.quads = {}
-    for x = 1, self.n_across do
-      for y = 1, self.n_down do
+    for y = 1, self.n_down do
+      for x = 1, self.n_across do
         table.insert(self.quads, love.graphics.newQuad(
-          x*self.quadw, y*self.quadh, 
+          (x-1)*self.quadw, (y-1)*self.quadh, 
           self.quadw, self.quadh,
           tileset.imagewidth, tileset.imageheight))
       end
