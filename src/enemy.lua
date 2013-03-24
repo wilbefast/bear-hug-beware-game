@@ -51,8 +51,8 @@ end
 
 -- fisix
 Enemy.GRAVITY    = 1200
-Enemy.BOOST    = 700
-Enemy.MOVE_X     = 30.0
+Enemy.BOOST      = 700
+Enemy.MOVE_X     = 4000.0
 Enemy.MAX_DX     = 500.0
 Enemy.FRICTION_X = 50
 
@@ -172,7 +172,7 @@ function Enemy:update(dt, level)
 
     local moveDir = useful.sign(self.requestMoveX)
     if moveDir ~= 0 then
-      self.dx = self.dx + moveDir*self.MOVE_X
+      self.dx = self.dx + moveDir*self.MOVE_X*dt
       self.facing = moveDir
     end
 
