@@ -209,7 +209,13 @@ function state:update(dt)
       self.cameraAreaRight = self.player:centreX()
       self.cameraAreaLeft = self.cameraAreaRight - self.CAMERA_AREA_WIDTH
     end
-
+    
+    -- LEFT BOUNDS OF CAMERA
+    if self.cameraAreaLeft < 176 then
+      self.cameraAreaLeft = 176
+      self.cameraAreaRight = self.cameraAreaLeft + self.CAMERA_AREA_WIDTH
+    end
+    
     if self.player:centreX() <= largeur then
       cam_x = largeur
     end
