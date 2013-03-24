@@ -59,6 +59,11 @@ local Player = Class
     self.animationtouched = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 20 })
     self.animationtouched:setSpeed(1,2)
 
+	fond = love.image.newImageData("assets/decors/horizon.png")
+   horizon = love.graphics.newImage(fond)
+   plan_1 = love.image.newImageData("assets/decors/plan1.png")
+   plan1 = love.graphics.newImage(plan_1)
+   
     self.animationcurrent = self.animationmarche
     --marche self.animation:setAnimation({ 1, 3, 5, 7, 9, 11, 13, 15 })
     --saut self.animation:setAnimation({ 21, 22, 23, 24, 26 })
@@ -95,6 +100,8 @@ Player.LIGHTATTACK =
   W = 40,
   H = 40,
   KNOCKBACK = 300,
+  KNOCKUP = 150,
+  
   reloadTime = 0
 }
 -- combat - magic attack
@@ -108,6 +115,8 @@ Player.MAGICATTACK =
   W = 256,
   H = 256,
   KNOCKBACK = 600,
+  KNOCKUP = 300,
+  
   reloadTime = 0
 }
 
@@ -127,10 +136,10 @@ end
 function Player:eventCollision(other)
   -- collision with enemy attack
   if other.type == GameObject.TYPE.ENEMYATTACK then
-    self:life_change(-other.damage)
+    self:life_change(-other.weapon.DAMAGE)
     -- knock-back
     push = useful.sign(self:centreX() - other.launcher:centreX())
-    self.dx = self.dx + push * other.knockback
+    self.dx = self.dx + push * other.weapon.KNOCKBACK
   
   -- collision with "death" (bottomless pit)
   elseif other.type == GameObject.TYPE.DEATH then
@@ -139,6 +148,7 @@ function Player:eventCollision(other)
   -- collision with "bonus" 
   elseif other.type == GameObject.TYPE.BONUS then
     self.life = 100
+	self.magic = self.MAXMANA
     other.purge = true --! FIXME
   end
 end
@@ -154,12 +164,7 @@ function Player:attack(weapon)
 
   return (Attack(
     self.x + self.w/2 + weapon.REACH*self.facing,
-    self.y + weapon.OFFSET_Y, 
-    weapon.W, 
-    weapon.H,
-    weapon.DAMAGE,
-    self,
-    weapon.KNOCKBACK))
+    self.y + weapon.OFFSET_Y, weapon, self))
 end
 
 function reload(weapon, dt)
@@ -268,6 +273,8 @@ function Player:draw()
     x = x + self.w
   end
   self.animationcurrent:draw(x, self.y + 16, 0, self.facing, 1)
+  
+  
   -- FIXME debug
   GameObject.draw(self)
   

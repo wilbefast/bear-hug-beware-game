@@ -29,19 +29,23 @@ Initialisation
 
 local Tile = Class
 {
-  init = function(self, type)
-    self.type = type
-  end
 }
 
 -- types
 Tile.TYPE = {}
 
-Tile.TYPE.WALL = 1
-Tile.TYPE[1] = "WALL"
+Tile.TYPE.EMPTY = 1
+Tile.TYPE[1] = "EMPTY"
 
-Tile.TYPE.ONESIDED = 2
-Tile.TYPE[2] = "ONESIDED"
+Tile.TYPE.WALL = 2
+Tile.TYPE[2] = "WALL"
+
+Tile.TYPE.ONESIDED = 3
+Tile.TYPE[3] = "ONESIDED"
+
+Tile.init = function(self, type)
+  self.type = (type or Tile.TYPE.EMPTY)
+end
 
 --[[------------------------------------------------------------
 Accessors

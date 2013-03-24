@@ -93,12 +93,13 @@ end
 function Enemy:eventCollision(other, level)
   -- collision with attack
   if other.type == GameObject.TYPE.ATTACK then
-    -- knock-back
+    -- knock-back and -up
     push = useful.sign(self:centreX() - other.launcher:centreX())
-    self.dx = self.dx + push * other.knockback
-
+    self.dx = self.dx + push * other.weapon.KNOCKBACK
+    self.dy = self.dy - other.weapon.KNOCKUP
+    
     -- lost life
-    self:life_change(-other.damage, level)
+    self:life_change(-other.weapon.DAMAGE, level)
   
   -- collision with player
   elseif other.type == GameObject.TYPE.PLAYER then
@@ -121,11 +122,8 @@ function Enemy:attack(attack, target)
   local newAttack = Attack(
     self.x + self.w/2 + reach*self.facing,
     self.y + attack.OFFSET_Y,
-    attack.W,
-    attack.H,
-    attack.DAMAGE,
-    self,
-    attack.KNOCKBACK)
+    attack,
+    self)
   newAttack.type = GameObject.TYPE.ENEMYATTACK
   return newAttack
 end

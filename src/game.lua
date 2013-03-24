@@ -38,7 +38,12 @@ function state:init()
   self.yLifeBarre  = 100
   self.xMagicBarre = 150
   self.yMagicBarre = 150
-
+  
+  fond = love.image.newImageData("assets/decors/horizon.png")
+  horizon = love.graphics.newImage(fond)
+  plan_1 = love.image.newImageData("assets/decors/plan1.png")
+  plan1 = love.graphics.newImage(plan_1)
+   
   path = "assets/audio/prise_de_degats.ogg"
   degats_subis = love.audio.newSource(path, "static")
   
@@ -228,33 +233,37 @@ function state:draw()
 	
 
   self.camera:attach()
+    for i=0,26 do
+	  love.graphics.draw(horizon,0+i*(1280),400-((1280-self.camera.y)/40))
+	  love.graphics.draw(plan1,0+i*(1280),580-((1280-self.camera.y)/40))
+    end
     self.level:draw(view)
   self.camera:detach()
 
 
   -- barre de magie et life :
-	love.graphics.print("life : ",50,100)
-	love.graphics.print("magic power : ",50,150)
-	love.graphics.rectangle("line",self.xLifeBarre,self.yLifeBarre,100,20)
-	love.graphics.rectangle("line",self.xMagicBarre,self.yMagicBarre,100,20)
+  love.graphics.print("life : ",50,100)
+  love.graphics.print("magic power : ",50,150)
+  love.graphics.rectangle("line",self.xLifeBarre,self.yLifeBarre,100,20)
+  love.graphics.rectangle("line",self.xMagicBarre,self.yMagicBarre,100,20)
 
-	love.graphics.rectangle("fill",self.xLifeBarre,self.yLifeBarre,self.player.life,20)
-	love.graphics.rectangle("fill",self.xMagicBarre,self.yMagicBarre,self.player.magic,20)
+  love.graphics.rectangle("fill",self.xLifeBarre,self.yLifeBarre,self.player.life,20)
+  love.graphics.rectangle("fill",self.xMagicBarre,self.yMagicBarre,self.player.magic,20)
 
-	if self.player.life == 0 then
-		love.graphics.print("game over ! ",self.xLifeBarre,self.yLifeBarre)
-		love.graphics.rectangle("fill",self.xMagicBarre,self.yMagicBarre,self.player.magic,20)
-		love.graphics.rectangle("line",1000, 100,100,100)
-		love.graphics.print("game over ! \n t'es mauvais \n JACK",1010,110)
-		love.graphics.draw(image_mort, 10, 10)
-		jeu_son:setLooping(false)
-		jeu_son:stop()
-		happy:play()
-	end
+  if self.player.life == 0 then
+    love.graphics.print("game over ! ",self.xLifeBarre,self.yLifeBarre)
+    love.graphics.rectangle("fill",self.xMagicBarre,self.yMagicBarre,self.player.magic,20)
+    love.graphics.rectangle("line",1000, 100,100,100)
+    love.graphics.print("game over ! \n t'es mauvais \n JACK",1010,110)
+    love.graphics.draw(image_mort, 10, 10)
+    jeu_son:setLooping(false)
+    jeu_son:stop()
+    happy:play()
+  end
 	
-	if paused then 
-		love.graphics.rectangle("line",700,50, 200,40)
-		love.graphics.print(" Game Paused !! \n Taper \"p\" pour redemarrer. ",705,55)
+  if paused then 
+    love.graphics.rectangle("line",700,50, 200,40)
+    love.graphics.print(" Game Paused !! \n Taper \"p\" pour redemarrer. ",705,55)
   end
 end
 

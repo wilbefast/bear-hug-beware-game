@@ -38,6 +38,11 @@ local Level = Class
 }
 
 function Level:load(filename)
+
+   fond = love.image.newImageData("assets/decors/horizon.png")
+   horizon = love.graphics.newImage(fond)
+   plan_1 = love.image.newImageData("assets/decors/plan1.png")
+   plan1 = love.graphics.newImage(plan_1)
   local mapfile = require(filename)
   -- load tiles
   self.tilegrid = TileGrid(mapfile)
@@ -48,8 +53,8 @@ function Level:load(filename)
   function parse_objects(table, constructor)
     for i, object in ipairs(table.objects) do
       self:addObject(constructor(
-        object.x + self.tilegrid.tilew, 
-        object.y + self.tilegrid.tileh, 
+        object.x, 
+        object.y - 1, 
         object.width, object.height))
     end
   end
@@ -121,6 +126,9 @@ function Level:update(dt)
 end
 
 function Level:draw(view)
+  --generation fond
+    
+ 
   -- draw the tiles
   self.tilegrid:draw(view)
   
