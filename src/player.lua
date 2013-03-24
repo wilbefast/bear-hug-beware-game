@@ -62,6 +62,10 @@ local Player = Class
     --attaque self.animation:setAnimation({ 17, 18, 19 })
     --touched self.animation:setAnimation({ 20 })
     --self.animation:setSpeed(1,2)
+	
+	  fic_saut = "assets/audio/saut.ogg"
+  saut = love.audio.newSource(fic_saut,"static")
+  
 end,
 }
 Player:include(Character)
@@ -83,6 +87,7 @@ Player.LIGHTATTACK =
   REACH = 80,
   OFFSET_Y = 32,
   DAMAGE = 30,
+  MANA = 0,
   RELOAD_TIME = 0.5,
   W = 40,
   H = 40,
@@ -95,6 +100,7 @@ Player.MAGICATTACK =
   REACH = 32,
   OFFSET_Y = 32,
   DAMAGE = 10,
+  MANA = 10,
   RELOAD_TIME = 4.0,
   W = 256,
   H = 256,
@@ -138,6 +144,9 @@ Combat
 
 function Player:attack(weapon)
   weapon.reloadTime = weapon.RELOAD_TIME
+
+  self:magic_change(-weapon.MANA)
+
   return (Attack(
     self.x + self.w/2 + weapon.REACH*self.facing,
     self.y + weapon.OFFSET_Y, 
@@ -172,6 +181,7 @@ function Player:update(dt, level)
       -- check if on the ground
       if (not self.airborne) then
         self.dy = -Player.BOOST
+		saut:play()
       end
     end
 
@@ -185,7 +195,7 @@ function Player:update(dt, level)
     if self.requestMagicAttack then
       weapon = self.MAGICATTACK
     end
-    if weapon and (weapon.reloadTime <= 0) then 
+    if weapon and (weapon.reloadTime <= 0) then
       level:addObject(self:attack(weapon))
     end
 

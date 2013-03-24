@@ -71,7 +71,12 @@ Objects
 
 function Level:getObject(type, i)
   i = (i or 1)
-  return (self.object_types[type][i])
+  local objects = self.object_types[type] 
+  if objects and (i <= #objects) then
+    return (self.object_types[type][i])
+  else
+    return nil
+  end
 end
 
 function Level:addObject(object)

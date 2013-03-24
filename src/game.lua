@@ -47,10 +47,7 @@ function state:init()
   
   fic="assets/audio/cri_mort.ogg"
   cri_mort = love.audio.newSource(fic,"static")
-  
-  fic_saut = "assets/audio/saut.ogg"
-  saut = love.audio.newSource(fic_saut,"static")
-  
+    
   image_mort = love.graphics.newImage("assets/images/mort.png")
   
   son_explosion = "assets/audio/explosion_magique.ogg"
@@ -218,9 +215,11 @@ function state:draw()
                           love.graphics.getHeight())
 	
 	cam = self.player.x<bord_gauche and self.player.x > bord_droit
+
 	self.camera:attach()
-    self.level:draw(view)
+	self.level:draw(view)
 	self.camera:detach()
+
 
   -- barre de magie et life :
 	love.graphics.print("life : ",50,100)
