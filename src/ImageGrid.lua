@@ -21,6 +21,42 @@ local Class = require("hump/class")
 local useful = require("useful")
 
 --[[------------------------------------------------------------
+TILESET CLASS
+--]]------------------------------------------------------------
+
+local TileSet = Class
+{
+  init = function(self, tileset)
+  
+    -- read the Tile.d exported Lua tileset object
+    self.image = love.graphics.newImage(tileset.image)
+    self.quadw = tileset.tilewidth
+    self.quadh = tileset.tileheight
+    -- ... number of tiles
+    self.n_across = math.floor(tileset.imagewidth 
+                          / tileset.tilewidth)
+    self.n_down = math.floor(tileset.imageheight 
+                          / tileset.tileheight)
+    self.n_total = self.n_down*self.n_across
+        
+    -- create quads
+    self.quads = {}
+    for x = 1, self.n_across do
+      self.quads[x] = {}
+      for y = 1, self.n_down do
+        self.quads[x][y] = love.graphics.newQuad(
+          x*self.quadw, y*self.quadh, self.quadw, self.quadh,
+          tileset.imagewidth, tileset.imageheight)
+      end
+    end
+
+    --! FIXME remove debug
+    print("tileset", tileset.name, "n_total tiles =",
+        self.n_total)
+  end
+}
+
+--[[------------------------------------------------------------
 IMAGEGRID CLASS
 --]]------------------------------------------------------------
 
@@ -43,27 +79,8 @@ local ImageGrid = Class
     -- grab the tilesets
     self.tilesets = {}
     for t, tileset in ipairs(mapfile.tilesets) do
-      local new_tset = 
-      {
-        image = love.graphics.newImage(tileset.image),
-        n_across = math.floor(tileset.imagewidth 
-                              / tileset.tilewidth),
-        n_down = math.floor(tileset.imageheight 
-                              / tileset.tileheight),
-        
-        quads = {}
-        
-      }
-      --[[for x = 1, self.w do
-        self.quads[x] = {}
-        for y = 1, self.h do
-          self.quads[x][y] = love.graphics.newQuad(x*self.quadw, y*self.quadh,
-                                                    self.quadw, self.quadh)
-        end
-      end--]]
-      
-      -- save the parsed tileset
-      table.insert(self.tilesets, new_tset)
+      -- create a new TileSet object
+      table.insert(self.tilesets, TileSet(tileset))
     end
 
     -- for each layer
