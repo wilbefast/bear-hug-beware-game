@@ -61,8 +61,14 @@ function state:init()
   happy_tree = "assets/audio/happy.ogg"
   happy = love.audio.newSource(happy_tree,"static")
   
-  --jeu_son:play()
-  --jeu_son:setLooping(true)
+    im = love.graphics.newImage("assets/hud/spriteVie.png")
+  self.barre_life = newAnimation(im, 186, 62, 0.1, 0, 0, 0, {1,2,3,4,5,6,7,8,9})
+  self.barre_life:setMode("once")
+  self.barre_mana = newAnimation(im, 186, 62, 0.1, 0, 0, 0, {10})
+  self.barre_mana:setMode("once")
+  
+    jeu_son:play()
+    jeu_son:setLooping(true)
 end
 
 
@@ -215,7 +221,16 @@ function state:update(dt)
     if( self.player.y >= levelh - hauteur ) then
       cam_y = levelh - hauteur
     end
-
+if self.player.life~=0 then
+	nb = ((90-self.player.life)/10)+1
+	self.barre_life:seek(nb)
+	
+	self.barre_mana:seek(1)
+	
+end
+self.barre_mana:update(dt)
+	self.barre_life:update(dt)
+	
     cam_x = (self.cameraAreaLeft + self.cameraAreaRight) / 2
     self.camera:lookAt( cam_x + self.level.tilegrid.tilew, cam_y + self.level.tilegrid.tileh )
   end
@@ -223,6 +238,7 @@ end
 
 
 function state:draw()
+
   love.graphics.print("Game screen", 32, 32)
   
   local view = {}
@@ -244,12 +260,8 @@ function state:draw()
   -- barre de magie et life :
 
   if self.player.life>0 then
-	love.graphics.print("life : ",50,100)
-	love.graphics.print("magic power : ",50,150)
-	love.graphics.rectangle("line",self.xLifeBarre,self.yLifeBarre,100,20)
-	love.graphics.rectangle("line",self.xMagicBarre,self.yMagicBarre,100,20)
-	love.graphics.rectangle("fill",self.xLifeBarre,self.yLifeBarre,self.player.life,20)
-	love.graphics.rectangle("fill",self.xMagicBarre,self.yMagicBarre,self.player.magic,20)
+	self.barre_life:draw(100,20)
+	self.barre_mana:draw(100,40)
   end
 
 	if self.player.life == 0 then
