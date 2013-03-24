@@ -36,6 +36,7 @@ local Character = Class
   life       = 100,
   magic      = 100,
   damage     = 0,
+  warmupTime = 0,
   reloadTime = 0,
   stunnedTime = 0,
   facing     = 1
@@ -75,10 +76,20 @@ Game loop
 --]]
 
 function Character:update(dt, level)
-  -- update reloadTime for attack
+  -- warm-up attack
+  if self.warmupTime > 0 then
+    self.warmupTime = self.warmupTime - dt
+    if (self.warmupTime <= 0) and self.deferred_attack then
+      level:addObject(self:attack(self.deferred_attack))
+    end
+  end
+  
+  -- reload weapon
   if self.reloadTime > 0 then
     self.reloadTime = self.reloadTime - dt
   end
+  
+  -- recover from stun
   if self.stunnedTime > 0 then
     self.stunnedTime = self.stunnedTime - dt
   end
