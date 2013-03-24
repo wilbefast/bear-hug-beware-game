@@ -72,7 +72,8 @@ local TileGrid = Class
             local x, y = self:pixelToGrid(object.x, object.y)
             local w, h = self:pixelToGrid(object.width, 
                                           object.height)
-            self:mapRectangle(x, y, w, h, setType)
+
+            self:mapRectangle(x, y, w-1, h-1, setType)
           end
         end
       end
@@ -86,8 +87,8 @@ Map functions to all or part of the grid
 --]]--
 
 function TileGrid:mapRectangle(startx, starty, w, h, f)
-  for x = startx, startx + w do
-    for y = starty, starty + h do
+  for x = startx, startx + w - 1 do
+    for y = starty, starty + h - 1 do
       if self:validGridPos(x, y) then
         f(self.tiles[x][y])
       end
@@ -100,13 +101,11 @@ Game loop
 --]]
 
 function TileGrid:draw(view) 
-  local start_x = math.max(1, 
-              math.floor(view.x / self.tilew))
+  local start_x = math.max(1, math.floor(view.x / self.tilew))
   local end_x = math.min(self.w, 
               start_x + math.ceil(view.w / self.tilew))
   
-  local start_y = math.max(1, 
-              math.floor(view.y / self.tileh))
+  local start_y = math.max(1, math.floor(view.y / self.tileh))
   local end_y = math.min(self.h, 
               start_y + math.ceil(view.h / self.tileh))
   
@@ -115,18 +114,16 @@ function TileGrid:draw(view)
       local type = self.tiles[x][y].type
       if type > 1 then
         
-        
+        local bink = "line"
         if type == 2 then
           love.graphics.setColor(0,0,255)
+        elseif type == 10 then
+          love.graphics.setColor(255,0,0)
+          bink = "fill"  
         end
         
-        love.graphics.rectangle("line", (x-1)*self.tilew,
-            y*self.tileh, self.tilew, self.tileh)
-
-        --local img = self.tilesets[tset_i].image
-        --love.graphics.draw(img, x * self.tilew, 
-          --                      y * self.tileh)
-        
+        love.graphics.rectangle(bink, (x-1)*self.tilew,
+            (y-1)*self.tileh, self.tilew, self.tileh)
         love.graphics.setColor(255,255,255)
       end
     end
@@ -139,17 +136,17 @@ end
 Accessors
 --]]--
 
-function TileGrid:gridToTile(x, y, z)
-  if self:validGridPos(x, y, z) then
-    return self.tiles[x+1][y] --FIXME
+function TileGrid:gridToTile(x, y)
+  if self:validGridPos(x, y) then
+    return self.tiles[x][y]
   else
-    return nil --FIXME
+    return nil --FIXME return default tile
   end
 end
 
-function TileGrid:pixelToTile(x, y, z)
-  return self:gridToTile(math.floor(x / self.tilew),
-                         math.floor(y / self.tileh), z)
+function TileGrid:pixelToTile(x, y)
+  return self:gridToTile(math.floor(x / self.tilew) + 1,
+                         math.floor(y / self.tileh) + 1)
 end
 
 
@@ -158,11 +155,11 @@ Conversion
 --]]--
 
 function TileGrid:pixelToGrid(x, y)
-  return math.floor(x / self.tilew), math.floor(y / self.tileh)
+  return math.floor(x / self.tilew) + 1, math.floor(y / self.tileh) +1
 end
 
 function TileGrid:gridToPixel(x, y)
-  return x * self.tilew, y * self.tileh
+  return (x-1) * self.tilew, (y-1) * self.tileh
 end
 
 
