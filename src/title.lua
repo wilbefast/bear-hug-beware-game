@@ -76,9 +76,10 @@ function state:keypressed(key, uni)
   if key=="escape" then
     love.event.push("quit")
   elseif key=="return" or key=="kpenter" then
-    GameState.switch(game)
-  elseif key=="c" then
     GameState.switch(histoire)
+  
+  elseif key=="x"  then
+    GameState.switch(fin)
   end
 end
 
@@ -90,7 +91,7 @@ end
 function state:update(dt)
   local x, y = love.mouse.getPosition()
 
-  if( love.timer.getTime() > debut + 1 ) then
+  if( love.timer.getTime() > debut + 2 ) then
       current=  bg2
   end
 

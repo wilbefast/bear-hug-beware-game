@@ -64,6 +64,13 @@ local Player = Class
     self.animationattaquemagic:setMode("once")
     self.animationwaiting = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 9, 10, 11, 12, 13, 14, 15, 16 })
     self.animationwaiting:setSpeed(1,2)
+    self.animationdead = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 29 })
+    self.animationdead:setSpeed(1,2)
+    self.animationdead:setMode("once")
+
+    self.animationlaunchedMagicAttack = newAnimation(love.graphics.newImage("assets/sprites/MagicHerosFx.png"), 256, 256, 0.1, 0, 0, 0, { 1, 2, 3, 4, 5, 6, 7, 8, 9 })
+    self.animationlaunchedMagicAttack:setSpeed(1,2)
+    self.animationlaunchedMagicAttack:setMode("once")
 
 	fond = love.image.newImageData("assets/decors/horizon.png")
    horizon = love.graphics.newImage(fond)
@@ -109,7 +116,6 @@ Player.FRICTION_X = 50
 -- combat - light attack
 Player.LIGHTATTACK = 
 {
-  TYPE = "light",
   REACH = 32,
   OFFSET_Y = 74,
   OFFSET_X = 0,
@@ -128,7 +134,6 @@ Player.LIGHTATTACK =
 -- combat - magic attack
 Player.MAGICATTACK = 
 {
-  TYPE = "magic",
   REACH = 0,
   OFFSET_Y = 64,
   OFFSET_X = -32,
@@ -171,7 +176,7 @@ function Player:eventCollision(other)
   -- collision with "death" (bottomless pit)
   elseif other.type == GameObject.TYPE.DEATH then
     self.life = 0
-	
+
   -- collision with "bonus" 
   elseif other.type == GameObject.TYPE.BONUS then
     self.life = 90
@@ -249,6 +254,8 @@ function Player:update(dt, level)
       	if (self.magic >= self.MAGICATTACK.MANA) then
         	weapon = self.MAGICATTACK
           explosion:play()
+          self.animationlaunchedMagicAttack:reset();
+          self.animationlaunchedMagicAttack:play()
       	end
     	end
 
@@ -307,6 +314,7 @@ function Player:update(dt, level)
     end
 
     self.animationcurrent:update(dt)
+    self.animationlaunchedMagicAttack:update(dt);
 
     -- reload weapons
     function reload(weapon, dt)
@@ -323,6 +331,10 @@ function Player:update(dt, level)
 
     -- base update
     Character.update(self, dt, level)
+  else
+    self.animationcurrent = self.animationdead
+    self.animationcurrent:reset()
+    self.animationcurrent:play()
   end
 
 end
@@ -332,7 +344,16 @@ function Player:draw()
   if self.facing < 0 then
     x = x + self.w
   end
+
+  if( x > 28000 ) then
+    GameState.switch(fin)
+  end
+  
   self.animationcurrent:draw(x, self.y + 16, 0, self.facing, 1)
+
+  if self.animationlaunchedMagicAttack:isPlaying() then
+    self.animationlaunchedMagicAttack:draw(self.x - 96, self.y - 32);
+  end
   -- FIXME debug
   --GameObject.draw(self)
   

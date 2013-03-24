@@ -21,8 +21,8 @@ local histoire2
 local debut
 
 function state:init()
-  histoire1 = love.graphics.newImage( "assets/backgrounds/accueilTitre.jpg" )
-  histoire2 = love.graphics.newImage( "assets/backgrounds/histoire2.jpg" )
+  histoire1 = love.graphics.newImage( "assets/backgrounds/livreP1.jpg" )
+  histoire2 = love.graphics.newImage( "assets/backgrounds/livreP2.jpg" )
 end
 
 
@@ -62,8 +62,8 @@ end
 
 
 function state:keypressed(key, uni)
-	if key=="escape" then
-		love.event.push("quit")
+  if key=="escape" then
+	love.event.push("quit")
   elseif key=="return" or key=="kpenter" then
     GameState.switch(game)
   end
@@ -76,14 +76,14 @@ end
 
 function state:update(dt)
 
-	if( love.timer.getTime() > debut + 4 ) then
+	if( love.timer.getTime() > debut + 8 ) then
     	GameState.switch(game)
 	end	
 end
 
 
 function state:draw()
-	if( love.timer.getTime() > debut + 2 ) then
+	if( love.timer.getTime() > debut + 4 ) then
   		love.graphics.draw( histoire2 )
 	else
   		love.graphics.draw( histoire1 )
