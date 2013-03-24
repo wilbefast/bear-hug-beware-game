@@ -33,12 +33,6 @@ local Attack = Class
     self.weapon = (weapon or self)
     self.launcher = (launcher or self)
     self.first_update = true
-
-    if self.weapon.TYPE == "magic" then
-      self.animationlaunched = newAnimation(love.graphics.newImage("assets/sprites/MagicHerosFx.png"), 256, 256, 0.1, 0, 0, 0, { 1, 2, 3, 4, 5, 6, 7, 8, 9 })
-      self.animationlaunched:setSpeed(1,2)
-      self.animationlaunched:setMode("once")
-    end
   end,
       
   type  =  GameObject.TYPE["ATTACK"],
@@ -57,15 +51,9 @@ function Attack:update(dt, tilegrid)
   else
     self.purge = true
   end
-  if self.weapon.TYPE == "magic" then
-    self.animationlaunched:update(dt)
-  end
 end
 
 function Attack:draw()
-  if self.weapon.TYPE == "magic" then
-    self.animationlaunched:draw(self.x, self.y)
-  end
   -- FIXME debug
 --  GameObject.draw(self)
 end
