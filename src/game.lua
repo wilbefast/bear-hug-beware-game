@@ -68,7 +68,7 @@ end
 
 function state:enter()
   -- reset objects
-  self.player = Player(300, 800)
+  self.player = Player(300, 1150)
   self.level:load("../assets/maps/map01")
   self.level:addObject(self.player)
   --TODO reset player position base on level

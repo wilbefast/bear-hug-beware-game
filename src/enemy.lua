@@ -45,9 +45,10 @@ function Enemy:init(x, y, w, h)
 end
 
 -- fisix
-Enemy.GRAVITY    = 700
+Enemy.GRAVITY    = 1200
+Enemy.BOOST    = 700
 Enemy.MOVE_X     = 50.0
-Enemy.MAX_DX     = 1000.0
+Enemy.MAX_DX     = 500.0
 Enemy.FRICTION_X = 50
 
 -- combat
@@ -136,22 +137,44 @@ function Enemy:update(dt, level)
   
   -- AI
   local player = level:getObject(GameObject.TYPE.PLAYER)
+
   
-  -- desire jump?
-  if player.y + player.h < self.y then
-    requestJump = true
+  local ecart = player:centreX() - self:centreX()
+    -- desire move?
+  if math.abs( ecart ) < 800 and math.abs( ecart ) > 0 then
+    -- ... left
+
+    -- desire jump?
+    if math.abs( player.y - self.y ) > 63 then
+      self.requestJump = true
+    end
+
+    if ecart < 1 then
+      self.requestMoveX = -1
+    end
+    -- ... right
+    if ecart > 1 then
+      self.requestMoveX = 1
+    end
   end
-  
-  -- desire move?
-  local player_side = player:centreX() - self:centreX()
-  -- ... left
-  if player_side < -self.w then
-    self.requestMoveX = -1
+
+  local moveDir = useful.sign(self.requestMoveX)
+  if moveDir ~= 0 then
+    self.dx = self.dx + moveDir*self.MOVE_X
+    self.facing = moveDir
   end
-  -- ... right
-  if player_side > self.w then
-    self.requestMoveX = 1
+
+  -- jump
+  if self.requestJump then
+    -- check if on the ground
+    if (not self.airborne) then
+      self.dy = -Enemy.BOOST
+      saut:play()
+    end
   end
+
+  self.requestJump = false
+
   
   -- base update
   Character.update(self, dt, level)
