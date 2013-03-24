@@ -76,7 +76,7 @@ function state:enter()
   
   love.mouse.setVisible( false )
   -- reset objects
-  self.player = Player(300, 1000)
+  self.player = Player(23000, 500)
   self.level:load("../assets/maps/map01")
   self.level:addObject(self.player)
   --TODO reset player position base on level

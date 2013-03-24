@@ -332,6 +332,12 @@ function Player:draw()
   if self.facing < 0 then
     x = x + self.w
   end
+  print( x)
+
+  if( x > 28000 ) then
+    GameState.switch(fin)
+  end
+  
   self.animationcurrent:draw(x, self.y + 16, 0, self.facing, 1)
   -- FIXME debug
   --GameObject.draw(self)
