@@ -191,8 +191,8 @@ function state:update(dt)
     local cam_x = self.player:centreX()
     local cam_y = self.player.y
 
-    local levelh = (self.level.tilegrid.h) * self.level.tilegrid.tileh
-    local levelw = (self.level.tilegrid.w) * self.level.tilegrid.tilew
+    local levelh = (self.level.tilegrid.h-1) * self.level.tilegrid.tileh
+    local levelw = (self.level.tilegrid.w+10) * self.level.tilegrid.tilew
 
     if self.player:centreX() < self.cameraAreaLeft then
       self.cameraAreaLeft = self.player:centreX()
