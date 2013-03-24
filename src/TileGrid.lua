@@ -66,15 +66,13 @@ local TileGrid = Class
           function setType(tile) 
             if (tile.type == Tile.TYPE.EMPTY) or (tile.type > type) then
               tile.type = type
-            else
-              tile.type = 10 --FIXME
             end
           end
           for i, object in ipairs(layer.objects) do
             local x, y = self:pixelToGrid(object.x, object.y)
             local w, h = self:pixelToGrid(object.width, 
                                           object.height)
-            print(layer.name, x, y, w-1, h-1)
+
             self:mapRectangle(x, y, w-1, h-1, setType)
           end
         end
