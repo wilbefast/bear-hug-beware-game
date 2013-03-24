@@ -46,6 +46,12 @@ function Enemy:init(x, y, w, h)
   self.animationmarche = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 1, 2, 3, 4, 5, 6 })
   self.animationmarche:setSpeed(1,2)
 
+  self.animationtouched = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 7 })
+  self.animationtouched:setSpeed(1,2)
+  self.animationtouched:setMode("once")
+
+  self.animationcurrent = self.animationmarche
+
   self.stunned = false
   fic="assets/audio/cri_mort.ogg"
   cri_mort = love.audio.newSource(fic,"static")
@@ -113,6 +119,8 @@ function Enemy:eventCollision(other, level)
     self.dy = self.dy - other.weapon.KNOCKUP
 
     self.stunnedTime = other.weapon.STUN_TIME
+
+    self.baffed = true
     
     -- lost life
     self:life_change(-other.weapon.DAMAGE, level)
@@ -154,7 +162,6 @@ Game loop
 
 function Enemy:update(dt, level)
 
-  
   if( self.stunnedTime <= 0 ) then
     -- AI
     local player = level:getObject(GameObject.TYPE.PLAYER)
@@ -185,8 +192,6 @@ function Enemy:update(dt, level)
       self.facing = moveDir
     end
 
-    self.animationcurrent =  self.animationmarche
-
     -- jump
     if self.requestJump then
       -- check if on the ground
@@ -198,9 +203,23 @@ function Enemy:update(dt, level)
 
     self.requestJump = false
 
-    self.animationcurrent:update(dt)
-
   end
+
+  if self.animationcurrent == self.animationtouched and not self.animationtouched:isPlaying()
+  then
+    self.animationcurrent = self.animationmarche
+    self.animationcurrent:play()
+  end
+
+  if self.baffed then
+    print('pouet')
+    self.animationcurrent = self.animationtouched
+    self.animationcurrent:reset()
+    self.animationcurrent:play()
+    self.baffed = false
+  end
+
+  self.animationcurrent:update(dt)
   
   -- base update
   Character.update(self, dt, level)
