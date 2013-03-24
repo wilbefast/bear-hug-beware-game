@@ -43,7 +43,11 @@ function state:init()
   horizon = love.graphics.newImage(fond)
   plan_1 = love.image.newImageData("assets/decors/plan1.png")
   plan1 = love.graphics.newImage(plan_1)
-   
+  pl = love.image.newImageData("assets/decors/plan.png")
+  plan = love.graphics.newImage(pl)
+    pla = love.image.newImageData("assets/decors/elem.png")
+  plan3 = love.graphics.newImage(pla)
+  
   path = "assets/audio/prise_de_degats.ogg"
   baffe= love.audio.newSource(path, "static")
   
@@ -270,6 +274,8 @@ function state:draw()
     for i=0,26 do
 	  love.graphics.draw(horizon,0+i*(1280),400-((1280-self.camera.y)/40))
 	  love.graphics.draw(plan1,0+i*(1280),580-((1280-self.camera.y)/40))
+	  love.graphics.draw(plan,0+i*(1280),580-((1280-self.camera.y)/40))
+	   love.graphics.draw(plan3,0+i*(1280),580-((1280-self.camera.y)/40))
     end
     self.level:draw(view)
   self.camera:detach()
