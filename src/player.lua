@@ -206,7 +206,7 @@ function Player:update(dt, level)
     end
 
     if self.airborne then
-      if( useful.sign(self.dy) > 0 ) then
+      if( useful.sign(self.dy) > 0 ) and (self.warmupTime <= 0) then
         self.animationcurrent = self.animationsautmilieudescente
         self.animationsautmilieudescente:play()
       end

@@ -66,5 +66,5 @@ end
 
 function love.draw()
   GameState.draw()
-  love.graphics.print(love.timer.getFPS(), 10, 10)
+  --love.graphics.print(love.timer.getFPS(), 10, 10)
 end

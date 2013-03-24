@@ -67,8 +67,8 @@ function state:init()
   self.barre_mana = newAnimation(im, 186, 62, 0.1, 0, 0, 0, {10})
   self.barre_mana:setMode("once")
   
-    jeu_son:play()
-    jeu_son:setLooping(true)
+  jeu_son:play()
+  jeu_son:setLooping(true)
 end
 
 
