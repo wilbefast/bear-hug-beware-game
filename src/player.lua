@@ -59,6 +59,11 @@ local Player = Class
     self.animationtouched = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 20 })
     self.animationtouched:setSpeed(1,2)
 
+	fond = love.image.newImageData("assets/decors/horizon.png")
+   horizon = love.graphics.newImage(fond)
+   plan_1 = love.image.newImageData("assets/decors/plan1.png")
+   plan1 = love.graphics.newImage(plan_1)
+   
     self.animationcurrent = self.animationmarche
     --marche self.animation:setAnimation({ 1, 3, 5, 7, 9, 11, 13, 15 })
     --saut self.animation:setAnimation({ 21, 22, 23, 24, 26 })
@@ -143,6 +148,7 @@ function Player:eventCollision(other)
   -- collision with "bonus" 
   elseif other.type == GameObject.TYPE.BONUS then
     self.life = 100
+	self.magic = self.MAXMANA
     other.purge = true --! FIXME
   end
 end
@@ -240,7 +246,7 @@ function Player:update(dt, level)
 
       else
         self.animationcurrent = self.animationmarche
-        self.animationcurrent:seek(1)
+        self.animationcurrent:seek(8)
       end
     end
 
@@ -249,15 +255,6 @@ function Player:update(dt, level)
     reload(self.LIGHTATTACK, dt)
     reload(self.MAGICATTACK, dt)
     
-    --[[update animation
-    if self.requestMoveX ~= 0 then
-      self.animationcurrent:update(dt)
-    else
-      self.animationcurrent = self.animationmarche
-      self.animationcurrent:seek(1)
-    end
-    ]]--
-
     -- reset input requests to false
     self.requestMoveX, self.requestMoveY = 0, 0
     self.requestJump = false
@@ -276,6 +273,8 @@ function Player:draw()
     x = x + self.w
   end
   self.animationcurrent:draw(x, self.y + 16, 0, self.facing, 1)
+  
+  
   -- FIXME debug
   GameObject.draw(self)
   
