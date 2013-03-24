@@ -18,7 +18,7 @@ Lesser General Public License for more details.
 local state = GameState.new()
 
 function state:init()
-  fin = love.graphics.newImage( "assets/backgrounds/illupetitdemonFin.png" )
+  fin = love.graphics.newImage( "assets/backgrounds/accueilPlayFin.jpg" )
 end
 
 
@@ -76,7 +76,7 @@ end
 
 
 function state:draw()
-		love.graphics.draw( fin, 1280/2-550/2,720/2-400/2 )
+		love.graphics.draw( fin )
 
 end
 

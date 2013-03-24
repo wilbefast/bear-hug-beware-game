@@ -332,7 +332,6 @@ function Player:draw()
   if self.facing < 0 then
     x = x + self.w
   end
-  print( x)
 
   if( x > 28000 ) then
     GameState.switch(fin)
