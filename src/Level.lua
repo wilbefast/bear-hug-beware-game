@@ -111,7 +111,7 @@ function Level:update(dt)
 end
 
 function Level:draw(view)
-  love.graphics.print("I am a Level", 32, 32)
+  -- draw the tiles
   self.tilegrid:draw(view)
   
   -- for each type of object
@@ -119,8 +119,11 @@ function Level:draw(view)
     -- for each object
     useful.map(object_type,
       function(object)
-        -- draw the object
-        object:draw()
+        -- if the object is in view...
+        if object:isColliding(view) then
+          -- ...draw the object
+          object:draw()
+        end
     end)
   end
 end
