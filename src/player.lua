@@ -58,6 +58,9 @@ local Player = Class
     self.animationattaque:setMode("once")
     self.animationtouched = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 20 })
     self.animationtouched:setSpeed(1,2)
+    self.animationattaquemagic = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 17, 18, 19 })
+    self.animationattaquemagic:setSpeed(1,2)
+    self.animationattaquemagic:setMode("once")
 
 	fond = love.image.newImageData("assets/decors/horizon.png")
    horizon = love.graphics.newImage(fond)
@@ -224,7 +227,6 @@ function Player:update(dt, level)
       self.animationcurrent = self.animationsautfin
       self.animationsautfin:play()
     end
-	
 
     -- attack
     local weapon = nil
@@ -238,16 +240,21 @@ function Player:update(dt, level)
       weapon = self.MAGICATTACK
     end
 
-	if self.animationcurrent == self.animationattaque and not self.animationattaque:isPlaying() then
-	  self.animationcurrent = self.animationmarche
-	  self.animationcurrent:play()
-	end
-	if weapon and (weapon.reloadTime <= 0) then
+    if self.animationcurrent == self.animationattaque and not self.animationattaque:isPlaying() then
+      self.animationcurrent = self.animationmarche
+      self.animationcurrent:play()
+    end
+    if weapon and (weapon.reloadTime <= 0) then
       level:addObject(self:attack(weapon))
-	  	  self.animationcurrent = self.animationattaque
-        self.animationcurrent:reset()
-	  self.animationcurrent:play()
-	elseif( not self.airborne and self.animationcurrent ==  self.animationmarche )then
+      if self.requestLightAttack then
+        self.animationcurrent = self.animationattaque
+      elseif self.requestMagicAttack then
+        self.animationcurrent = self.animationattaquemagic
+      end
+      self.animationcurrent = self.animationattaque
+      self.animationcurrent:reset()
+      self.animationcurrent:play()
+    elseif( not self.airborne and self.animationcurrent ==  self.animationmarche )then
       if self.requestMoveX ~= 0 then
 
       else
@@ -258,8 +265,6 @@ function Player:update(dt, level)
 	
     self.animationcurrent:update(dt)
 
-
-    
     -- reload weapons
     reload(self.LIGHTATTACK, dt)
     reload(self.MAGICATTACK, dt)
