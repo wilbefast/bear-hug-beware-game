@@ -109,8 +109,8 @@ Player.LIGHTATTACK =
   OFFSET_X = 0,
   DAMAGE = 35,
   MANA = 0,
-  RELOAD_TIME = 0,
-  PRERELOAD_TIME = 0,
+  WARMUP_TIME = 0.2,
+  RELOAD_TIME = 0.04,
   STUN_TIME = 0.5,
   W = 118,
   H = 108,
@@ -125,15 +125,15 @@ Player.MAGICATTACK =
   REACH = 0,
   OFFSET_Y = 64,
   OFFSET_X = -32,
-  DAMAGE = 0,
+  DAMAGE = 20,
   MANA = 10,
-  RELOAD_TIME = 0,
-  PRERELOAD_TIME = 0.5,
+  WARMUP_TIME = 0.4,
+  RELOAD_TIME = 0.3,
   STUN_TIME = 1,
   W = 256,
   H = 256,
-  KNOCKBACK = 6000,
-  KNOCKUP = 300,
+  KNOCKBACK = 7000,
+  KNOCKUP = 400,
   
   reloadTime = 0
 }
@@ -168,27 +168,9 @@ function Player:eventCollision(other)
   -- collision with "bonus" 
   elseif other.type == GameObject.TYPE.BONUS then
     self.life = 100
-	  self.magic = self.MAXMANA
+	self.magic = self.MAXMANA
     other.purge = true --! FIXME
   end
-end
-
---[[------------------------------------------------------------
-Combat
---]]
-
-function Player:attack(weapon)
-  weapon.reloadTime = weapon.RELOAD_TIME
-
-  self:magic_change(-weapon.MANA)
-
-  return (Attack(
-    self.x + self.w/2 + weapon.REACH*self.facing ,
-    self.y + weapon.OFFSET_Y, weapon, self))
-end
-
-function reload(weapon, dt)
-  weapon.reloadTime = math.max(0, weapon.reloadTime - dt)
 end
 
 --[[------------------------------------------------------------
@@ -245,58 +227,86 @@ function Player:update(dt, level)
       self.animationsautfin:play()
     end
 
-    -- attack
-    local weapon = nil
-    -- ... light
-    if self.requestLightAttack then
-      weapon = self.LIGHTATTACK
-      baffe:play()
-    end
-    -- ... magic
-    if self.requestMagicAttack then
-      if (self.magic - self.MAGICATTACK.MANA) >= 0 then
-        weapon = self.MAGICATTACK
-	    explosion:play()
+    -------------ATTACK---------------------
+    if self.warmupTime <= 0 then
+      -- attack
+    	local weapon = nil
+    	-- ... light
+    	if self.requestLightAttack then
+      	weapon = self.LIGHTATTACK
+      	baffe:play()
+    	end
+    	-- ... magic
+    	if self.requestMagicAttack then
+      	if (self.magic >= self.MAGICATTACK.MANA) then
+        	weapon = self.MAGICATTACK
+          explosion:play()
+      	end
+    	end
+
+      if self.animationcurrent == self.animationattaque and not self.animationattaque:isPlaying()
+        or self.animationcurrent == self.animationattaquemagic and not self.animationattaquemagic:isPlaying()
+        or self.animationcurrent == self.animationtouched and not self.animationtouched:isPlaying()
+      then
+        self.animationcurrent = self.animationmarche
+        self.animationcurrent:play()
+      end
+
+      if weapon and (weapon.reloadTime <= 0) then
+        
+        
+        
+        
+          ------GAMEPLAY LOGIC--------
+          self:startAttack(weapon)
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          ------ANIMATION LOGIC--------
+          if self.requestLightAttack then
+            self.animationcurrent = self.animationattaque
+          elseif self.requestMagicAttack then
+            self.animationcurrent = self.animationattaquemagic
+          end
+          self.animationcurrent:reset()
+          self.animationcurrent:play()
+        elseif( not self.airborne and self.animationcurrent ==  self.animationmarche or self.animationcurrent ==  self.animationwaiting)then
+          if self.requestMoveX ~= 0 then
+            self.animationcurrent = self.animationmarche
+            self.animationcurrent:play()
+          else
+            self.animationcurrent = self.animationwaiting
+            self.animationcurrent:play()
+          end
+      end
+
+      
+      
+      
+      ------ANIMATION LOGIC--------
+      if self.baffed then
+        self.animationcurrent = self.animationtouched
+          self.animationcurrent:reset()
+        self.animationtouched:play()
+        self.baffed = false
       end
     end
-
-    if self.animationcurrent == self.animationattaque and not self.animationattaque:isPlaying()
-      or self.animationcurrent == self.animationattaquemagic and not self.animationattaquemagic:isPlaying()
-      or self.animationcurrent == self.animationtouched and not self.animationtouched:isPlaying()
-    then
-      self.animationcurrent = self.animationmarche
-      self.animationcurrent:play()
-    end
-
-    if weapon and (weapon.reloadTime <= 0) then
-        level:addObject(self:attack(weapon))
-        if self.requestLightAttack then
-          self.animationcurrent = self.animationattaque
-        elseif self.requestMagicAttack then
-          self.animationcurrent = self.animationattaquemagic
-        end
-        self.animationcurrent:reset()
-        self.animationcurrent:play()
-      elseif( not self.airborne and self.animationcurrent ==  self.animationmarche or self.animationcurrent ==  self.animationwaiting)then
-        if self.requestMoveX ~= 0 then
-          self.animationcurrent = self.animationmarche
-          self.animationcurrent:play()
-        else
-          self.animationcurrent = self.animationwaiting
-          self.animationcurrent:play()
-        end
-    end
-
-    if self.baffed then
-      self.animationcurrent = self.animationtouched
-        self.animationcurrent:reset()
-      self.animationtouched:play()
-      self.baffed = false
-    end
-
+    
+    ----------------------------------
+    
+    -- UPDATE ANIMATION
     self.animationcurrent:update(dt)
 
     -- reload weapons
+    function reload(weapon, dt)
+      weapon.reloadTime = math.max(0, weapon.reloadTime - dt)
+    end
     reload(self.LIGHTATTACK, dt)
     reload(self.MAGICATTACK, dt)
     

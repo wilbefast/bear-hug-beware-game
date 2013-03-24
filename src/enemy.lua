@@ -73,11 +73,13 @@ Enemy.ATTACK =
   OFFSET_X = 0,
   DAMAGE = 10,
   MANA = 0,
+  WARMUP_TIME = 0.5,
   RELOAD_TIME = 1,
   STUN_TIME = 0.5,
   W = 118,
   H = 108,
-  KNOCKBACK = 300
+  KNOCKBACK = 300,
+  reloadTime = 0
 }
 
 --[[------------------------------------------------------------
@@ -128,8 +130,8 @@ function Enemy:eventCollision(other, level)
   -- collision with player
   elseif other.type == GameObject.TYPE.PLAYER then
     self.facing = useful.tri(other:centreX() > self:centreX(), 1, -1)
-    if self.reloadTime <= 0 then
-      level:addObject(self:attack(self.ATTACK, other))
+    if self.reloadTime <= 0 and self.warmupTime <= 0 then
+      self:startAttack(self.ATTACK, other)
     end
   
   -- collision with death
@@ -236,6 +238,8 @@ function Enemy:draw()
 
   -- FIXME debug
 --  GameObject.draw(self)
+  
+--  love.graphics.print(self.warmupTime, self.x, self.y)
 
   --love.graphics.print(self.LIGHTATTACK.reloadTime, self.x, self.y)
   --love.graphics.print(self.MAGICATTACK.reloadTime, self.x, self.y+40)
