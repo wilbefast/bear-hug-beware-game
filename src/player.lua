@@ -61,6 +61,8 @@ local Player = Class
     self.animationattaquemagic = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 23, 24 })
     self.animationattaquemagic:setSpeed(1,2)
     self.animationattaquemagic:setMode("once")
+    self.animationwaiting = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 9, 10, 11, 12, 13, 14, 15, 16 })
+    self.animationwaiting:setSpeed(1,2)
 
 	fond = love.image.newImageData("assets/decors/horizon.png")
    horizon = love.graphics.newImage(fond)
@@ -270,12 +272,13 @@ function Player:update(dt, level)
       end
       self.animationcurrent:reset()
       self.animationcurrent:play()
-    elseif( not self.airborne and self.animationcurrent ==  self.animationmarche )then
+    elseif( not self.airborne and self.animationcurrent ==  self.animationmarche or self.animationcurrent ==  self.animationwaiting )then
       if self.requestMoveX ~= 0 then
-
-      else
         self.animationcurrent = self.animationmarche
-        self.animationcurrent:seek(8)
+        self.animationcurrent:play()
+      else
+        self.animationcurrent = self.animationwaiting
+        self.animationcurrent:play()
       end
     end
 	
