@@ -129,8 +129,8 @@ function TileGrid:draw(view)
         
         love.graphics.setColor(255,255,255)
       end
-    end
-  end
+    --end
+  --end
 
     --TODO use sprite batches
 end

@@ -92,14 +92,16 @@ Player.FRICTION_X = 50
 -- combat - light attack
 Player.LIGHTATTACK = 
 {
-  REACH = 80,
-  OFFSET_Y = 32,
-  DAMAGE = 30,
+  REACH = 32,
+  OFFSET_Y = 74,
+  OFFSET_X = 0,
+  DAMAGE = 35,
   MANA = 0,
-  RELOAD_TIME = 0.5,
-  W = 40,
-  H = 40,
-  KNOCKBACK = 300,
+  RELOAD_TIME = 0,
+  STUN_TIME = 0.5,
+  W = 118,
+  H = 108,
+  KNOCKBACK = 1700,
   KNOCKUP = 150,
   
   reloadTime = 0
@@ -107,14 +109,16 @@ Player.LIGHTATTACK =
 -- combat - magic attack
 Player.MAGICATTACK = 
 {
-  REACH = 32,
-  OFFSET_Y = 32,
-  DAMAGE = 10,
+  REACH = 0,
+  OFFSET_Y = 64,
+  OFFSET_X = -32,
+  DAMAGE = 0,
   MANA = 10,
-  RELOAD_TIME = 4.0,
+  RELOAD_TIME = 0,
+  STUN_TIME = 1,
   W = 256,
   H = 256,
-  KNOCKBACK = 600,
+  KNOCKBACK = 1700,
   KNOCKUP = 300,
   
   reloadTime = 0
@@ -163,7 +167,7 @@ function Player:attack(weapon)
   self:magic_change(-weapon.MANA)
 
   return (Attack(
-    self.x + self.w/2 + weapon.REACH*self.facing,
+    self.x + self.w/2 + weapon.REACH*self.facing ,
     self.y + weapon.OFFSET_Y, weapon, self))
 end
 
