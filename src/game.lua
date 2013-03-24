@@ -59,8 +59,8 @@ function state:init()
   happy_tree = "assets/audio/happy.ogg"
   happy = love.audio.newSource(happy_tree,"static")
   
-  jeu_son:play()
-  jeu_son:setLooping(true)
+  --jeu_son:play()
+  --jeu_son:setLooping(true)
 end
 
 

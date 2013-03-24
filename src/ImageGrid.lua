@@ -30,7 +30,6 @@ local TileSet = Class
   
     -- read the Tile.d exported Lua tileset object
     self.image = love.graphics.newImage(tileset.image)
-    self.name = tileset.name
     self.quadw = tileset.tilewidth
     self.quadh = tileset.tileheight
     -- ... number of tiles
@@ -63,7 +62,7 @@ function TileSet:tryDraw(id, x, y)
   end
   -- draw using the appropriate quad and report success
   love.graphics.drawq(self.image, self.quads[id], 
-      x*self.quadw, y*self.quadh)
+      (x-1)*self.quadw, (y-1)*self.quadh)
   return true -- success!
 end
 
