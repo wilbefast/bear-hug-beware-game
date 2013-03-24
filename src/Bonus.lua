@@ -43,7 +43,7 @@ end
 
 
 function Bonus:draw()
-  love.graphics.draw(self.image, self.x, self.y, 64, 64)
+  love.graphics.draw(self.image, self.x, self.y)
 end
 
 --[[------------------------------------------------------------

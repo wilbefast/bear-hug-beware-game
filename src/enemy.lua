@@ -62,7 +62,7 @@ end
 Enemy.GRAVITY    = 1200
 Enemy.BOOST      = 700
 Enemy.MOVE_X     = 4000.0
-Enemy.MAX_DX     = 500.0
+Enemy.MAX_DX     = 700.0
 Enemy.FRICTION_X = 50
 
 -- combat
