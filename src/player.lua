@@ -58,9 +58,12 @@ local Player = Class
     self.animationattaque:setMode("once")
     self.animationtouched = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 28 })
     self.animationtouched:setSpeed(1,2)
+    self.animationtouched:setMode("once")
     self.animationattaquemagic = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 23, 24 })
     self.animationattaquemagic:setSpeed(1,2)
     self.animationattaquemagic:setMode("once")
+    self.animationwaiting = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 9, 10, 11, 12, 13, 14, 15, 16 })
+    self.animationwaiting:setSpeed(1,2)
 
 	fond = love.image.newImageData("assets/decors/horizon.png")
    horizon = love.graphics.newImage(fond)
@@ -152,7 +155,8 @@ function Player:eventCollision(other)
   -- collision with enemy attack
   if other.type == GameObject.TYPE.ENEMYATTACK then
     self:life_change(-other.weapon.DAMAGE)
-	calin:play()
+	  calin:play()
+    self.baffed = true
     -- knock-back
     push = useful.sign(self:centreX() - other.launcher:centreX())
     self.dx = self.dx + push * other.weapon.KNOCKBACK
@@ -175,12 +179,9 @@ Combat
 
 function Player:startAttack(weapon)
   
-  if weapon.WARMUP_TIME > 0 then
-    self.deferred_attack = weapon
-    self.warmupTime = weapon.WARMUP_TIME
-  else
-    self:attack(weapon)
-  end
+  self.deferred_attack = weapon
+  self.warmupTime = useful.tri(weapon.WARMUP_TIME > 0, 
+                              weapon.WARMUP_TIME, 0.01)
   
 end
 
@@ -189,7 +190,6 @@ function Player:attack(weapon)
 
   self:magic_change(-weapon.MANA)
 
-  
   return (Attack(
     self.x + self.w/2 + weapon.REACH*self.facing ,
     self.y + weapon.OFFSET_Y, weapon, self))
@@ -256,35 +256,45 @@ function Player:update(dt, level)
     -------------ATTACK---------------------
     if self.warmupTime <= 0 then
       -- attack
-      local weapon = nil
-      -- ... light
-      if self.requestLightAttack then
-        weapon = self.LIGHTATTACK
-        baffe:play()
-      end
-      -- ... magic
-      if self.requestMagicAttack then
-        if (self.magic - self.MAGICATTACK.MANA) >= 0 then
-          weapon = self.MAGICATTACK
+    	local weapon = nil
+    	-- ... light
+    	if self.requestLightAttack then
+      	weapon = self.LIGHTATTACK
+      	baffe:play()
+    	end
+    	-- ... magic
+    	if self.requestMagicAttack then
+      	if (self.magic >= self.MAGICATTACK.MANA) then
+        	weapon = self.MAGICATTACK
           explosion:play()
-        end
-      end
-      
-      -------------ATTACK ANIMATION---------------------
-      if (self.animationcurrent == self.animationattaque 
-      and (not self.animationattaque:isPlaying())
-        or (self.animationcurrent == self.animationattaquemagic 
-      and (not self.animationattaquemagic:isPlaying())))
+      	end
+    	end
+
+      if self.animationcurrent == self.animationattaque and not self.animationattaque:isPlaying()
+        or self.animationcurrent == self.animationattaquemagic and not self.animationattaquemagic:isPlaying()
+        or self.animationcurrent == self.animationtouched and not self.animationtouched:isPlaying()
       then
         self.animationcurrent = self.animationmarche
         self.animationcurrent:play()
       end
 
-      --------------ATTACK OBJECT--------------------
       if weapon and (weapon.reloadTime <= 0) then
+        
+        
+        
+        
+          ------GAMEPLAY LOGIC--------
           self:startAttack(weapon)
           
           
+          
+          
+          
+          
+          
+          
+          
+          ------ANIMATION LOGIC--------
           if self.requestLightAttack then
             self.animationcurrent = self.animationattaque
           elseif self.requestMagicAttack then
@@ -292,24 +302,31 @@ function Player:update(dt, level)
           end
           self.animationcurrent:reset()
           self.animationcurrent:play()
-          
-        elseif( (not self.airborne)
-        and self.animationcurrent ==  self.animationmarche ) then
+        elseif( not self.airborne and self.animationcurrent ==  self.animationmarche or self.animationcurrent ==  self.animationwaiting)then
           if self.requestMoveX ~= 0 then
-            --TODO
-          else
             self.animationcurrent = self.animationmarche
-            self.animationcurrent:seek(8)
+            self.animationcurrent:play()
+          else
+            self.animationcurrent = self.animationwaiting
+            self.animationcurrent:play()
           end
-        end
+      end
+
       
       
       
+      ------ANIMATION LOGIC--------
+      if self.baffed then
+        self.animationcurrent = self.animationtouched
+          self.animationcurrent:reset()
+        self.animationtouched:play()
+        self.baffed = false
+      end
     end
     
     ----------------------------------
     
-    -- ANIMATION
+    -- UPDATE ANIMATION
     self.animationcurrent:update(dt)
 
     -- reload weapons

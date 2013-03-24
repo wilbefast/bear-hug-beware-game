@@ -39,9 +39,12 @@ Enemy:include(Character)
 
 function Enemy:init(x, y, w, h)
   -- base constructor
-  Character.init(self, x, y, w, h, "assets/sprites/sol.png")
+  Character.init(self, x, y, w, h, "assets/sprites/EnnemiWalkerSprite.png")
   self.requestJump = false
   self.requestMoveX = 0
+
+  self.animationmarche = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 1, 2, 3, 4, 5, 6 })
+  self.animationmarche:setSpeed(1,2)
 
   self.stunned = false
   fic="assets/audio/cri_mort.ogg"
@@ -176,12 +179,13 @@ function Enemy:update(dt, level)
       self.requestMoveX = 0
     end
 
-
     local moveDir = useful.sign(self.requestMoveX)
     if moveDir ~= 0 then
       self.dx = self.dx + moveDir*self.MOVE_X*dt
       self.facing = moveDir
     end
+
+    self.animationcurrent =  self.animationmarche
 
     -- jump
     if self.requestJump then
@@ -194,10 +198,29 @@ function Enemy:update(dt, level)
 
     self.requestJump = false
 
+    self.animationcurrent:update(dt)
+
   end
   
   -- base update
   Character.update(self, dt, level)
+end
+
+
+
+function Enemy:draw()
+  local x = self.x - 32*self.facing
+  if self.facing < 0 then
+    x = x + self.w
+  end
+  self.animationcurrent:draw(x, self.y + 16, 0, self.facing, 1)
+
+
+  -- FIXME debug
+  --GameObject.draw(self)
+
+  --love.graphics.print(self.LIGHTATTACK.reloadTime, self.x, self.y)
+  --love.graphics.print(self.MAGICATTACK.reloadTime, self.x, self.y+40)
 end
 
 
