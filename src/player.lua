@@ -115,6 +115,8 @@ Player.MAGICATTACK =
   reloadTime = 0
 }
 
+Player.MAXMANA = 100
+
 --[[------------------------------------------------------------
 Collisions
 --]]
