@@ -95,6 +95,8 @@ Player.LIGHTATTACK =
   W = 40,
   H = 40,
   KNOCKBACK = 300,
+  KNOCKUP = 150,
+  
   reloadTime = 0
 }
 -- combat - magic attack
@@ -108,6 +110,8 @@ Player.MAGICATTACK =
   W = 256,
   H = 256,
   KNOCKBACK = 600,
+  KNOCKUP = 300,
+  
   reloadTime = 0
 }
 
@@ -125,10 +129,10 @@ end
 function Player:eventCollision(other)
   -- collision with enemy attack
   if other.type == GameObject.TYPE.ENEMYATTACK then
-    self:life_change(-other.damage)
+    self:life_change(-other.weapon.DAMAGE)
     -- knock-back
     push = useful.sign(self:centreX() - other.launcher:centreX())
-    self.dx = self.dx + push * other.knockback
+    self.dx = self.dx + push * other.weapon.KNOCKBACK
   
   -- collision with "death" (bottomless pit)
   elseif other.type == GameObject.TYPE.DEATH then
@@ -152,12 +156,7 @@ function Player:attack(weapon)
 
   return (Attack(
     self.x + self.w/2 + weapon.REACH*self.facing,
-    self.y + weapon.OFFSET_Y, 
-    weapon.W, 
-    weapon.H,
-    weapon.DAMAGE,
-    self,
-    weapon.KNOCKBACK))
+    self.y + weapon.OFFSET_Y, weapon, self))
 end
 
 function reload(weapon, dt)
