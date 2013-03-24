@@ -120,7 +120,7 @@ Player.LIGHTATTACK =
   STUN_TIME = 0.5,
   W = 118,
   H = 108,
-  KNOCKBACK = 3000,
+  KNOCKBACK = 1000,
   KNOCKUP = 150,
   
   reloadTime = 0
@@ -139,8 +139,8 @@ Player.MAGICATTACK =
   STUN_TIME = 1,
   W = 256,
   H = 256,
-  KNOCKBACK = 7000,
-  KNOCKUP = 400,
+  KNOCKBACK = 2000,
+  KNOCKUP = 300,
   
   reloadTime = 0
 }

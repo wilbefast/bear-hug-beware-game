@@ -22,7 +22,6 @@ function love.load(arg)
   histoire = require("histoire")
   GameState.switch(title)
 
-  love.mouse.setVisible( false )
   
 end
 

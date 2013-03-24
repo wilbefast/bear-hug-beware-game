@@ -73,6 +73,8 @@ end
 
 
 function state:enter()
+  
+  love.mouse.setVisible( false )
   -- reset objects
   self.player = Player(300, 1000)
   self.level:load("../assets/maps/map01")
