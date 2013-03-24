@@ -58,6 +58,7 @@ local Player = Class
     self.animationattaque:setMode("once")
     self.animationtouched = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 28 })
     self.animationtouched:setSpeed(1,2)
+    self.animationtouched:setMode("once")
     self.animationattaquemagic = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 23, 24 })
     self.animationattaquemagic:setSpeed(1,2)
     self.animationattaquemagic:setMode("once")
@@ -154,7 +155,8 @@ function Player:eventCollision(other)
   -- collision with enemy attack
   if other.type == GameObject.TYPE.ENEMYATTACK then
     self:life_change(-other.weapon.DAMAGE)
-	calin:play()
+	  calin:play()
+    self.baffed = true
     -- knock-back
     push = useful.sign(self:centreX() - other.launcher:centreX())
     self.dx = self.dx + push * other.weapon.KNOCKBACK
@@ -166,7 +168,7 @@ function Player:eventCollision(other)
   -- collision with "bonus" 
   elseif other.type == GameObject.TYPE.BONUS then
     self.life = 100
-	self.magic = self.MAXMANA
+	  self.magic = self.MAXMANA
     other.purge = true --! FIXME
   end
 end
@@ -260,30 +262,38 @@ function Player:update(dt, level)
 
     if self.animationcurrent == self.animationattaque and not self.animationattaque:isPlaying()
       or self.animationcurrent == self.animationattaquemagic and not self.animationattaquemagic:isPlaying()
+      or self.animationcurrent == self.animationtouched and not self.animationtouched:isPlaying()
     then
       self.animationcurrent = self.animationmarche
       self.animationcurrent:play()
     end
 
-	if weapon and (weapon.reloadTime <= 0) then
-      level:addObject(self:attack(weapon))
-      if self.requestLightAttack then
-        self.animationcurrent = self.animationattaque
-      elseif self.requestMagicAttack then
-        self.animationcurrent = self.animationattaquemagic
-      end
-      self.animationcurrent:reset()
-      self.animationcurrent:play()
-    elseif( not self.airborne and self.animationcurrent ==  self.animationmarche or self.animationcurrent ==  self.animationwaiting )then
-      if self.requestMoveX ~= 0 then
-        self.animationcurrent = self.animationmarche
+    if weapon and (weapon.reloadTime <= 0) then
+        level:addObject(self:attack(weapon))
+        if self.requestLightAttack then
+          self.animationcurrent = self.animationattaque
+        elseif self.requestMagicAttack then
+          self.animationcurrent = self.animationattaquemagic
+        end
+        self.animationcurrent:reset()
         self.animationcurrent:play()
-      else
-        self.animationcurrent = self.animationwaiting
-        self.animationcurrent:play()
-      end
+      elseif( not self.airborne and self.animationcurrent ==  self.animationmarche or self.animationcurrent ==  self.animationwaiting)then
+        if self.requestMoveX ~= 0 then
+          self.animationcurrent = self.animationmarche
+          self.animationcurrent:play()
+        else
+          self.animationcurrent = self.animationwaiting
+          self.animationcurrent:play()
+        end
     end
-	
+
+    if self.baffed then
+      self.animationcurrent = self.animationtouched
+        self.animationcurrent:reset()
+      self.animationtouched:play()
+      self.baffed = false
+    end
+
     self.animationcurrent:update(dt)
 
     -- reload weapons
