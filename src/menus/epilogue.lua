@@ -21,40 +21,11 @@ function state:init()
   fin = love.graphics.newImage( "assets/backgrounds/accueilPlayFin.jpg" )
 end
 
-
 function state:enter()
 end
 
-
-function state:focus()
-
-end
-
-
-function state:mousepressed(x, y, btn)
-
-end
-
-
-function state:mousereleased(x, y, btn)
-	
-end
-
-
-function state:joystickpressed(joystick, button)
-	
-end
-
-
-function state:joystickreleased(joystick, button)
-	
-end
-
-
 function state:quit()
-	
 end
-
 
 function state:keypressed(key, uni)
 	if key=="escape" then
@@ -65,19 +36,14 @@ function state:keypressed(key, uni)
   end
 end
 
-
 function state:keyreleased(key, uni)
 end
 
-
 function state:update(dt)
-
 end
 
-
 function state:draw()
-		love.graphics.draw( fin )
-
+		love.graphics.draw(fin)
 end
 
 return state

@@ -13,40 +13,28 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 Lesser General Public License for more details.
 --]]
 
+--[[------------------------------------------------------------
+IMPORTS
+--]]------------------------------------------------------------
+
+GameState = require("hump/gamestate")
+conf = require("conf")
+title = require("menus/title")
+prologue = require("menus/prologue")
+game = require("game")
+
+
+
+--[[------------------------------------------------------------
+LOVE CALLBACKS
+--]]------------------------------------------------------------
 
 function love.load(arg)
-  GameState = require("hump/gamestate")
-  conf = require("conf")
-	love.graphics.setMode(1280, 720, true, true)
-  title = require("title")
-  game = require("game")
-  fin = require("end")
-  credits = require("credits")
-  histoire = require("histoire")
   GameState.switch(title)
-
-  
 end
-
 
 function love.focus(f)
   GameState.focus(f)
-end
-
-function love.mousepressed(x, y, btn)
-  GameState.mousepressed(x, y, btn)
-end
-
-function love.mousereleased(x, y, btn)
-  GameState.mousereleased(x, y, btn)
-end
-
-function love.joystickpressed(joystick, button)
-  GameState.joystickpressed(joystick, button)
-end
-
-function love.joystickreleased(joystick, button)
-  GameState.joystickreleased(joystick, button)
 end
 
 function love.quit()
@@ -61,7 +49,7 @@ function keyreleased(key, uni)
   GameState.keyreleased(key)
 end
 
-MAX_DT = 1/30 -- global!
+MAX_DT = 1/60
 function love.update(dt)
   dt = math.min(MAX_DT, dt)
   GameState.update(dt)
@@ -69,5 +57,4 @@ end
 
 function love.draw()
   GameState.draw()
-  --love.graphics.print(love.timer.getFPS(), 10, 10)
 end

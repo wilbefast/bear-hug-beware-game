@@ -205,7 +205,7 @@ function Player:update(dt, level)
       -- check if on the ground
       if (not self.airborne) then
         self.dy = -Player.BOOST
-		saut:setVolume(0.1)
+        saut:setVolume(0.1)
 		    saut:play()
       end
     end

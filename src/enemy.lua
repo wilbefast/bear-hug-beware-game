@@ -215,6 +215,7 @@ function Enemy:update(dt, level)
       -- check if on the ground
       if (not self.airborne) then
         self.dy = -Enemy.BOOST
+        print("teddy jump")
         saut:play()
       end
     end

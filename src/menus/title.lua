@@ -13,59 +13,41 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 Lesser General Public License for more details.
 --]]
 
+--[[------------------------------------------------------------
+RESOURCES
+--]]------------------------------------------------------------
+
+local MUSIC, BACKGROUND
+
+--[[------------------------------------------------------------
+MAIN MENU (TITLE)
+--]]------------------------------------------------------------
 
 local state = GameState.new()
 
-local histoire1
-local histoire2
-local debut
-
 function state:init()
-  histoire1 = love.graphics.newImage( "assets/backgrounds/livreP1.jpg" )
-  histoire2 = love.graphics.newImage( "assets/backgrounds/livreP2.jpg" )
+  -- load resources
+  MUSIC = love.audio.newSource("assets/audio/bisounours.ogg")
+  BACKGROUND = love.graphics.newImage("assets/menus/menu_background.jpg")
 end
-
 
 function state:enter()
-	debut = love.timer.getTime()
+  MUSIC:play()
 end
 
 
-function state:focus()
-
-end
-
-
-function state:mousepressed(x, y, btn)
-
-end
-
-
-function state:mousereleased(x, y, btn)
-	
-end
-
-
-function state:joystickpressed(joystick, button)
-	
-end
-
-
-function state:joystickreleased(joystick, button)
-	
-end
-
-
-function state:quit()
-	
+function state:leave()
+  MUSIC:stop()
 end
 
 
 function state:keypressed(key, uni)
+  -- quit game
   if key=="escape" then
-	love.event.push("quit")
+    love.event.push("quit")
+  -- go to prologue
   elseif key=="return" or key=="kpenter" then
-    GameState.switch(game)
+    GameState.switch(prologue)
   end
 end
 
@@ -75,20 +57,16 @@ end
 
 
 function state:update(dt)
-
-	if( love.timer.getTime() > debut + 8 ) then
-    	GameState.switch(game)
-	end	
 end
 
 
 function state:draw()
-	if( love.timer.getTime() > debut + 4 ) then
-  		love.graphics.draw( histoire2 )
-	else
-  		love.graphics.draw( histoire1 )
-	end
-
+  love.graphics.draw(BACKGROUND)
 end
+
+
+--[[------------------------------------------------------------
+EXPORT
+--]]------------------------------------------------------------
 
 return state
