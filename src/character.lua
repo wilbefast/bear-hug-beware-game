@@ -32,7 +32,6 @@ local Character = Class
   init = function(self, x, y, w, h, imagefile)
     GameObject.init(self, x, y, w, h)
     self.image     = love.graphics.newImage(imagefile)
-    self.deadImage = love.graphics.newImage("assets/sprites/sol.png")
   end,
 
   life       = 100,
