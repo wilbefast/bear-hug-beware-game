@@ -1,4 +1,3 @@
-
 --[[
 (C) Copyright 2013 
 William Dyce, Maxime Ailloud, Alex Verbrugghe, Julien Deville

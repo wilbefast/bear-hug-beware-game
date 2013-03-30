@@ -32,7 +32,7 @@ function state:init()
 end
 
 function state:enter()
-  MUSIC:play()
+  --MUSIC:play()
 end
 
 
@@ -61,7 +61,7 @@ end
 
 
 function state:draw()
-  love.graphics.draw(BACKGROUND)
+  love.graphics.draw(BACKGROUND, 0, 0, 0, SCALE_X, SCALE_Y)
 end
 
 

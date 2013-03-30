@@ -24,12 +24,47 @@ prologue = require("menus/prologue")
 game = require("game")
 
 
+--[[------------------------------------------------------------
+GLOBALS
+--]]------------------------------------------------------------
+
+SCALE_X, SCALE_Y = 1, 1
+
+
+--[[------------------------------------------------------------
+SUBROUTINES
+--]]------------------------------------------------------------
+
+local function setBestResolution(desired_w, desired_h, fullscreen)
+  -- get and sort the available screen modes from best to worst
+  local modes = love.graphics.getModes()
+  table.sort(modes, function(a, b) 
+    return a.width*a.height < b.width*b.height end)
+    
+  -- try each mode from best to worst
+  for i, m in ipairs(modes) do
+    -- try to set the resolution
+    local success = love.graphics.setMode(m.width, m.height, fullscreen)
+    if success then
+      SCALE_X, SCALE_Y = m.width/desired_w, m.height/desired_h
+      return true -- success!
+    end
+  end
+  return false -- failure!
+end
 
 --[[------------------------------------------------------------
 LOVE CALLBACKS
 --]]------------------------------------------------------------
 
 function love.load(arg)
+  -- set up the screen resolution
+  if (not setBestResolution(1280, 720, false)) then
+    print("Failed to set mode")
+    love.event.push("quit")
+  end
+  
+  -- go to the initial gamestate
   GameState.switch(title)
 end
 
