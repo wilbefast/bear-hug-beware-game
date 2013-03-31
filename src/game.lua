@@ -23,6 +23,13 @@ local Camera = require("hump/camera")
 local Player = require("Player")
 
 --[[------------------------------------------------------------
+CONSTANTS
+--]]------------------------------------------------------------
+
+-- camera
+local FOLLOW_DIST = 150
+
+--[[------------------------------------------------------------
 GAME GAMESTATE
 --]]------------------------------------------------------------
 
@@ -35,7 +42,6 @@ function state:init()
   
   -- set up camera
   self.camera = Camera(0, 0)
-  self.camera:zoomTo(math.max(SCALE_X, SCALE_Y))
 
   self.xLifeBarre  = 150
   self.yLifeBarre  = 100
@@ -75,11 +81,9 @@ function state:enter()
   self.level:addObject(self.player)
   
   -- reset camera
-  self.CAMERA_AREA_WIDTH = (love.graphics.getWidth() / 4)
-  self.cameraAreaLeft = self.player.x - (self.CAMERA_AREA_WIDTH / 2) 
-                              + (love.graphics.getWidth() / 2)
-  self.cameraAreaRight = self.player.x + (self.CAMERA_AREA_WIDTH / 2) 
-                              + (love.graphics.getWidth() / 2)
+  self.cam_x, self.cam_y = self.player.x, self.player.y
+  self.camera:zoomTo(math.max(SCALE_X, SCALE_Y))
+  self.camera:lookAt(self.cam_x, self.cam_y)
 
 end
 
@@ -143,14 +147,12 @@ function state:update(dt)
   self.level:update(dt)
   
   -- point camera at player object
-  --[[if self.player:centreX() < self.cameraAreaLeft then
-    self.cameraAreaLeft = self.player:centreX()
-    self.cameraAreaRight = self.cameraAreaLeft + self.CAMERA_AREA_WIDTH
-  elseif self.player:centreX() > self.cameraAreaRight then
-    self.cameraAreaRight = self.player:centreX()
-    self.cameraAreaLeft = self.cameraAreaRight - self.CAMERA_AREA_WIDTH
-  end--]]
-  self.camera:lookAt(self.player.x, self.player.y)
+  if self.player:centreX() < self.cam_x - FOLLOW_DIST then
+    self.cam_x = self.player:centreX() + FOLLOW_DIST
+  elseif self.player:centreX() > self.cam_x + FOLLOW_DIST then
+    self.cam_x = self.player:centreX() - FOLLOW_DIST
+  end
+  self.camera:lookAt(self.cam_x, self.player.y)
   
   -- update GUI
   if self.player.life ~= 0 then
