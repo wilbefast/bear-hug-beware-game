@@ -19,6 +19,7 @@ PROLOGUE STORY PAGES
 --]]------------------------------------------------------------
 
 local PAGES = { }
+local BACKGROUND = nil
 
 local PAGE_DURATION = 4
 
@@ -43,8 +44,25 @@ PROLOGUE GAME STATE
 local state = GameState.new()
 
 function state:init()
-  table.insert(PAGES, love.graphics.newImage("assets/menus/prologue1.jpg"))
-  table.insert(PAGES, love.graphics.newImage("assets/menus/prologue2.jpg"))
+  
+  -- background
+  BACKGROUND = love.graphics.newImage("assets/menus/prologue_background.jpg")
+  
+  -- page 1
+  local TEXT_1 = love.graphics.newImage("assets/menus/prologue1_fr.png")
+  local BANISHED = love.graphics.newImage("assets/menus/banished.png")
+  table.insert(PAGES, function() 
+    love.graphics.draw(BANISHED, 242*SCALE_X, 205*SCALE_Y, 0, SCALE_X, SCALE_Y)
+    love.graphics.draw(TEXT_1, 700*SCALE_X, 116*SCALE_Y, 0, SCALE_X, SCALE_Y)
+  end)
+
+  -- page 2
+  local TEXT_2 = love.graphics.newImage("assets/menus/prologue2_fr.png")
+  local HUGLAND = love.graphics.newImage("assets/menus/hugland.png")
+  table.insert(PAGES, function() 
+    love.graphics.draw(TEXT_2, 285*SCALE_X, 198*SCALE_Y, 0, SCALE_X, SCALE_Y)
+    love.graphics.draw(HUGLAND, 705*SCALE_X, 159*SCALE_Y, 0, SCALE_X, SCALE_Y)
+  end)
 end
 
 function state:enter()
@@ -76,8 +94,11 @@ end
 
 
 function state:draw()
+  -- draw the background
+  love.graphics.draw(BACKGROUND, 0, 0, 0, SCALE_X, SCALE_Y)
+  
   -- draw the current page
-  love.graphics.draw(PAGES[self.currentPage])
+  PAGES[self.currentPage]()
 end
 
 

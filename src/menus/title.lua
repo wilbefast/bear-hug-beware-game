@@ -43,10 +43,10 @@ end
 
 function state:keypressed(key, uni)
   -- quit game
-  if key=="escape" then
+  if key=="escape" or key =="left" then
     love.event.push("quit")
   -- go to prologue
-  elseif key=="return" or key=="kpenter" then
+  elseif key=="return" or key=="kpenter" or key=="right" then
     GameState.switch(prologue)
   end
 end
@@ -61,6 +61,7 @@ end
 
 
 function state:draw()
+  -- draw the background
   love.graphics.draw(BACKGROUND, 0, 0, 0, SCALE_X, SCALE_Y)
 end
 
