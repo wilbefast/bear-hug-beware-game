@@ -28,33 +28,44 @@ game = require("game")
 DEAL WITH DIFFERENT RESOLUTIONS (scale images)
 --]]------------------------------------------------------------
 
-SCALE_X, SCALE_Y = 1, 1
+DEFAULT_W, DEFAULT_H, SCALE_X, SCALE_Y, SCALE_MIN, SCALE_MAX = 1280, 720, 1, 1, 1, 1
 
 function scaled_draw(img, x, y, rot, sx, sy)
   x, y, rot, sx, sy = (x or 0), (y or 0), (rot or 0), (sx or 1), (sy or 1)
-  love.graphics.draw(img, x*SCALE_X, y*SCALE_Y, rot, sx*SCALE_X, sy*SCALE_Y)
+  love.graphics.draw(img, x*SCALE_MIN + DEFAULT_W*(SCALE_X-SCALE_MIN)/2, 
+                          y*SCALE_MIN + DEFAULT_H*(SCALE_Y-SCALE_MIN)/2, 
+                          rot, 
+                          sx*SCALE_MIN, 
+                          sy*SCALE_MIN)
 end
 
 function scaled_drawq(img, quad, x, y, rot, sx, sy)
   x, y, rot, sx, sy = (x or 0), (y or 0), (rot or 0), (sx or 1), (sy or 1)
-  love.graphics.drawq(img, quad, x*SCALE_X, y*SCALE_Y, rot, sx*SCALE_X, sy*SCALE_Y)
+  love.graphics.drawq(img, quad, x*SCALE_MIN + DEFAULT_W*(SCALE_X-SCALE_MIN)/2, 
+                                  y*SCALE_MIN + DEFAULT_H*(SCALE_Y-SCALE_MIN)/2, 
+                                  rot, 
+                                  sx*SCALE_MIN, 
+                                  sy*SCALE_MIN)
 end
 
 local function setBestResolution(desired_w, desired_h, fullscreen)
+  DEFAULT_W, DEFAULT_H = desired_w, desired_h
   -- get and sort the available screen modes from best to worst
   local modes = love.graphics.getModes()
   table.sort(modes, function(a, b) 
-    return a.width*a.height < b.width*b.height end)
-    --return a.width*a.height > b.width*b.height end) --FIXME
+    return a.width*a.height > b.width*b.height end)
     
   -- try each mode from best to worst
   for i, m in ipairs(modes) do
+    if not (i < 4) then --FIXME
     -- try to set the resolution
     local success = love.graphics.setMode(m.width, m.height, fullscreen)
     if success then
       SCALE_X, SCALE_Y = m.width/desired_w, m.height/desired_h
+      SCALE_MIN, SCALE_MAX = math.min(SCALE_X, SCALE_Y), math.max(SCALE_X, SCALE_Y)
       return true -- success!
     end
+    end --FIXME
   end
   return false -- failure!
 end
@@ -76,7 +87,8 @@ function love.load(arg)
   love.mouse.setVisible(false)
 
   -- go to the initial gamestate
-  GameState.switch(title)
+  --GameState.switch(title) --FIXME
+  GameState.switch(game)
 end
 
 function love.focus(f)

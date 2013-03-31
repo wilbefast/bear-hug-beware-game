@@ -116,6 +116,7 @@ Player.LIGHTATTACK =
   DAMAGE = 35,
   MANA = 0,
   WARMUP_TIME = 0.2,
+  DURATION = 0.1,
   RELOAD_TIME = 0.04,
   STUN_TIME = 0.5,
   W = 118,
@@ -134,6 +135,7 @@ Player.MAGICATTACK =
   DAMAGE = 20,
   MANA = 10,
   WARMUP_TIME = 0.4,
+  DURATION = 0.2,
   RELOAD_TIME = 0.3,
   STUN_TIME = 1,
   W = 256,
@@ -200,9 +202,10 @@ function Player:update(dt, level)
   end
 
   ------------- ATTACK ---------------------
-  if self.STATE == Character.STATE.NORMAL then
+  if self.state == Character.STATE.NORMAL then
     -- attack
     local weapon = nil
+    
     -- ... light
     if self.requestLightAttack then
       weapon = self.LIGHTATTACK

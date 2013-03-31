@@ -39,7 +39,7 @@ local Character = Class
   life        = 100,
   magic       = 100,
   damage      = 0,
-  timer       = 0,
+  timer       = -1,
   facing      = 1
 }
 Character:include(GameObject)
@@ -60,8 +60,11 @@ function onStateChange(new_state)
   -- override me!
 end
 
-function Character:setState(new_state)
+function Character:setState(new_state, timer)
   onStateChange(new_state)
+  if timer then
+    self.timer = timer
+  end
   self.state = new_state
 end
 
@@ -71,9 +74,9 @@ Combat
 
 function Character:startAttack(weapon, target)
   -- attack will be launched next update
-  self.deferred_attack = weapon
+  self.deferred_weapon = weapon
   self.deferred_target = target
-  self.warmupTime = (weapon.WARMUP_TIME or 0)
+  self:setState(Character.STATE.WARMUP, (weapon.WARMUP_TIME or 0))
 end
 
 function Character:attack(weapon)
@@ -95,7 +98,7 @@ function Character:life_change(amount)
   self.life = math.min(100, math.max(0, self.life + amount))
 end
 
-function Character:magic_change(nb)
+function Character:magic_change(amount)
   self.magic = math.min(100, math.max(0, self.magic + amount))
 end
 
@@ -105,23 +108,26 @@ Game loop
 
 function Character:update(dt, level)
   -- count-down timer
-  if self.timer >= 0 then
+  if self.timer > 0 then
     self.timer = self.timer - dt
     -- time's up!
     if (self.timer < 0) then
       -- launch the attack when ready
-      if self.state == Character.WARMUP then
-        level:addObject(self:attack(self.deferred_attack,
-                                  self.deferred_target))
-        self:setState(Character.ATTACKING)
+      if self.state == Character.STATE.WARMUP then
+        level:addObject(self:attack(self.deferred_weapon, self.deferred_target))      
+        self:setState(Character.STATE.ATTACKING, self.deferred_weapon.DURATION)
+        
+      -- finish attack
+      elseif self.state == Character.STATE.ATTACKING then
+        self:setState(Character.STATE.NORMAL)
         
       -- finish stun
-      elseif self.state == Character.STUNNED then
-        self:setState(Character.NORMAL)
+      elseif self.state == Character.STATE.STUNNED then
+        self:setState(Character.STATE.NORMAL)
       
       -- finish dying
-      elseif self.state == Character.DYING then
-        self:setState(Character.DEAD)
+      elseif self.state == Character.STATE.DYING then
+        self:setState(Character.STATE.DEAD)
       end
     end
   end
@@ -133,6 +139,7 @@ end
 function Character:draw()
   -- FIXME debug
   love.graphics.print(Character.STATE[self.state], self.x, self.y)
+  love.graphics.print(self.timer, self.x + 64, self.y)
   GameObject.draw(self)
 end
 

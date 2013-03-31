@@ -32,7 +32,7 @@ local Attack = Class
                     weapon.W, weapon.H)
     self.weapon = (weapon or self)
     self.launcher = (launcher or self)
-    self.first_update = true
+    self.timer = 0 --FIXME (weapon.DURATION or 0)
   end,
       
   type  =  GameObject.TYPE["ATTACK"],
@@ -44,18 +44,18 @@ Attack:include(GameObject)
 Game loop
 --]]
 
-function Attack:update(dt, tilegrid)
+function Attack:update(dt, level)
   -- destroy self on *second* update
-  if self.first_update then
-    self.first_update = false
-  else
+  if self.timer < 0 then
     self.purge = true
+  else
+    self.timer = self.timer - dt
   end
 end
 
 function Attack:draw()
-  -- FIXME debug
---  GameObject.draw(self)
+  -- debug
+  GameObject.draw(self)
 end
 
 return Attack
