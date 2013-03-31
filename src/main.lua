@@ -35,6 +35,11 @@ function scaled_draw(img, x, y, rot, sx, sy)
   love.graphics.draw(img, x*SCALE_X, y*SCALE_Y, rot, sx*SCALE_X, sy*SCALE_Y)
 end
 
+function scaled_drawq(img, quad, x, y, rot, sx, sy)
+  x, y, rot, sx, sy = (x or 0), (y or 0), (rot or 0), (sx or 1), (sy or 1)
+  love.graphics.drawq(img, quad, x*SCALE_X, y*SCALE_Y, rot, sx*SCALE_X, sy*SCALE_Y)
+end
+
 local function setBestResolution(desired_w, desired_h, fullscreen)
   -- get and sort the available screen modes from best to worst
   local modes = love.graphics.getModes()
