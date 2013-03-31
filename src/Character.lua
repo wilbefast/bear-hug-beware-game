@@ -34,37 +34,55 @@ local Character = Class
     self.image = image
   end,
 
-  life       = 100,
-  magic      = 100,
-  damage     = 0,
-  warmupTime = 0,
-  reloadTime = 0,
-  stunnedTime = 0,
-  facing     = 1
+  -- defaults
+  state       = 1,
+  life        = 100,
+  magic       = 100,
+  damage      = 0,
+  timer       = 0,
+  facing      = 1
 }
 Character:include(GameObject)
 
+--[[------------------------------------------------------------
+State machine
+--]]
+
+Character.STATE = {}
+useful.bind(Character.STATE, "NORMAL", 1)
+useful.bind(Character.STATE, "STUNNED", 2)
+useful.bind(Character.STATE, "WARMUP", 3)
+useful.bind(Character.STATE, "ATTACKING", 4)
+useful.bind(Character.STATE, "DYING", 5)
+useful.bind(Character.STATE, "DEAD", 6)
+
+function onStateChange(new_state)
+  -- override me!
+end
+
+function Character:setState(new_state)
+  onStateChange(new_state)
+  self.state = new_state
+end
 
 --[[------------------------------------------------------------
 Combat
 --]]
 
 function Character:startAttack(weapon, target)
-  
+  -- attack will be launched next update
   self.deferred_attack = weapon
   self.deferred_target = target
-  self.warmupTime = useful.tri(weapon.WARMUP_TIME > 0, 
-                              weapon.WARMUP_TIME, 0.01)
-  
+  self.warmupTime = (weapon.WARMUP_TIME or 0)
 end
 
 function Character:attack(weapon)
+  -- reload-time and mana-cost
   weapon.reloadTime = weapon.RELOAD_TIME
-
   self:magic_change(-weapon.MANA)
-
+  -- create the attack object
   return (Attack(
-    self.x + self.w/2 + weapon.REACH*self.facing ,
+    self:centreX() + weapon.REACH*self.facing ,
     self.y + weapon.OFFSET_Y, weapon, self))
 end
 
@@ -73,24 +91,12 @@ end
 Resources
 --]]
 
-function Character:life_change(nb)
-  local newLife = self.life + nb
-  if newLife <= 0 then
-    newLife = 0
-  end
-  self.life = newLife
+function Character:life_change(amount)
+  self.life = math.min(100, math.max(0, self.life + amount))
 end
 
 function Character:magic_change(nb)
-  local newMagic = self.magic + nb
-  if newMagic <= 0 then
-    newMagic = 0
-  end
-  if newMagic > self.MAXMANA then
-    newMagic = self.MAXMANA
-  end
-
-  self.magic = newMagic
+  self.magic = math.min(100, math.max(0, self.magic + amount))
 end
 
 --[[------------------------------------------------------------
@@ -98,23 +104,26 @@ Game loop
 --]]
 
 function Character:update(dt, level)
-  -- warm-up attack
-  if self.warmupTime > 0 then
-    self.warmupTime = self.warmupTime - dt
-    if (self.warmupTime <= 0) and self.deferred_attack then
-      level:addObject(self:attack(self.deferred_attack,
+  -- count-down timer
+  if self.timer >= 0 then
+    self.timer = self.timer - dt
+    -- time's up!
+    if (self.timer < 0) then
+      -- launch the attack when ready
+      if self.state == Character.WARMUP then
+        level:addObject(self:attack(self.deferred_attack,
                                   self.deferred_target))
+        self:setState(Character.ATTACKING)
+        
+      -- finish stun
+      elseif self.state == Character.STUNNED then
+        self:setState(Character.NORMAL)
+      
+      -- finish dying
+      elseif self.state == Character.DYING then
+        self:setState(Character.DEAD)
+      end
     end
-  end
-  
-  -- reload weapon
-  if self.reloadTime > 0 then
-    self.reloadTime = self.reloadTime - dt
-  end
-  
-  -- recover from stun
-  if self.stunnedTime > 0 then
-    self.stunnedTime = self.stunnedTime - dt
   end
   
   -- base update
@@ -122,10 +131,8 @@ function Character:update(dt, level)
 end
 
 function Character:draw()
-  -- FIXME animation
-  love.graphics.draw(self.image, self.x, self.y)
-  love.graphics.print(self.life, self.x, self.y)
   -- FIXME debug
+  love.graphics.print(Character.STATE[self.state], self.x, self.y)
   GameObject.draw(self)
 end
 

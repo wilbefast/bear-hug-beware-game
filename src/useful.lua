@@ -127,4 +127,10 @@ function useful.dist2(x1, y1, x2, y2)
   return (dx*dx + dy*dy)
 end
 
+-- two-directional look-up
+function useful.bind(table, a, b)
+  table[a] = b
+  table[b] = a
+end
+
 return useful

@@ -125,20 +125,18 @@ function Enemy:eventCollision(other, level)
     push = useful.sign(self:centreX() - other.launcher:centreX())
     self.dx = self.dx + push * other.weapon.KNOCKBACK
     self.dy = self.dy - other.weapon.KNOCKUP
-
-    self.stunnedTime = other.weapon.STUN_TIME
-
-    self.baffed = true
-    
-    -- lost life
+    -- set stunned
+    self:setState(Character.STATE.STUNNED)
+    self.timer = other.weapon.STUN_TIME
+    -- lose life
     self:life_change(-other.weapon.DAMAGE, level)
   
   -- collision with player
   elseif other.type == GameObject.TYPE.PLAYER then
     self.facing = useful.tri(other:centreX() > self:centreX(), 1, -1)
-    if self.reloadTime <= 0 and self.warmupTime <= 0 then
-      self:startAttack(self.ATTACK, other)
-    end
+    --if self.reloadTime <= 0 and self.warmupTime <= 0 then
+    --  self:startAttack(self.ATTACK, other)
+    --end
   
   -- collision with death
   elseif other.type == GameObject.TYPE.DEATH then
@@ -175,52 +173,50 @@ Game loop
 
 function Enemy:update(dt, level)
 
-  if( self.stunnedTime <= 0 ) then
-    -- AI
-    local player = level:getObject(GameObject.TYPE.PLAYER)
-    local ecart = player:centreX() - self:centreX()
-      -- desire move?
-    if math.abs( ecart ) < 800 and math.abs( ecart ) > 30 then
-      -- ... left
-      if ecart < 1 then
-        self.requestMoveX = -1
-      end
-      -- ... right
-      if ecart > 1 then
-        self.requestMoveX = 1
-      end
-    else
-      self.requestMoveX = 0
+  -- AI
+  local player = level:getObject(GameObject.TYPE.PLAYER)
+  local ecart = player:centreX() - self:centreX()
+    -- desire move?
+  if math.abs( ecart ) < 800 and math.abs( ecart ) > 30 then
+    -- ... left
+    if ecart < 1 then
+      self.requestMoveX = -1
     end
-    
-    -- desire jump?
-    local delta_y = self.y - player.y
-    if delta_y > 0 then
-      if (delta_y > player.h*2) 
-      or ((delta_y / player.h / 2 * self.PERCENT_JUMPING) > math.random() ) then
-        self.requestJump = true
-      end
+    -- ... right
+    if ecart > 1 then
+      self.requestMoveX = 1
     end
-
-
-
-    local moveDir = useful.sign(self.requestMoveX)
-    if moveDir ~= 0 then
-      self.dx = self.dx + moveDir*self.MOVE_X*dt
-      self.facing = moveDir
-    end
-
-    -- jump
-    if self.requestJump then
-      -- check if on the ground
-      if (not self.airborne) then
-        self.dy = -Enemy.BOOST
-      end
-    end
-
-    self.requestJump = false
-
+  else
+    self.requestMoveX = 0
   end
+  
+  -- desire jump?
+  local delta_y = self.y - player.y
+  if delta_y > 0 then
+    if (delta_y > player.h*2) 
+    or ((delta_y / player.h / 2 * self.PERCENT_JUMPING) > math.random() ) then
+      self.requestJump = true
+    end
+  end
+
+
+
+  local moveDir = useful.sign(self.requestMoveX)
+  if moveDir ~= 0 then
+    self.dx = self.dx + moveDir*self.MOVE_X*dt
+    self.facing = moveDir
+  end
+
+  -- jump
+  if self.requestJump then
+    -- check if on the ground
+    if (not self.airborne) then
+      self.dy = -Enemy.BOOST
+    end
+  end
+
+  self.requestJump = false
+
 
   if self.animationcurrent == self.animationtouched and not self.animationtouched:isPlaying()
   then
@@ -244,20 +240,12 @@ end
 
 
 function Enemy:draw()
-  local x = self.x + 96 * self.facing
+  Character.draw(self)
+  --[[local x = self.x + 96 * self.facing
   if self.facing < 0 then
     x = x + self.w
   end
-  self.animationcurrent:draw(x, self.y + 16, 0, -self.facing, 1)
-
-
-  -- FIXME debug
-  --GameObject.draw(self)
-  
-  --love.graphics.print(self.warmupTime, self.x, self.y)
-
-  --love.graphics.print(self.LIGHTATTACK.reloadTime, self.x, self.y)
-  --love.graphics.print(self.MAGICATTACK.reloadTime, self.x, self.y+40)
+  self.animationcurrent:draw(x, self.y + 16, 0, -self.facing, 1)--]]
 end
 
 

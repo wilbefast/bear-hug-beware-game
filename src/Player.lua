@@ -30,6 +30,36 @@ CHARACTER CLASS
 
 local SPRITE_SHEET = love.graphics.newImage("assets/sprites/hero.png")
 
+--[[
+self.animationmarche = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 1, 2, 3, 4, 5, 6, 7, 8 })
+self.animationmarche:setSpeed(1,2)
+self.animationsautdebut = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 17, 18 })
+self.animationsautdebut:setSpeed(1,2)
+self.animationsautdebut:setMode("once")
+self.animationsautmilieumontee = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 19 })
+self.animationsautmilieumontee:setSpeed(1,2)
+self.animationsautmilieumontee:setMode("once")
+self.animationsautmilieudescente = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 20 })
+self.animationsautmilieudescente:setSpeed(1,2)
+self.animationsautmilieudescente:setMode("once")
+self.animationsautfin = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 21, 22 })
+self.animationsautfin:setSpeed(1,2)
+self.animationsautfin:setMode("once")
+self.animationattaque = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 25, 26, 27 })
+self.animationattaque:setSpeed(1,2)
+self.animationattaque:setMode("once")
+self.animationtouched = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 28 })
+self.animationtouched:setSpeed(1,2)
+self.animationtouched:setMode("once")
+self.animationattaquemagic = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 23, 24 })
+self.animationattaquemagic:setSpeed(1,2)
+self.animationattaquemagic:setMode("once")
+self.animationwaiting = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 9, 10, 11, 12, 13, 14, 15, 16 })
+self.animationwaiting:setSpeed(1,2)
+self.animationdead = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 29 })
+self.animationdead:setSpeed(1,2)
+self.animationdead:setMode("once") --]]
+
 --[[------------------------------------------------------------
 Initialise
 --]]
@@ -38,59 +68,31 @@ local Player = Class
 {
   type  =  GameObject.TYPE["PLAYER"],
 
+  -- constructor
   init = function(self, x, y)
+  
+    -- super
     Character.init(self, x, y, 64, 128, SPRITE_SHEET)
-    self.animationmarche = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 1, 2, 3, 4, 5, 6, 7, 8 })
-    self.animationmarche:setSpeed(1,2)
-    self.animationsautdebut = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 17, 18 })
-    self.animationsautdebut:setSpeed(1,2)
-    self.animationsautdebut:setMode("once")
-    self.animationsautmilieumontee = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 19 })
-    self.animationsautmilieumontee:setSpeed(1,2)
-    self.animationsautmilieumontee:setMode("once")
-    self.animationsautmilieudescente = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 20 })
-    self.animationsautmilieudescente:setSpeed(1,2)
-    self.animationsautmilieudescente:setMode("once")
-    self.animationsautfin = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 21, 22 })
-    self.animationsautfin:setSpeed(1,2)
-    self.animationsautfin:setMode("once")
-    self.animationattaque = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 25, 26, 27 })
-    self.animationattaque:setSpeed(1,2)
-    self.animationattaque:setMode("once")
-    self.animationtouched = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 28 })
-    self.animationtouched:setSpeed(1,2)
-    self.animationtouched:setMode("once")
-    self.animationattaquemagic = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 23, 24 })
-    self.animationattaquemagic:setSpeed(1,2)
-    self.animationattaquemagic:setMode("once")
-    self.animationwaiting = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 9, 10, 11, 12, 13, 14, 15, 16 })
-    self.animationwaiting:setSpeed(1,2)
-    self.animationdead = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 29 })
-    self.animationdead:setSpeed(1,2)
-    self.animationdead:setMode("once")
-
-    self.animationlaunchedMagicAttack = newAnimation(love.graphics.newImage("assets/sprites/MagicHerosFx.png"), 256, 256, 0.1, 0, 0, 0, { 1, 2, 3, 4, 5, 6, 7, 8, 9 })
-    self.animationlaunchedMagicAttack:setSpeed(1,2)
-    self.animationlaunchedMagicAttack:setMode("once")
     
-    self.animationcurrent = self.animationmarche
+    
+    
+    --self.animationcurrent = self.animationmarche
 
   --[[
   im = love.graphics.newImage("assets/hud/spriteVie.png")
   self.barre_life = newAnimation(im, 186, 62, 0.1, 0, 0, 0, {1,2,3,4,5,6,7,8,9})
   self.barre_life:setMode("once")
   self.barre_mana = newAnimation(im, 186, 62, 0.1, 0, 0, 0, {10})
-  self.barre_mana:setMode("once") --]]
+  self.barre_mana:setMode("once")
     --marche self.animation:setAnimation({ 1, 3, 5, 7, 9, 11, 13, 15 })
     --saut self.animation:setAnimation({ 21, 22, 23, 24, 26 })
     --attaque self.animation:setAnimation({ 17, 18, 19 })
     --touched self.animation:setAnimation({ 20 })
     --self.animation:setSpeed(1,2)
-	--[[self.barre_life:seek(1)
-	  fic_saut = "assets/audio/saut.ogg"
-  saut = love.audio.newSource(fic_saut,"static")
+	self.barre_life:seek(1)
+  saut = love.audio.newSource("assets/audio/saut.ogg", "static")
   self.life=90 --]]
-end,
+  end,
 }
 Player:include(Character)
 
@@ -181,93 +183,60 @@ Game loop
 --]]
 
 function Player:update(dt, level)
+
+  ------------- ACCELERATE ---------------------
+  local moveDir = useful.sign(self.requestMoveX)
+  if moveDir ~= 0 then
+    self.dx = self.dx + moveDir*self.MOVE_X*dt
+    self.facing = moveDir
+  end
+
+  ------------- JUMP ---------------------
+  if self.requestJump then
+    -- check if on the ground
+    if (not self.airborne) then
+      self.dy = -Player.BOOST
+    end
+  end
+
+  ------------- ATTACK ---------------------
+  if self.STATE == Character.STATE.NORMAL then
+    -- attack
+    local weapon = nil
+    -- ... light
+    if self.requestLightAttack then
+      weapon = self.LIGHTATTACK
+    end
+    -- ... magic
+    if self.requestMagicAttack then
+      if (self.magic >= self.MAGICATTACK.MANA) then
+        weapon = self.MAGICATTACK
+      end
+    end
+
+    if weapon and (weapon.reloadTime <= 0) then
+      self:startAttack(weapon)
+    end
+  end
+        
+  ------------- RELOAD ---------------------
+  function reload(weapon, dt)
+    weapon.reloadTime = math.max(0, weapon.reloadTime - dt)
+  end
+  reload(self.LIGHTATTACK, dt)
+  reload(self.MAGICATTACK, dt)
   
-  --update player only if alive
-  if self.life > 0 then
-    
-    -- accelerate
-    local moveDir = useful.sign(self.requestMoveX)
-    if moveDir ~= 0 then
-      self.dx = self.dx + moveDir*self.MOVE_X*dt
-      self.facing = moveDir
-    end
+  ------------- RESET INPUT REGISTERS ---------------------
+  self.requestMoveX, self.requestMoveY = 0, 0
+  self.requestJump = false
+  self.requestLightAttack = false
+  self.requestMagicAttack = false
 
-    -- jump
-    if self.requestJump then
-      -- check if on the ground
-      if (not self.airborne) then
-        self.dy = -Player.BOOST
-      end
-    end
-
-    if self.airborne then
-      if( useful.sign(self.dy) > 0 ) and (self.warmupTime <= 0) then
-        self.animationcurrent = self.animationsautmilieudescente
-        self.animationsautmilieudescente:play()
-      end
-
-      if( self.animationcurrent ==  self.animationsautdebut and not self.animationsautdebut:isPlaying() ) then
-        self.animationcurrent = self.animationsautmilieumontee
-        self.animationsautmilieumontee:play()
-      end
-      if( self.animationcurrent ==  self.animationmarche) then
-        if( useful.sign(self.requestMoveY) < 0 ) then
-          self.animationcurrent = self.animationsautdebut
-          self.animationsautdebut:play()
-        else
-          self.animationcurrent = self.animationsautmilieudescente
-          self.animationsautmilieudescente:play()
-        end
-      end
-
-    end
-    if( self.animationcurrent ==  self.animationsautfin and not self.animationsautfin:isPlaying() ) then
-      self.animationcurrent = self.animationmarche
-      self.animationmarche:play()
-    end
-    if( not self.airborne and self.animationcurrent ==  self.animationsautmilieudescente) then
-      self.animationcurrent = self.animationsautfin
-      self.animationsautfin:play()
-    end
-
-    -------------ATTACK---------------------
-    if self.warmupTime <= 0 then
-      -- attack
-    	local weapon = nil
-    	-- ... light
-    	if self.requestLightAttack then
-      	weapon = self.LIGHTATTACK
-    	end
-    	-- ... magic
-    	if self.requestMagicAttack then
-      	if (self.magic >= self.MAGICATTACK.MANA) then
-        	weapon = self.MAGICATTACK
-          self.animationlaunchedMagicAttack:reset();
-          self.animationlaunchedMagicAttack:play()
-      	end
-    	end
-
-      if self.animationcurrent == self.animationattaque and not self.animationattaque:isPlaying()
-        or self.animationcurrent == self.animationattaquemagic and not self.animationattaquemagic:isPlaying()
-        or self.animationcurrent == self.animationtouched and not self.animationtouched:isPlaying()
-      then
-        self.animationcurrent = self.animationmarche
-        self.animationcurrent:play()
-      end
-
-      if weapon and (weapon.reloadTime <= 0) then
-        
-        
-        
-        
-          ------GAMEPLAY LOGIC--------
-          self:startAttack(weapon)
+  ------------- BASE UPDATE ---------------------
+  Character.update(self, dt, level)
+end
           
-          
-          
-          
-          
-          
+    --[[    
           
           
           
@@ -300,48 +269,51 @@ function Player:update(dt, level)
         self.baffed = false
       end
     end
-
-    self.animationcurrent:update(dt)
-    self.animationlaunchedMagicAttack:update(dt);
-
-    -- reload weapons
-    function reload(weapon, dt)
-      weapon.reloadTime = math.max(0, weapon.reloadTime - dt)
-    end
-    reload(self.LIGHTATTACK, dt)
-    reload(self.MAGICATTACK, dt)
     
-    -- reset input requests to false
-    self.requestMoveX, self.requestMoveY = 0, 0
-    self.requestJump = false
-    self.requestLightAttack = false
-    self.requestMagicAttack = false
+        if self.airborne then
+      if( useful.sign(self.dy) > 0 ) and (self.warmupTime <= 0) then
+        self.animationcurrent = self.animationsautmilieudescente
+        self.animationsautmilieudescente:play()
+      end
 
-    -- base update
-    Character.update(self, dt, level)
+      if( self.animationcurrent ==  self.animationsautdebut and not self.animationsautdebut:isPlaying() ) then
+        self.animationcurrent = self.animationsautmilieumontee
+        self.animationsautmilieumontee:play()
+      end
+      if( self.animationcurrent ==  self.animationmarche) then
+        if( useful.sign(self.requestMoveY) < 0 ) then
+          self.animationcurrent = self.animationsautdebut
+          self.animationsautdebut:play()
+        else
+          self.animationcurrent = self.animationsautmilieudescente
+          self.animationsautmilieudescente:play()
+        end
+      end
+
+    end
+    if( self.animationcurrent ==  self.animationsautfin and not self.animationsautfin:isPlaying() ) then
+      self.animationcurrent = self.animationmarche
+      self.animationmarche:play()
+    end
+    if( not self.airborne and self.animationcurrent ==  self.animationsautmilieudescente) then
+      self.animationcurrent = self.animationsautfin
+      self.animationsautfin:play()
+    end
+
+    self.animationcurrent:update(dt) 
+
   else
     self.animationcurrent = self.animationdead
     self.animationcurrent:reset()
     self.animationcurrent:play()
-  end
+  end 
 
-end
+end--]]
 
 function Player:draw()
-  local x = self.x - 32*self.facing
-  if self.facing < 0 then
-    x = x + self.w
-  end
-
-  if( x > 28000 ) then
-    GameState.switch(fin)
-  end
-  
-  self.animationcurrent:draw(x, self.y + 16, 0, self.facing, 1)
-
-  if self.animationlaunchedMagicAttack:isPlaying() then
-    self.animationlaunchedMagicAttack:draw(self.x - 96, self.y - 32);
-  end
+  Character.draw(self)
+  --local x = self.x + useful.tri(self.facing < 0, self.w - 32, 32)
+  --self.animationcurrent:draw(x, self.y + 16, 0, self.facing, 1)
 end
 
 return Player

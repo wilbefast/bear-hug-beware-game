@@ -51,26 +51,13 @@ Types
 
 GameObject.TYPE = {}
 
-GameObject.TYPE["PLAYER"] = 1 
-GameObject.TYPE[1] = "PLAYER"
-
-GameObject.TYPE["ATTACK"] = 2
-GameObject.TYPE[2] = "ATTACK"
-
-GameObject.TYPE["ENEMY"] = 3
-GameObject.TYPE[3] = "ENEMY"
-
-GameObject.TYPE["ENEMYATTACK"] = 4
-GameObject.TYPE[4] = "ENEMYATTACK"
-
-GameObject.TYPE["DEADENEMY"] = 5
-GameObject.TYPE[5] = "DEADENEMY"
-
-GameObject.TYPE["DEATH"] = 6
-GameObject.TYPE[6] = "DEATH"
-
-GameObject.TYPE["BONUS"] = 7
-GameObject.TYPE[7] = "BONUS"
+useful.bind(GameObject.TYPE, "PLAYER", 1)
+useful.bind(GameObject.TYPE, "ATTACK", 2)
+useful.bind(GameObject.TYPE, "ENEMY", 3)
+useful.bind(GameObject.TYPE, "ENEMYATTACK", 4)
+useful.bind(GameObject.TYPE, "DEADENEMY", 5)
+useful.bind(GameObject.TYPE, "DEATH", 6)
+useful.bind(GameObject.TYPE, "BONUS", 7)
 
 --[[----------------------------------------------------------------------------
 Collisions
