@@ -159,7 +159,6 @@ function Player:eventCollision(other)
   -- collision with enemy attack
   if other.type == GameObject.TYPE.ENEMYATTACK then
     self:life_change(-other.weapon.DAMAGE)
-	  calin:play()
     self.baffed = true
     -- knock-back
     push = useful.sign(self:centreX() - other.launcher:centreX())
@@ -198,8 +197,6 @@ function Player:update(dt, level)
       -- check if on the ground
       if (not self.airborne) then
         self.dy = -Player.BOOST
-        saut:setVolume(0.1)
-		    saut:play()
       end
     end
 
@@ -240,7 +237,6 @@ function Player:update(dt, level)
     	-- ... light
     	if self.requestLightAttack then
       	weapon = self.LIGHTATTACK
-      	baffe:play()
     	end
     	-- ... magic
     	if self.requestMagicAttack then

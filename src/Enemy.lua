@@ -98,13 +98,12 @@ function Enemy:life_change(nb, level)
 
     newLife = 0
     self.purge = true
-    local deadEnemy = DeadEnemy(self.x, self.y, 64, 128)
-    deadEnemy.dx, deadEnemy.dy = self.dx, self.dy
-    level:addObject(deadEnemy)
-	cri_mort:play()
+    --local deadEnemy = DeadEnemy(self.x, self.y, 64, 128)
+    --deadEnemy.dx, deadEnemy.dy = self.dx, self.dy
+    --level:addObject(deadEnemy)
+    --cri_mort:play()
   end
 
-  self.animationmarche = newAnimation(love.graphics.newImage("assets/sprites/EnnemiWalkerSpriteBlood.png"), 128, 128, 0.1, 0, 0, 0, { 1, 2, 3, 4, 5, 6 })
   self.life = newLife
 end
 
