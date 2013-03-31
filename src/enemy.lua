@@ -28,6 +28,8 @@ local DeadEnemy   = require("DeadEnemy")
 ENEMY CLASS
 --]]------------------------------------------------------------
 
+local SPRITE_SHEET = love.graphics.newImage("assets/sprites/enemy.png")
+
 --[[------------------------------------------------------------
 Initialise
 --]]
@@ -39,7 +41,7 @@ Enemy:include(Character)
 
 function Enemy:init(x, y, w, h)
   -- base constructor
-  Character.init(self, x, y, w, h, "assets/sprites/EnnemiWalkerSprite.png")
+  Character.init(self, x, y, w, h, SPRITE_SHEET)
   self.requestJump = false
   self.requestMoveX = 0
 
@@ -53,8 +55,7 @@ function Enemy:init(x, y, w, h)
   self.animationcurrent = self.animationmarche
 
   self.stunned = false
-  fic="assets/audio/cri_mort.ogg"
-  cri_mort = love.audio.newSource(fic,"static")
+  cri_mort = love.audio.newSource("assets/audio/cri_mort.ogg", "static")
 
 end
 
@@ -215,8 +216,6 @@ function Enemy:update(dt, level)
       -- check if on the ground
       if (not self.airborne) then
         self.dy = -Enemy.BOOST
-        print("teddy jump")
-        saut:play()
       end
     end
 

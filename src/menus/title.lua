@@ -42,12 +42,17 @@ function state:init()
   PLAY = love.graphics.newImage("assets/menus/button_play.png")
   CREDITS = love.graphics.newImage("assets/menus/button_credits.png")
   CREDITS_TEXT = love.graphics.newImage("assets/menus/credits_fr.png")
+  
+  -- only display splash screen the first time
+  self.timer = 1
 end
 
 function state:enter()
-  self.timer = 1
+  -- reset options
   self.option = 1
   self.credits = false
+  
+  -- restart music
   --MUSIC:play()
 end
 

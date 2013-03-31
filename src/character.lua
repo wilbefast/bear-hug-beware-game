@@ -29,10 +29,9 @@ CHARACTER CLASS
 
 local Character = Class
 {
-  init = function(self, x, y, w, h, imagefile)
+  init = function(self, x, y, w, h, image)
     GameObject.init(self, x, y, w, h)
-    self.image     = love.graphics.newImage(imagefile)
-    self.deadImage = love.graphics.newImage("assets/sprites/sol.png")
+    self.image = image
   end,
 
   life       = 100,

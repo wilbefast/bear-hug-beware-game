@@ -28,6 +28,8 @@ local AnAl        = require("AnAL/AnAL")
 CHARACTER CLASS
 --]]------------------------------------------------------------
 
+local SPRITE_SHEET = love.graphics.newImage("assets/sprites/hero.png")
+
 --[[------------------------------------------------------------
 Initialise
 --]]
@@ -37,8 +39,7 @@ local Player = Class
   type  =  GameObject.TYPE["PLAYER"],
 
   init = function(self, x, y)
-    Character.init(self, x, y, 64, 128, 
-                    "assets/sprites/HerosSprite.png")
+    Character.init(self, x, y, 64, 128, SPRITE_SHEET)
     self.animationmarche = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 1, 2, 3, 4, 5, 6, 7, 8 })
     self.animationmarche:setSpeed(1,2)
     self.animationsautdebut = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 17, 18 })
@@ -71,33 +72,24 @@ local Player = Class
     self.animationlaunchedMagicAttack = newAnimation(love.graphics.newImage("assets/sprites/MagicHerosFx.png"), 256, 256, 0.1, 0, 0, 0, { 1, 2, 3, 4, 5, 6, 7, 8, 9 })
     self.animationlaunchedMagicAttack:setSpeed(1,2)
     self.animationlaunchedMagicAttack:setMode("once")
-
-	fond = love.image.newImageData("assets/decors/horizon.png")
-   horizon = love.graphics.newImage(fond)
-   plan_1 = love.image.newImageData("assets/decors/plan1.png")
-   plan1 = love.graphics.newImage(plan_1)
-   fichier="assets/audio/calin.ogg"
-  calin = love.audio.newSource(fichier,"static")
-   son_explosion = "assets/audio/explosion_magique.ogg"
-  explosion = love.audio.newSource(son_explosion,"static")
+    
     self.animationcurrent = self.animationmarche
-	path = "assets/audio/prise_de_degats.ogg"
-  baffe= love.audio.newSource(path, "static")
-  
+
+  --[[
   im = love.graphics.newImage("assets/hud/spriteVie.png")
   self.barre_life = newAnimation(im, 186, 62, 0.1, 0, 0, 0, {1,2,3,4,5,6,7,8,9})
   self.barre_life:setMode("once")
   self.barre_mana = newAnimation(im, 186, 62, 0.1, 0, 0, 0, {10})
-  self.barre_mana:setMode("once")
+  self.barre_mana:setMode("once") --]]
     --marche self.animation:setAnimation({ 1, 3, 5, 7, 9, 11, 13, 15 })
     --saut self.animation:setAnimation({ 21, 22, 23, 24, 26 })
     --attaque self.animation:setAnimation({ 17, 18, 19 })
     --touched self.animation:setAnimation({ 20 })
     --self.animation:setSpeed(1,2)
-	self.barre_life:seek(1)
+	--[[self.barre_life:seek(1)
 	  fic_saut = "assets/audio/saut.ogg"
   saut = love.audio.newSource(fic_saut,"static")
-  self.life=90
+  self.life=90 --]]
 end,
 }
 Player:include(Character)
@@ -190,6 +182,7 @@ Game loop
 --]]
 
 function Player:update(dt, level)
+  
   --update player only if alive
   if self.life > 0 then
     
@@ -354,11 +347,6 @@ function Player:draw()
   if self.animationlaunchedMagicAttack:isPlaying() then
     self.animationlaunchedMagicAttack:draw(self.x - 96, self.y - 32);
   end
-  -- FIXME debug
-  --GameObject.draw(self)
-  
-  --love.graphics.print(self.LIGHTATTACK.reloadTime, self.x, self.y)
-  --love.graphics.print(self.MAGICATTACK.reloadTime, self.x, self.y+40)
 end
 
 return Player

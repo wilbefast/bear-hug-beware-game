@@ -44,7 +44,7 @@ local function setBestResolution(desired_w, desired_h, fullscreen)
   -- get and sort the available screen modes from best to worst
   local modes = love.graphics.getModes()
   table.sort(modes, function(a, b) 
-    return a.width*a.height < b.width*b.height end) --FIXME
+    return a.width*a.height > b.width*b.height end) --FIXME
     
   -- try each mode from best to worst
   for i, m in ipairs(modes) do
@@ -63,12 +63,16 @@ LOVE CALLBACKS
 --]]------------------------------------------------------------
 
 function love.load(arg)
+    
   -- set up the screen resolution
-  if (not setBestResolution(1280, 720, false)) then --FIXME
+  if (not setBestResolution(1280, 720, true)) then --FIXME
     print("Failed to set mode")
     love.event.push("quit")
   end
   
+  -- hide the mouse
+  love.mouse.setVisible(false)
+
   -- go to the initial gamestate
   GameState.switch(title)
 end
@@ -89,9 +93,10 @@ function keyreleased(key, uni)
   GameState.keyreleased(key)
 end
 
-MAX_DT = 1/60
+MIN_DT = 1/60
+MAX_DT = 1/30
 function love.update(dt)
-  dt = math.min(MAX_DT, dt)
+  dt = math.max(MIN_DT, math.min(MAX_DT, dt))
   GameState.update(dt)
 end
 
