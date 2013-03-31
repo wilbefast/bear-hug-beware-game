@@ -17,7 +17,7 @@ Lesser General Public License for more details.
 IMPORTS
 --]]------------------------------------------------------------
 
-local Character   = require("character")
+local Character   = require("Character")
 local GameObject  = require("GameObject")
 local Attack      = require("Attack")
 local Class       = require("hump/class")

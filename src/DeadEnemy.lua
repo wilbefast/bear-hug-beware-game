@@ -17,7 +17,7 @@ Lesser General Public License for more details.
 IMPORTS
 --]]------------------------------------------------------------
 
-local Character   = require("character")
+local Character   = require("Character")
 local GameObject  = require("GameObject")
 local Class       = require("hump/class")
 local Timer       = require("hump.timer")

@@ -18,7 +18,7 @@ IMPORTS
 --]]------------------------------------------------------------
 
 local Class       = require("hump/class")
-local Character   = require("character")
+local Character   = require("Character")
 local GameObject  = require("GameObject")
 local Attack      = require("Attack")
 local useful      = require("useful")

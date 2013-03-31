@@ -20,7 +20,7 @@ IMPORTS
 
 local Level = require("Level")
 local Camera = require("hump/camera")
-local Player = require("player")
+local Player = require("Player")
 
 --[[------------------------------------------------------------
 GAME GAMESTATE
