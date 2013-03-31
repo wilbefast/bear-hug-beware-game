@@ -242,7 +242,6 @@ function Player:update(dt, level)
     	if self.requestMagicAttack then
       	if (self.magic >= self.MAGICATTACK.MANA) then
         	weapon = self.MAGICATTACK
-          explosion:play()
           self.animationlaunchedMagicAttack:reset();
           self.animationlaunchedMagicAttack:play()
       	end

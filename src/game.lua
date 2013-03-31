@@ -29,10 +29,13 @@ GAME GAMESTATE
 local state = GameState.new()
 
 function state:init()
+  
   -- create objects
-
-  self.level         = Level()
-  self.camera        = Camera(0, 0)
+  self.level = Level()
+  
+  -- set up camera
+  self.camera = Camera(0, 0)
+  self.camera:zoomTo(math.max(SCALE_X, SCALE_Y))
 
   self.xLifeBarre  = 150
   self.yLifeBarre  = 100

@@ -87,8 +87,9 @@ end
 function state:update(dt)
   -- countdown
   self.pageTime = self.pageTime - dt
-  if self.pageTime < PAGE_DURATION then
+  if self.pageTime <= 0 then
     turnPage(self)
+    self.pageTime = PAGE_DURATION
   end
 end
 
