@@ -17,7 +17,7 @@ Lesser General Public License for more details.
 RESOURCES
 --]]------------------------------------------------------------
 
-local MUSIC, BACKGROUND
+local MUSIC, BACKGROUND, TITLE, PLAY, CREDITS
 
 --[[------------------------------------------------------------
 MAIN MENU (TITLE)
@@ -29,6 +29,9 @@ function state:init()
   -- load resources
   MUSIC = love.audio.newSource("assets/audio/bisounours.ogg")
   BACKGROUND = love.graphics.newImage("assets/menus/menu_background.jpg")
+  TITLE = love.graphics.newImage("assets/menus/title.png")
+  PLAY = love.graphics.newImage("assets/menus/button_play.png")
+  CREDITS = love.graphics.newImage("assets/menus/button_credits.png")
 end
 
 function state:enter()
@@ -62,7 +65,14 @@ end
 
 function state:draw()
   -- draw the background
-  love.graphics.draw(BACKGROUND, 0, 0, 0, SCALE_X, SCALE_Y)
+  scaled_draw(BACKGROUND)
+  
+  -- draw the title
+  scaled_draw(TITLE, 370, 42)
+  
+  -- draw the buttons
+  --scaled_draw(PLAY, 840, 390)
+  --scaled_draw(CREDITS, 840, 390)
 end
 
 

@@ -52,16 +52,16 @@ function state:init()
   local TEXT_1 = love.graphics.newImage("assets/menus/prologue1_fr.png")
   local BANISHED = love.graphics.newImage("assets/menus/banished.png")
   table.insert(PAGES, function() 
-    love.graphics.draw(BANISHED, 242*SCALE_X, 205*SCALE_Y, 0, SCALE_X, SCALE_Y)
-    love.graphics.draw(TEXT_1, 700*SCALE_X, 116*SCALE_Y, 0, SCALE_X, SCALE_Y)
+    scaled_draw(BANISHED, 242, 205)
+    scaled_draw(TEXT_1, 700, 116)
   end)
 
   -- page 2
   local TEXT_2 = love.graphics.newImage("assets/menus/prologue2_fr.png")
   local HUGLAND = love.graphics.newImage("assets/menus/hugland.png")
   table.insert(PAGES, function() 
-    love.graphics.draw(TEXT_2, 285*SCALE_X, 198*SCALE_Y, 0, SCALE_X, SCALE_Y)
-    love.graphics.draw(HUGLAND, 705*SCALE_X, 159*SCALE_Y, 0, SCALE_X, SCALE_Y)
+    scaled_draw(TEXT_2, 285, 198)
+    scaled_draw(HUGLAND, 705, 159)
   end)
 end
 
@@ -95,7 +95,7 @@ end
 
 function state:draw()
   -- draw the background
-  love.graphics.draw(BACKGROUND, 0, 0, 0, SCALE_X, SCALE_Y)
+  scaled_draw(BACKGROUND)
   
   -- draw the current page
   PAGES[self.currentPage]()

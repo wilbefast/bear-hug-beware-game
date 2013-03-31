@@ -25,21 +25,21 @@ game = require("game")
 
 
 --[[------------------------------------------------------------
-GLOBALS
+DEAL WITH DIFFERENT RESOLUTIONS (scale images)
 --]]------------------------------------------------------------
 
-SCALE_X, SCALE_Y = 1, 1
+local SCALE_X, SCALE_Y = 1, 1
 
-
---[[------------------------------------------------------------
-SUBROUTINES
---]]------------------------------------------------------------
+function scaled_draw(img, x, y, rot, sx, sy)
+  x, y, rot, sx, sy = (x or 0), (y or 0), (rot or 0), (sx or 1), (sy or 1)
+  love.graphics.draw(img, x*SCALE_X, y*SCALE_Y, rot, sx*SCALE_X, sy*SCALE_Y)
+end
 
 local function setBestResolution(desired_w, desired_h, fullscreen)
   -- get and sort the available screen modes from best to worst
   local modes = love.graphics.getModes()
   table.sort(modes, function(a, b) 
-    return a.width*a.height < b.width*b.height end)
+    return a.width*a.height < b.width*b.height end) --FIXME
     
   -- try each mode from best to worst
   for i, m in ipairs(modes) do
@@ -59,7 +59,7 @@ LOVE CALLBACKS
 
 function love.load(arg)
   -- set up the screen resolution
-  if (not setBestResolution(1280, 720, false)) then
+  if (not setBestResolution(1280, 720, false)) then --FIXME
     print("Failed to set mode")
     love.event.push("quit")
   end
