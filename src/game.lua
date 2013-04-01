@@ -22,6 +22,7 @@ local Level = require("Level")
 local Camera = require("hump/camera")
 local Player = require("Player")
 
+
 --[[------------------------------------------------------------
 CONSTANTS
 --]]------------------------------------------------------------
@@ -30,7 +31,9 @@ CONSTANTS
 local FOLLOW_DIST = 150
 
 -- background images
-local HORIZON, QHORIZON, MOUNTAINS, QMOUTAINS
+local SKY
+local HORIZON, HORIZON_W, HORIZON_H, QHORIZON 
+local MOUNTAINS, MOUNTAINS_W, MOUNTAINS_H, QMOUTAINS
 
 --[[------------------------------------------------------------
 GAME GAMESTATE
@@ -46,16 +49,19 @@ function state:init()
   -- set up camera
   self.camera = Camera(0, 0)
 
+  SKY = love.graphics.newImage("assets/background/sky.jpg")
   
   HORIZON = love.graphics.newImage("assets/background/horizon.png")
   HORIZON:setWrap('repeat', 'clamp')
-  QHORIZON = love.graphics.newQuad(0, 0, DEFAULT_W*3, HORIZON:getHeight(), 
-                                  HORIZON:getWidth(), HORIZON:getHeight())
+  HORIZON_W, HORIZON_H = HORIZON:getWidth(), HORIZON:getHeight()
+  QHORIZON = love.graphics.newQuad(0, 0, DEFAULT_W*3, HORIZON_H, 
+                                  HORIZON_W, HORIZON_H)
   
   MOUNTAINS = love.graphics.newImage("assets/background/mountains.png")
   MOUNTAINS:setWrap('repeat', 'clamp')
-  QMOUNTAINS = love.graphics.newQuad(0, 0, DEFAULT_W*3, MOUNTAINS:getHeight(), 
-                                  MOUNTAINS:getWidth(), MOUNTAINS:getHeight())
+  MOUNTAINS_W, MOUNTAINS_H = MOUNTAINS:getWidth(), MOUNTAINS:getHeight()
+  QMOUNTAINS = love.graphics.newQuad(0, 0, DEFAULT_W*3, MOUNTAINS_H, 
+                                  MOUNTAINS_W, MOUNTAINS_H)
   
   --plan1 = love.graphics.newImage("assets/decors/plan1.png")
   --plan = love.graphics.newImage("assets/decors/plan.png")
@@ -188,11 +194,32 @@ function state:draw()
                           love.graphics.getWidth(), 
                           love.graphics.getHeight())
 	
-  local offset = (math.floor(view.x / DEFAULT_W))*DEFAULT_W
   
   self.camera:attach()
-    love.graphics.drawq(HORIZON, QHORIZON, offset - (view.x/20)%DEFAULT_W, 400)
-    love.graphics.drawq(MOUNTAINS, QMOUNTAINS, offset - (view.x/15)%DEFAULT_W, 500)
+  
+    local base_offset = (math.floor(view.x / DEFAULT_W))*DEFAULT_W
+    
+    -- draw sky
+    if view.y < 300 then
+    love.graphics.setColor(168, 230, 227)
+      love.graphics.rectangle("fill", view.x, view.y, DEFAULT_W, 300 - view.y)
+    love.graphics.setColor(255, 255, 255)
+    end
+    love.graphics.draw(SKY, view.x, 300)
+  
+    -- draw horizon mountains
+    local horizon_offset = base_offset - (view.x/20)%DEFAULT_W
+    love.graphics.drawq(HORIZON, QHORIZON, horizon_offset, 400)
+    love.graphics.setColor(160, 61, 96)
+      love.graphics.rectangle("fill", view.x, 400+HORIZON_H, DEFAULT_W, 400)
+    love.graphics.setColor(255, 255, 255)
+      
+    -- draw background mountains
+    local mountains_offset = base_offset - (view.x/15)%DEFAULT_W
+    love.graphics.drawq(MOUNTAINS, QMOUNTAINS, mountains_offset, 500)
+    love.graphics.setColor(104, 161, 127)
+      love.graphics.rectangle("fill", view.x, 500+MOUNTAINS_H, DEFAULT_W, view.h - (500 + MOUNTAINS_H))
+    love.graphics.setColor(255, 255, 255)
     
     
     --[[for i=0,26 do
@@ -202,8 +229,9 @@ function state:draw()
       love.graphics.draw(plan3,0+i*(1280),580-((1280-self.camera.y)/40))
     end --]]
     self.level:draw(view)
+    --love.graphics.rectangle("fill", base_offset, 500, 3*DEFAULT_W, 100)
   self.camera:detach()
-
+  
 
   -- barre de magie et life :
 
