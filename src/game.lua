@@ -29,6 +29,9 @@ CONSTANTS
 -- camera
 local FOLLOW_DIST = 150
 
+-- background images
+local HORIZON, QHORIZON, MOUNTAINS, QMOUTAINS
+
 --[[------------------------------------------------------------
 GAME GAMESTATE
 --]]------------------------------------------------------------
@@ -43,12 +46,17 @@ function state:init()
   -- set up camera
   self.camera = Camera(0, 0)
 
-  self.xLifeBarre  = 150
-  self.yLifeBarre  = 100
-  self.xMagicBarre = 150
-  self.yMagicBarre = 150
   
-  --horizon = love.graphics.newImage("assets/decors/horizon.png")
+  HORIZON = love.graphics.newImage("assets/background/horizon.png")
+  HORIZON:setWrap('repeat', 'clamp')
+  QHORIZON = love.graphics.newQuad(0, 0, DEFAULT_W*3, HORIZON:getHeight(), 
+                                  HORIZON:getWidth(), HORIZON:getHeight())
+  
+  MOUNTAINS = love.graphics.newImage("assets/background/mountains.png")
+  MOUNTAINS:setWrap('repeat', 'clamp')
+  QMOUNTAINS = love.graphics.newQuad(0, 0, DEFAULT_W*3, MOUNTAINS:getHeight(), 
+                                  MOUNTAINS:getWidth(), MOUNTAINS:getHeight())
+  
   --plan1 = love.graphics.newImage("assets/decors/plan1.png")
   --plan = love.graphics.newImage("assets/decors/plan.png")
   --plan3 = love.graphics.newImage("assets/decors/elem.png")
@@ -62,11 +70,19 @@ function state:init()
   --jeu_son = love.audio.newSource("assets/audio/themejeu.ogg")
  -- happy = love.audio.newSource("assets/audio/happy.ogg", "static")
   
+  
+  --- GUI health bar
+  --[[
+  self.xLifeBarre  = 150
+  self.yLifeBarre  = 100
+  self.xMagicBarre = 150
+  self.yMagicBarre = 150
+  
   im = love.graphics.newImage("assets/hud/spriteVie.png")
   self.gui_life = newAnimation(im, 186, 62, 0.1, 0, 0, 0, {1,2,3,4,5,6,7,8,9})
   self.gui_life:setMode("once")
   self.gui_magic = newAnimation(im, 186, 62, 0.1, 0, 0, 0, {10})
-  self.gui_magic:setMode("once")
+  self.gui_magic:setMode("once") --]]
   
   --jeu_son:play()
   --jeu_son:setLooping(true)
@@ -155,10 +171,10 @@ function state:update(dt)
   self.camera:lookAt(self.cam_x, self.player.y)
   
   -- update GUI
-  if self.player.life ~= 0 then
+  --[[if self.player.life ~= 0 then
     self.gui_life:seek(((90 - self.player.life)/10) + 1)
     self.gui_magic:seek(((90 - self.player.magic)/10) + 1)
-  end
+  end --]]
   --self.gui_magic:update(dt)
   --self.gui_life:update(dt)
 
@@ -172,8 +188,13 @@ function state:draw()
                           love.graphics.getWidth(), 
                           love.graphics.getHeight())
 	
-
+  local offset = (math.floor(view.x / DEFAULT_W))*DEFAULT_W
+  
   self.camera:attach()
+    love.graphics.drawq(HORIZON, QHORIZON, offset - (view.x/20)%DEFAULT_W, 400)
+    love.graphics.drawq(MOUNTAINS, QMOUNTAINS, offset - (view.x/15)%DEFAULT_W, 500)
+    
+    
     --[[for i=0,26 do
       love.graphics.draw(horizon,0+i*(1280),400-((1280-self.camera.y)/40))
       love.graphics.draw(plan1,0+i*(1280),580-((1280-self.camera.y)/40))
