@@ -39,16 +39,18 @@ local Level = Class
 }
 
 function Level:load(filename)
-
+  -- load lua-parsed "Tiled" map
   local mapfile = require(filename)
   
-  -- load collision grid
+  -- parse collision grid
   self.tilegrid = TileGrid(mapfile)
+  self.w = self.tilegrid.w*self.tilegrid.tilew
+  self.h = self.tilegrid.h*self.tilegrid.tileh
   
-  -- load graphics tile grid
+  -- parse graphics tile grid
   self.imagegrid = ImageGrid(mapfile)
   
-  -- load objects
+  -- parse objects
   self.object_types = {}
   -- ... using this function
   function parse_objects(table, constructor)
