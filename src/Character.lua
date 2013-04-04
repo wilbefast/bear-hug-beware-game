@@ -107,6 +107,7 @@ Game loop
 --]]
 
 function Character:update(dt, level)
+  
   -- count-down timer
   if self.timer > 0 then
     self.timer = self.timer - dt
@@ -132,15 +133,24 @@ function Character:update(dt, level)
     end
   end
   
+  -- animate
+  if self.view then
+    self.view:update(dt)
+  end
+  
   -- base update
   GameObject.update(self, dt, level)
 end
 
 function Character:draw()
-  -- FIXME debug
-  love.graphics.print(Character.STATE[self.state], self.x, self.y)
-  love.graphics.print(self.timer, self.x + 64, self.y)
-  GameObject.draw(self)
+  if self.view then
+    self.view:draw(self)
+  else
+    -- FIXME debug view
+    love.graphics.print(Character.STATE[self.state], self.x, self.y)
+    love.graphics.print(self.timer, self.x + 64, self.y)
+    GameObject.draw(self)
+  end
 end
 
 return Character
