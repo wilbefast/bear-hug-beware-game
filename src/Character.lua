@@ -144,6 +144,7 @@ end
 
 function Character:draw()
   if self.view then
+    self.view.flip_x = (self.facing < 0)
     self.view:draw(self)
   else
     -- FIXME debug view

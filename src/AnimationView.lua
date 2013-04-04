@@ -33,7 +33,6 @@ local AnimationView = Class
     self.speed = (speed or 0.0)
     self.frame = (frame or math.random(self.anim.n_frames))
   end,
-      
 }
   
   
@@ -42,7 +41,8 @@ Game loop
 --]]
     
 function AnimationView:draw(object)
-  self.anim:draw(object.x, object.y, self.frame)
+  self.anim:draw(object.x, object.y, self.frame, 
+                  self.flip_x, self.flip_y, object.w, self.offy)
 end
 
 function AnimationView:update(dt)

@@ -55,12 +55,14 @@ local Animation = Class
 Game loop
 --]]
   
-function Animation:draw(x, y, subimage, ox, oy)
+function Animation:draw(x, y, subimage, flip_x, flip_y, ox, oy)
   subimage = (math.min(self.n_frames, math.floor(subimage)) 
-              or 1)
+              or 1)     
+  flip_x = (flip_x or self.flip_x)
+  flip_y = (flip_y or self.flip_y)
   love.graphics.drawq(self.img, self.quads[subimage], x, y, 0,
-      useful.tri(self.flip_x, -1, 1), 
-      useful.tri(self.flip_y, -1, 1),
+      useful.tri(flip_x, -1, 1), 
+      useful.tri(flip_y, -1, 1),
       ox, oy)
 end
 

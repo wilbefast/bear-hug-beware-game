@@ -84,7 +84,8 @@ local Player = Class
     
     ---- animation
     self.view = AnimationView(ANIM_STAND)
-    self.view.speed = 7
+    self.view.offy = -7
+    self.view.speed = 6
     
     --self.animationcurrent = self.animationmarche
 
