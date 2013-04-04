@@ -82,7 +82,7 @@ end
 function Character:attack(weapon)
   -- reload-time and mana-cost
   weapon.reloadTime = weapon.RELOAD_TIME
-  self:magic_change(-weapon.MANA)
+  self:addMagic(-weapon.MANA)
   -- create the attack object
   return (Attack(
     self:centreX() + weapon.REACH*self.facing ,
@@ -94,11 +94,11 @@ end
 Resources
 --]]
 
-function Character:life_change(amount)
+function Character:addLife(amount)
   self.life = math.min(100, math.max(0, self.life + amount))
 end
 
-function Character:magic_change(amount)
+function Character:addMagic(amount)
   self.magic = math.min(100, math.max(0, self.magic + amount))
 end
 

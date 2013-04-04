@@ -22,14 +22,22 @@ local Character   = require("Character")
 local GameObject  = require("GameObject")
 local Attack      = require("Attack")
 local useful      = require("useful")
-local AnAl        = require("AnAL/AnAL")
+--local AnAl        = require("AnAL/AnAL")
+local Animation   = require("Animation")
+local AnimationView = require("AnimationView")
 
 --[[------------------------------------------------------------
 CHARACTER CLASS
 --]]------------------------------------------------------------
 
 local SPRITE_SHEET = love.graphics.newImage("assets/sprites/hero.png")
-
+local ANIM_WALK = Animation(SPRITE_SHEET, 128, 128, 8)
+local ANIM_STAND = Animation(SPRITE_SHEET, 128, 128, 8, 0, 128)
+local ANIM_JUMP = Animation(SPRITE_SHEET, 128, 128, 6, 0, 256)
+local ANIM_MAGIC = Animation(SPRITE_SHEET, 128, 128, 2, 768, 256)
+local ANIM_BUTT = Animation(SPRITE_SHEET, 128, 128, 3, 0, 384)
+local ANIM_PAIN = Animation(SPRITE_SHEET, 128, 128, 1, 384, 384)
+local ANIM_DEAD = Animation(SPRITE_SHEET, 128, 128, 1, 512, 384)
 --[[
 self.animationmarche = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 1, 2, 3, 4, 5, 6, 7, 8 })
 self.animationmarche:setSpeed(1,2)
@@ -71,10 +79,11 @@ local Player = Class
   -- constructor
   init = function(self, x, y)
   
-    -- super
+    ---- Character
     Character.init(self, x, y, 64, 128, SPRITE_SHEET)
     
-    
+    ---- animation
+    self.view = AnimationView(ANIM_STAND)
     
     --self.animationcurrent = self.animationmarche
 
@@ -162,7 +171,7 @@ end
 function Player:eventCollision(other)
   -- collision with enemy attack
   if other.type == GameObject.TYPE.ENEMYATTACK then
-    self:life_change(-other.weapon.DAMAGE)
+    self:addLife(-other.weapon.DAMAGE)
     self.baffed = true
     -- knock-back
     push = useful.sign(self:centreX() - other.launcher:centreX())
@@ -170,7 +179,7 @@ function Player:eventCollision(other)
   
   -- collision with "death" (bottomless pit)
   elseif other.type == GameObject.TYPE.DEATH then
-    self.life = 0
+    self:addLife(-math.huge)
 
   -- collision with "bonus" 
   elseif other.type == GameObject.TYPE.BONUS then

@@ -45,17 +45,17 @@ function Enemy:init(x, y, w, h)
   self.requestJump = false
   self.requestMoveX = 0
 
-  self.animationmarche = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 1, 2, 3, 4, 5, 6 })
-  self.animationmarche:setSpeed(1,2)
+  --self.animationmarche = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 1, 2, 3, 4, 5, 6 })
+  --self.animationmarche:setSpeed(1,2)
 
-  self.animationtouched = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 7 })
-  self.animationtouched:setSpeed(1,2)
-  self.animationtouched:setMode("once")
+  --self.animationtouched = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 7 })
+  --self.animationtouched:setSpeed(1,2)
+  --self.animationtouched:setMode("once")
 
-  self.animationcurrent = self.animationmarche
+  --self.animationcurrent = self.animationmarche
 
   self.stunned = false
-  cri_mort = love.audio.newSource("assets/audio/cri_mort.ogg", "static")
+  --cri_mort = love.audio.newSource("assets/audio/cri_mort.ogg", "static")
 
 end
 
@@ -86,26 +86,6 @@ Enemy.ATTACK =
 -- ai
 Enemy.PERCENT_JUMPING = 0.1
 
---[[------------------------------------------------------------
-Resources
---]]
-
-function Enemy:life_change(nb, level)
-  local newLife = self.life + nb
-  if newLife <= 0 then
-    local player = level:getObject(GameObject.TYPE["PLAYER"])
-    player:magic_change(player.MAXMANA*0.2)
-
-    newLife = 0
-    self.purge = true
-    --local deadEnemy = DeadEnemy(self.x, self.y, 64, 128)
-    --deadEnemy.dx, deadEnemy.dy = self.dx, self.dy
-    --level:addObject(deadEnemy)
-    --cri_mort:play()
-  end
-
-  self.life = newLife
-end
 
 --[[------------------------------------------------------------
 Collisions
@@ -129,7 +109,7 @@ function Enemy:eventCollision(other, level)
     self:setState(Character.STATE.STUNNED)
     self.timer = other.weapon.STUN_TIME
     -- lose life
-    self:life_change(-other.weapon.DAMAGE, level)
+    self:addLife(-other.weapon.DAMAGE, level)
   
   -- collision with player
   elseif other.type == GameObject.TYPE.PLAYER then
@@ -140,7 +120,7 @@ function Enemy:eventCollision(other, level)
   
   -- collision with death
   elseif other.type == GameObject.TYPE.DEATH then
-    self:life_change(-math.huge, level)
+    self:addLife(-math.huge)
   
   -- collision with other enemy
   elseif other.type == GameObject.TYPE.ENEMY then
@@ -213,12 +193,13 @@ function Enemy:update(dt, level)
     if (not self.airborne) then
       self.dy = -Enemy.BOOST
     end
+    self.requestJump = false
   end
 
-  self.requestJump = false
+  
 
 
-  if self.animationcurrent == self.animationtouched and not self.animationtouched:isPlaying()
+  --[[if self.animationcurrent == self.animationtouched and not self.animationtouched:isPlaying()
   then
     self.animationcurrent = self.animationmarche
     self.animationcurrent:play()
@@ -229,9 +210,9 @@ function Enemy:update(dt, level)
     self.animationcurrent:reset()
     self.animationcurrent:play()
     self.baffed = false
-  end
+  end 
 
-  self.animationcurrent:update(dt)
+  self.animationcurrent:update(dt) --]]
   
   -- base update
   Character.update(self, dt, level)

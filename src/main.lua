@@ -83,6 +83,9 @@ function love.load(arg)
     love.event.push("quit")
   end
   
+  -- initialise random
+  math.randomseed(os.time())
+  
   -- hide the mouse
   love.mouse.setVisible(false)
 

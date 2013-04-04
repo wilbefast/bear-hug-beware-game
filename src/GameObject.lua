@@ -220,13 +220,15 @@ function GameObject:update(dt, level)
 end
 
 function GameObject:draw()
-  -- FIXME debug
-  love.graphics.rectangle("line", self.x, self.y, self.w, self.h)
-  love.graphics.print(GameObject.TYPE[self.type], self.x, self.y+32)
-  
-  
-  if self.type == GameObject.TYPE.ENEMY then
-    love.graphics.print(self.dx, self.x, self.y-32)
+
+  if self.view then
+    self.view:draw(self)
+  else
+    -- FIXME debug view
+    love.graphics.rectangle("line", 
+        self.x, self.y, self.w, self.h)
+    love.graphics.print(GameObject.TYPE[self.type], 
+        self.x, self.y+32)
   end
 end
 
