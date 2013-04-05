@@ -180,22 +180,21 @@ function state:update(dt)
   self.cam_y = self.player.y
   
   -- don't look outside the level bounds
-  local view_w, view_h = love.graphics.getWidth(), love.graphics.getHeight()
   -- ... snap horizontal
-  local cam_left  = self.cam_x - view_w/2
-  local cam_right = cam_left + view_w
-  if cam_left < 160 then
-    self.cam_x = view_w/2 + 160
-  elseif cam_right > self.level.w - 160 then
-    self.cam_x = self.level.w - view_w/2 - 160
+  local cam_left  = self.cam_x - DEFAULT_W/2
+  local cam_right = cam_left + DEFAULT_W
+  if cam_left < 0 then
+    self.cam_x = DEFAULT_W/2
+  elseif cam_right > self.level.w then
+    self.cam_x = self.level.w - DEFAULT_W/2
   end
   -- ... snap vertical
-  local cam_top   = self.cam_y - view_h/2
-  local cam_bottom = cam_top + view_h
-  if cam_top < 120 then
-    self.cam_y = view_h/2 + 120
-  elseif cam_bottom > self.level.h - 120 then
-    self.cam_y = self.level.h - view_h/2 - 120
+  local cam_top   = self.cam_y - DEFAULT_H/2
+  local cam_bottom = cam_top + DEFAULT_H
+  if cam_top < 0 then
+    self.cam_y = DEFAULT_H/2
+  elseif cam_bottom > self.level.h then
+    self.cam_y = self.level.h - DEFAULT_H/2
   end
   
   

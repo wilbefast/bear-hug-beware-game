@@ -2,3 +2,7 @@
 *.DS_Store
 *.Thumbs.db
 *.com.apple.timemachine.supported
+*.dll
+run.bat
+love.exe
+npsession
