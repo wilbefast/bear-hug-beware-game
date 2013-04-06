@@ -22,7 +22,6 @@ local Character   = require("Character")
 local GameObject  = require("GameObject")
 local Attack      = require("Attack")
 local useful      = require("useful")
---local AnAl        = require("AnAL/AnAL")
 local Animation   = require("Animation")
 local AnimationView = require("AnimationView")
 
@@ -51,12 +50,8 @@ local Player = Class
   init = function(self, x, y)
   
     ---- Character
-    Character.init(self, x, y, 64, 128, SPRITE_SHEET)
-    
-    ---- animation
-    self.view = AnimationView(ANIM_STAND)
-    self.view.offy = -7
-    self.view.speed = 6
+    Character.init(self, x, y, 64, 128,
+        ANIM_STAND, ANIM_WALK, ANIM_JUMP, ANIM_PAIN)
   end,
 }
 Player:include(Character)

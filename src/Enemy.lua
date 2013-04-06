@@ -22,7 +22,7 @@ local GameObject  = require("GameObject")
 local Attack      = require("Attack")
 local Class       = require("hump/class")
 local useful      = require("useful")
-local DeadEnemy   = require("DeadEnemy")
+local Animation   = require("Animation")
 
 --[[------------------------------------------------------------
 ENEMY CLASS
@@ -30,6 +30,7 @@ ENEMY CLASS
 
 local SPRITE_SHEET = love.graphics.newImage("assets/sprites/enemy.png")
 
+local ANIM_STAND = Animation(SPRITE_SHEET, 128, 128, 6, 0, 0)
 --[[------------------------------------------------------------
 Initialise
 --]]
@@ -41,22 +42,9 @@ Enemy:include(Character)
 
 function Enemy:init(x, y, w, h)
   -- base constructor
-  Character.init(self, x, y, w, h, SPRITE_SHEET)
+  Character.init(self, x, y, w, h, ANIM_STAND)
   self.requestJump = false
   self.requestMoveX = 0
-
-  --self.animationmarche = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 1, 2, 3, 4, 5, 6 })
-  --self.animationmarche:setSpeed(1,2)
-
-  --self.animationtouched = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 7 })
-  --self.animationtouched:setSpeed(1,2)
-  --self.animationtouched:setMode("once")
-
-  --self.animationcurrent = self.animationmarche
-
-  self.stunned = false
-  --cri_mort = love.audio.newSource("assets/audio/cri_mort.ogg", "static")
-
 end
 
 -- fisix
@@ -114,10 +102,8 @@ function Enemy:eventCollision(other, level)
   -- collision with player
   elseif other.type == GameObject.TYPE.PLAYER then
     self.facing = useful.tri(other:centreX() > self:centreX(), 1, -1)
-    --if self.reloadTime <= 0 and self.warmupTime <= 0 then
-    --  self:startAttack(self.ATTACK, other)
-    --end
-  
+    -- TODO
+    
   -- collision with death
   elseif other.type == GameObject.TYPE.DEATH then
     self:addLife(-math.huge)
@@ -179,41 +165,22 @@ function Enemy:update(dt, level)
     end
   end
 
-
-
+  -- update speed: walk
   local moveDir = useful.sign(self.requestMoveX)
   if moveDir ~= 0 then
     self.dx = self.dx + moveDir*self.MOVE_X*dt
     self.facing = moveDir
   end
 
-  -- jump
+  -- update speed: walk
   if self.requestJump then
     -- check if on the ground
     if (not self.airborne) then
-      self.dy = -Enemy.BOOST
+      self.dy = -self.BOOST
     end
     self.requestJump = false
   end
 
-  
-
-
-  --[[if self.animationcurrent == self.animationtouched and not self.animationtouched:isPlaying()
-  then
-    self.animationcurrent = self.animationmarche
-    self.animationcurrent:play()
-  end
-
-  if self.baffed then
-    self.animationcurrent = self.animationtouched
-    self.animationcurrent:reset()
-    self.animationcurrent:play()
-    self.baffed = false
-  end 
-
-  self.animationcurrent:update(dt) --]]
-  
   -- base update
   Character.update(self, dt, level)
 end
@@ -222,11 +189,6 @@ end
 
 function Enemy:draw()
   Character.draw(self)
-  --[[local x = self.x + 96 * self.facing
-  if self.facing < 0 then
-    x = x + self.w
-  end
-  self.animationcurrent:draw(x, self.y + 16, 0, -self.facing, 1)--]]
 end
 
 

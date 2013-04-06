@@ -21,6 +21,8 @@ local Class      = require("hump/class")
 local GameObject = require("GameObject")
 local useful      = require("useful")
 local Attack      = require("Attack")
+local Animation   = require("Animation")
+local AnimationView = require("AnimationView")
 
 --[[------------------------------------------------------------
 CHARACTER CLASS
@@ -29,9 +31,17 @@ CHARACTER CLASS
 
 local Character = Class
 {
-  init = function(self, x, y, w, h, image)
+  init = function(self, x, y, w, h, astand, awalk, ajump, apain)
     GameObject.init(self, x, y, w, h)
-    self.image = image
+    -- get animations
+    self.anim_stand = astand
+    self.anim_walk = awalk
+    self.anim_jump = ajump
+    self.anim_pain = apain
+    -- creat view
+    self.view = AnimationView(self.anim_stand)
+    self.view.offy = -7
+    self.view.speed = 6
   end,
 
   -- defaults
