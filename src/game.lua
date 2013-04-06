@@ -104,7 +104,7 @@ function state:enter()
   
   -- reset camera
   self.cam_x, self.cam_y = self.player.x, self.player.y
-  self.camera:zoomTo(math.max(SCALE_X, SCALE_Y))
+  self.camera:zoomTo(SCALE_MAX)
   self.camera:lookAt(self.cam_x, self.cam_y)
 
 end
@@ -196,7 +196,6 @@ function state:update(dt)
   elseif cam_bottom > self.level.h then
     self.cam_y = self.level.h - DEFAULT_H/2
   end
-  
   
   -- update camera
   self.camera:lookAt(self.cam_x, self.cam_y)
