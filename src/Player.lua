@@ -32,7 +32,7 @@ CHARACTER CLASS
 local SPRITE_SHEET = love.graphics.newImage("assets/sprites/hero.png")
 local ANIM_WALK = Animation(SPRITE_SHEET, 128, 128, 8)
 local ANIM_STAND = Animation(SPRITE_SHEET, 128, 128, 8, 0, 128)
-local ANIM_JUMP = Animation(SPRITE_SHEET, 128, 128, 6, 0, 256)
+local ANIM_JUMP = Animation(SPRITE_SHEET, 128, 128, 3, 0, 256)
 local ANIM_MAGIC = Animation(SPRITE_SHEET, 128, 128, 2, 768, 256)
 local ANIM_BUTT = Animation(SPRITE_SHEET, 128, 128, 3, 0, 384)
 local ANIM_PAIN = Animation(SPRITE_SHEET, 128, 128, 1, 384, 384)
@@ -158,22 +158,7 @@ Game loop
 
 function Player:update(dt, level)
 
-  ------------- ACCELERATE ---------------------
-  local moveDir = useful.sign(self.requestMoveX)
-  if moveDir ~= 0 then
-    self.dx = self.dx + moveDir*self.MOVE_X*dt
-    self.facing = moveDir
-  end
-
-  ------------- JUMP ---------------------
-  if self.requestJump then
-    -- check if on the ground
-    if (not self.airborne) then
-      self.dy = -Player.BOOST
-    end
-  end
-
-  ------------- ATTACK ---------------------
+  -- attack
   if self.state == Character.STATE.NORMAL then
     -- attack
     local weapon = nil
@@ -194,20 +179,18 @@ function Player:update(dt, level)
     end
   end
         
-  ------------- RELOAD ---------------------
+  -- reload weapons
   function reload(weapon, dt)
     weapon.reloadTime = math.max(0, weapon.reloadTime - dt)
   end
   reload(self.LIGHTATTACK, dt)
   reload(self.MAGICATTACK, dt)
   
-  ------------- RESET INPUT REGISTERS ---------------------
-  self.requestMoveX, self.requestMoveY = 0, 0
-  self.requestJump = false
+  -- reset input
   self.requestLightAttack = false
   self.requestMagicAttack = false
-
-  ------------- BASE UPDATE ---------------------
+  
+  -- base update
   Character.update(self, dt, level)
 end
 

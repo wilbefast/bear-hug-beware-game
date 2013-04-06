@@ -47,7 +47,7 @@ end
 
 function AnimationView:update(dt)
   self.frame = self.frame + self.speed*dt
-  if self.frame > self.anim.n_frames then
+  if self.frame >= self.anim.n_frames + 1 then
     self.frame = self.frame - self.anim.n_frames + 1
     return true -- animation end
   end
@@ -67,7 +67,7 @@ function AnimationView:randomSubimage()
 end
 
 function AnimationView:setAnimation(anim)
-  if self.anim ~= anim then
+  if anim and (self.anim ~= anim) then
     self.anim = anim
     self.frame = 1
   end

@@ -44,7 +44,7 @@ local Animation = Class
     offx, offy = (offx or 0), (offy or 0)
     self.quads= {}
     for i = 1, n_frames do
-      self.quads[i] = love.graphics.newQuad(offx + i*w, offy, 
+      self.quads[i] = love.graphics.newQuad(offx + (i-1)*w, offy, 
           w, h, img:getWidth(), img:getHeight())
     end
   end,
@@ -57,7 +57,7 @@ Game loop
   
 function Animation:draw(x, y, subimage, flip_x, flip_y, ox, oy)
   subimage = (math.min(self.n_frames, math.floor(subimage)) 
-              or 1)     
+              or 1)           
   flip_x = (flip_x or self.flip_x)
   flip_y = (flip_y or self.flip_y)
   love.graphics.drawq(self.img, self.quads[subimage], x, y, 0,

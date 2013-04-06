@@ -89,11 +89,6 @@ function Character:startAttack(weapon, target)
   self.deferred_weapon = weapon
   self.deferred_target = target
   self:setState(Character.STATE.WARMUP, (weapon.WARMUP_TIME or 0))
-  
-  -- start the back-swing/warmup animation
-  if weapon.ANIM_WARMUP then
-    self.view:setAnimation(weapon.ANIM_WARMUP)
-  end
 end
 
 function Character:attack(weapon)
@@ -125,7 +120,11 @@ Game loop
 
 function Character:update(dt, level)
   
-  -- count-down timer
+  --[[------
+  Timing
+  --]]--
+  
+  -- count-down the timer
   if self.timer > 0 then
     self.timer = self.timer - dt
     -- time's up!
@@ -150,10 +149,80 @@ function Character:update(dt, level)
     end
   end
   
-  -- animate
-  if self.view then
-    self.view:update(dt)
+  --[[------
+  Control
+  --]]--
+  
+  -- run
+  local moveDir = useful.sign(self.requestMoveX)
+  if moveDir ~= 0 then
+    self.dx = self.dx + moveDir*self.MOVE_X*dt
+    self.facing = moveDir
   end
+ 
+  -- jump
+  if self.requestJump then
+    -- check if on the ground
+    if (not self.airborne) then
+      -- boost
+      self.dy = -self.BOOST
+    end
+  end
+  
+  
+  --[[------
+  Animation Logic
+  --]]--
+  
+  if self.state == self.STATE.NORMAL then
+  
+    -- ground-based animations
+    if (not self.airborne) and (self.dy == 0) then
+      if moveDir ~= 0 then
+        -- walk
+        self.view:setAnimation(self.anim_walk) 
+      else
+        -- stand
+        self.view:setAnimation(self.anim_stand) 
+      end
+    else
+    -- fly
+      self.view:setAnimation(self.anim_jump) 
+      if self.dy < -500 then
+        -- up
+        self.view.frame = 1
+      elseif self.dy > 300 then
+        -- down
+        self.view.frame = 3
+      else
+        -- apex
+        self.view.frame = 2
+      end
+    end
+    
+    -- animate
+    if self.view then
+      self.view:update(dt)
+    end
+  -- if self.state == self.STATE.NORMAL then
+  elseif self.state == self.STATE_WARMUP then
+    -- back-swing/warmup animation
+    if deferred_weapon.ANIM_WARMUP then
+      self.view:setAnimation(deferred_weapon.ANIM_WARMUP)
+      -- TODO
+      --self.view.frame = deferred_weapon.ANIM_WARMUP.n_frames
+    end
+  end
+    
+
+  
+  --[[------
+  Other
+  --]]--
+  
+  -- reset input
+  self.requestMoveX, self.requestMoveY = 0, 0
+  self.requestJump = false
   
   -- base update
   GameObject.update(self, dt, level)
@@ -161,6 +230,7 @@ end
 
 function Character:draw()
   if self.view then
+    
     self.view.flip_x = (self.facing < 0)
     self.view:draw(self)
   else
