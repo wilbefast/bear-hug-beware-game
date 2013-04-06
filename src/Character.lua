@@ -56,16 +56,18 @@ useful.bind(Character.STATE, "ATTACKING", 4)
 useful.bind(Character.STATE, "DYING", 5)
 useful.bind(Character.STATE, "DEAD", 6)
 
-function onStateChange(new_state)
+function Character:onStateChange(new_state)
   -- override me!
 end
 
 function Character:setState(new_state, timer)
-  onStateChange(new_state)
+  if state ~= new_state then
+    self:onStateChange(new_state)
+    self.state = new_state
+  end
   if timer then
     self.timer = timer
   end
-  self.state = new_state
 end
 
 --[[------------------------------------------------------------
@@ -77,6 +79,11 @@ function Character:startAttack(weapon, target)
   self.deferred_weapon = weapon
   self.deferred_target = target
   self:setState(Character.STATE.WARMUP, (weapon.WARMUP_TIME or 0))
+  
+  -- start the back-swing/warmup animation
+  if weapon.ANIM_WARMUP then
+    self.view:setAnimation(weapon.ANIM_WARMUP)
+  end
 end
 
 function Character:attack(weapon)

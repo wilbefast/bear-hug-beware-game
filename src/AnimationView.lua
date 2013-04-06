@@ -63,7 +63,14 @@ Mutators
 --]]
 
 function AnimationView:randomSubimage()
-  self.subimage = math.rand()
+  self.subimage = math.random(self.anim.n_frames)
+end
+
+function AnimationView:setAnimation(anim)
+  if self.anim ~= anim then
+    self.anim = anim
+    self.frame = 1
+  end
 end
 
 

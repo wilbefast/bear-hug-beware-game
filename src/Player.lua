@@ -38,35 +38,6 @@ local ANIM_MAGIC = Animation(SPRITE_SHEET, 128, 128, 2, 768, 256)
 local ANIM_BUTT = Animation(SPRITE_SHEET, 128, 128, 3, 0, 384)
 local ANIM_PAIN = Animation(SPRITE_SHEET, 128, 128, 1, 384, 384)
 local ANIM_DEAD = Animation(SPRITE_SHEET, 128, 128, 1, 512, 384)
---[[
-self.animationmarche = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 1, 2, 3, 4, 5, 6, 7, 8 })
-self.animationmarche:setSpeed(1,2)
-self.animationsautdebut = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 17, 18 })
-self.animationsautdebut:setSpeed(1,2)
-self.animationsautdebut:setMode("once")
-self.animationsautmilieumontee = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 19 })
-self.animationsautmilieumontee:setSpeed(1,2)
-self.animationsautmilieumontee:setMode("once")
-self.animationsautmilieudescente = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 20 })
-self.animationsautmilieudescente:setSpeed(1,2)
-self.animationsautmilieudescente:setMode("once")
-self.animationsautfin = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 21, 22 })
-self.animationsautfin:setSpeed(1,2)
-self.animationsautfin:setMode("once")
-self.animationattaque = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 25, 26, 27 })
-self.animationattaque:setSpeed(1,2)
-self.animationattaque:setMode("once")
-self.animationtouched = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 28 })
-self.animationtouched:setSpeed(1,2)
-self.animationtouched:setMode("once")
-self.animationattaquemagic = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 23, 24 })
-self.animationattaquemagic:setSpeed(1,2)
-self.animationattaquemagic:setMode("once")
-self.animationwaiting = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 9, 10, 11, 12, 13, 14, 15, 16 })
-self.animationwaiting:setSpeed(1,2)
-self.animationdead = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 29 })
-self.animationdead:setSpeed(1,2)
-self.animationdead:setMode("once") --]]
 
 --[[------------------------------------------------------------
 Initialise
@@ -86,23 +57,6 @@ local Player = Class
     self.view = AnimationView(ANIM_STAND)
     self.view.offy = -7
     self.view.speed = 6
-    
-    --self.animationcurrent = self.animationmarche
-
-  --[[
-  im = love.graphics.newImage("assets/hud/spriteVie.png")
-  self.barre_life = newAnimation(im, 186, 62, 0.1, 0, 0, 0, {1,2,3,4,5,6,7,8,9})
-  self.barre_life:setMode("once")
-  self.barre_mana = newAnimation(im, 186, 62, 0.1, 0, 0, 0, {10})
-  self.barre_mana:setMode("once")
-    --marche self.animation:setAnimation({ 1, 3, 5, 7, 9, 11, 13, 15 })
-    --saut self.animation:setAnimation({ 21, 22, 23, 24, 26 })
-    --attaque self.animation:setAnimation({ 17, 18, 19 })
-    --touched self.animation:setAnimation({ 20 })
-    --self.animation:setSpeed(1,2)
-	self.barre_life:seek(1)
-  saut = love.audio.newSource("assets/audio/saut.ogg", "static")
-  self.life=90 --]]
   end,
 }
 Player:include(Character)
@@ -134,7 +88,8 @@ Player.LIGHTATTACK =
   H = 108,
   KNOCKBACK = 1000,
   KNOCKUP = 150,
-  
+  ANIM_WARMUP = ANIM_BUTT,
+
   reloadTime = 0
 }
 -- combat - magic attack
@@ -153,6 +108,7 @@ Player.MAGICATTACK =
   H = 256,
   KNOCKBACK = 2000,
   KNOCKUP = 300,
+  ANIM_WARMUP = ANIM_MAGIC,
   
   reloadTime = 0
 }
@@ -190,6 +146,16 @@ function Player:eventCollision(other)
     other.purge = true --! FIXME
   end
 end
+
+
+--[[------------------------------------------------------------
+Animations
+--]]
+
+function Player:onStateChange(new_state)
+  -- TODO
+end
+
 
 --[[------------------------------------------------------------
 Game loop
@@ -249,85 +215,9 @@ function Player:update(dt, level)
   ------------- BASE UPDATE ---------------------
   Character.update(self, dt, level)
 end
-          
-    --[[    
-          
-          
-          
-          ------ANIMATION LOGIC--------
-          if self.requestLightAttack then
-            self.animationcurrent = self.animationattaque
-          elseif self.requestMagicAttack then
-            self.animationcurrent = self.animationattaquemagic
-          end
-          self.animationcurrent:reset()
-          self.animationcurrent:play()
-        elseif( not self.airborne and self.animationcurrent ==  self.animationmarche or self.animationcurrent ==  self.animationwaiting)then
-          if self.requestMoveX ~= 0 then
-            self.animationcurrent = self.animationmarche
-            self.animationcurrent:play()
-          else
-            self.animationcurrent = self.animationwaiting
-            self.animationcurrent:play()
-          end
-      end
-
-      
-      
-      
-      ------ANIMATION LOGIC--------
-      if self.baffed then
-        self.animationcurrent = self.animationtouched
-          self.animationcurrent:reset()
-        self.animationtouched:play()
-        self.baffed = false
-      end
-    end
-    
-        if self.airborne then
-      if( useful.sign(self.dy) > 0 ) and (self.warmupTime <= 0) then
-        self.animationcurrent = self.animationsautmilieudescente
-        self.animationsautmilieudescente:play()
-      end
-
-      if( self.animationcurrent ==  self.animationsautdebut and not self.animationsautdebut:isPlaying() ) then
-        self.animationcurrent = self.animationsautmilieumontee
-        self.animationsautmilieumontee:play()
-      end
-      if( self.animationcurrent ==  self.animationmarche) then
-        if( useful.sign(self.requestMoveY) < 0 ) then
-          self.animationcurrent = self.animationsautdebut
-          self.animationsautdebut:play()
-        else
-          self.animationcurrent = self.animationsautmilieudescente
-          self.animationsautmilieudescente:play()
-        end
-      end
-
-    end
-    if( self.animationcurrent ==  self.animationsautfin and not self.animationsautfin:isPlaying() ) then
-      self.animationcurrent = self.animationmarche
-      self.animationmarche:play()
-    end
-    if( not self.airborne and self.animationcurrent ==  self.animationsautmilieudescente) then
-      self.animationcurrent = self.animationsautfin
-      self.animationsautfin:play()
-    end
-
-    self.animationcurrent:update(dt) 
-
-  else
-    self.animationcurrent = self.animationdead
-    self.animationcurrent:reset()
-    self.animationcurrent:play()
-  end 
-
-end--]]
 
 function Player:draw()
   Character.draw(self)
-  --local x = self.x + useful.tri(self.facing < 0, self.w - 32, 32)
-  --self.animationcurrent:draw(x, self.y + 16, 0, self.facing, 1)
 end
 
 return Player

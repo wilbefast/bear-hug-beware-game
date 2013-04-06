@@ -44,7 +44,7 @@ local Animation = Class
     offx, offy = (offx or 0), (offy or 0)
     self.quads= {}
     for i = 1, n_frames do
-      self.quads[i] = love.graphics.newQuad(offx + i*w, offx, 
+      self.quads[i] = love.graphics.newQuad(offx + i*w, offy, 
           w, h, img:getWidth(), img:getHeight())
     end
   end,
