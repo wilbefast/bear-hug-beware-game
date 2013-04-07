@@ -35,7 +35,7 @@ local Giblet = Class
 {
   init = function(self, x, y, dx, dy)
     x, y = x + math.random()*32, y + math.random()*32
-    GameObject.init(self, x, y, 16, 16)
+    GameObject.init(self, x, y, 0, 16)
     self.dx = dx + math.random()*700 - 350
     self.dy = dy - math.random()*300 - 300
     self.view = GameObject.DEBUG_VIEW
@@ -66,7 +66,9 @@ function Giblet:update(dt, level, view)
   
   -- stop and destroy
   if not self.airborne then
-    self.dx = 0
+    if (self.dx ~= 0) or (self.dy ~= 0) then
+      self.dx, self.dy = 0, 0
+    end
     if not self:isColliding(view) then
       self.purge = true
     end
