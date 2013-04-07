@@ -27,7 +27,7 @@ CHARACTER CLASS
 
 local Attack = Class
 {
-  init = function(self, x, y, weapon, launcher)
+  init = function(self, x, y, weapon, launcher, directional)
     GameObject.init(self, x-weapon.W/2, y-weapon.H/2, 
                     weapon.W, weapon.H)
     self.weapon = (weapon or self)

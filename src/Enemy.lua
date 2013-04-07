@@ -30,8 +30,12 @@ ENEMY CLASS
 
 local SPRITE_SHEET = love.graphics.newImage("assets/sprites/enemy.png")
 
-local ANIM_STAND = Animation(SPRITE_SHEET, 128, 128, 6, 0, 0)
-local ANIM_PAIN = Animation(SPRITE_SHEET, 128, 128, 1, 768, 0)
+local ANIM_STAND = 
+  Animation(SPRITE_SHEET, 128, 128, 6, 0, 0)
+local ANIM_JUMP = 
+  Animation(SPRITE_SHEET, 128, 128, 3, 0, 128)
+local ANIM_PAIN = 
+  Animation(SPRITE_SHEET, 128, 128, 2, 768, 0)
 --[[------------------------------------------------------------
 Initialise
 --]]
@@ -44,7 +48,7 @@ Enemy:include(Character)
 function Enemy:init(x, y, w, h)
   -- base constructor
   Character.init(self, x, y, w, h, 
-      ANIM_STAND, ANIM_STAND, ANIM_STAND, ANIM_PAIN)
+      ANIM_STAND, ANIM_STAND, ANIM_JUMP, ANIM_PAIN)
 end
 
 -- fisix
@@ -84,34 +88,6 @@ function Enemy:collidesType(type)
       or (type == GameObject.TYPE.ATTACK)
       or (type == GameObject.TYPE.DEATH)
       or (type == GameObject.TYPE.ENEMY))
-end
-
-function Enemy:eventCollision(other, level)
-  -- collision with attack
-  if other.type == GameObject.TYPE.ATTACK then
-    -- knock-back and -up
-    push = useful.sign(self:centreX() - other.launcher:centreX())
-    self.dx = self.dx + push * other.weapon.KNOCKBACK
-    self.dy = self.dy - other.weapon.KNOCKUP
-    -- set stunned
-    self:setState(Character.STATE.STUNNED)
-    self.timer = other.weapon.STUN_TIME
-    -- lose life
-    self:addLife(-other.weapon.DAMAGE, level)
-  
-  -- collision with death
-  elseif other.type == GameObject.TYPE.DEATH then
-    self:addLife(-math.huge)
-  
-  -- collision with other characters
-  elseif other.type == GameObject.TYPE.ENEMY 
-  or other.type == GameObject.TYPE.PLAYER then
-    if (self.state ~= self.STATE.STUNNED)
-    and (other.state ~= other.STATE.STUNNED) then
-      push = (self:centreX() - other:centreX())
-      self.dx = self.dx + push * 3
-    end
-  end
 end
 
 --[[------------------------------------------------------------

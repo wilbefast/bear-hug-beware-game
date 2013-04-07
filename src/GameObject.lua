@@ -54,10 +54,9 @@ GameObject.TYPE = {}
 useful.bind(GameObject.TYPE, "PLAYER", 1)
 useful.bind(GameObject.TYPE, "ATTACK", 2)
 useful.bind(GameObject.TYPE, "ENEMY", 3)
-useful.bind(GameObject.TYPE, "ENEMYATTACK", 4)
-useful.bind(GameObject.TYPE, "DEADENEMY", 5)
-useful.bind(GameObject.TYPE, "DEATH", 6)
-useful.bind(GameObject.TYPE, "BONUS", 7)
+useful.bind(GameObject.TYPE, "DEADENEMY", 4)
+useful.bind(GameObject.TYPE, "DEATH", 5)
+useful.bind(GameObject.TYPE, "BONUS", 6)
 
 --[[----------------------------------------------------------------------------
 Collisions

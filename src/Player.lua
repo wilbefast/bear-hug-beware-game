@@ -26,7 +26,7 @@ local Animation   = require("Animation")
 local AnimationView = require("AnimationView")
 
 --[[------------------------------------------------------------
-CHARACTER CLASS
+PLAYER CLASS
 --]]------------------------------------------------------------
 
 local SPRITE_SHEET = love.graphics.newImage("assets/sprites/hero.png")
@@ -84,6 +84,7 @@ Player.LIGHTATTACK =
   KNOCKBACK = 2000,
   KNOCKUP = 450,
   ANIM_WARMUP = ANIM_BUTT,
+  DIRECTIONAL = true,
 
   reloadTime = 0
 }
@@ -104,6 +105,7 @@ Player.MAGICATTACK =
   KNOCKBACK = 2000,
   KNOCKUP = 1000,
   ANIM_WARMUP = ANIM_MAGIC,
+  DIRECTIONAL = false,
   
   reloadTime = 0
 }

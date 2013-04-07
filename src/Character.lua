@@ -83,6 +83,44 @@ function Character:setState(new_state, timer)
   end
 end
 
+
+--[[------------------------------------------------------------
+Collisions
+--]]
+
+function Character:eventCollision(other, level)
+  -- collision with attack
+  if other.type == GameObject.TYPE.ATTACK 
+  and other.launcher.type ~= self.self then
+    push = useful.sign(self:centreX() - other.launcher:centreX())
+    if (not other.weapon.DIRECTIONAL) 
+    or (push == other.launcher.facing) then
+      -- knock-back and -up
+      self.dx = self.dx + push * other.weapon.KNOCKBACK
+      self.dy = self.dy - other.weapon.KNOCKUP
+      -- set stunned
+      self:setState(Character.STATE.STUNNED)
+      self.timer = other.weapon.STUN_TIME
+      -- lose life
+      self:addLife(-other.weapon.DAMAGE, level)
+    end
+  
+  -- collision with death
+  elseif other.type == GameObject.TYPE.DEATH then
+    self:addLife(-math.huge)
+  
+  -- collision with other characters
+  elseif other.type == GameObject.TYPE.ENEMY 
+  or other.type == GameObject.TYPE.PLAYER then
+    if (self.state ~= self.STATE.STUNNED)
+    and (other.state ~= other.STATE.STUNNED) then
+      push = (self:centreX() - other:centreX())
+      self.dx = self.dx + push * 3
+    end
+  end
+end
+
+
 --[[------------------------------------------------------------
 Combat
 --]]
@@ -109,8 +147,16 @@ end
 Resources
 --]]
 
+function Character:die()
+  -- override me!
+  self.purge = true
+end
+
 function Character:addLife(amount)
   self.life = math.min(100, math.max(0, self.life + amount))
+  if self.life == 0 then
+    self:die()
+  end
 end
 
 function Character:addMagic(amount)
@@ -215,6 +261,11 @@ function Character:update(dt, level)
   -- elseif self.state == self.STATE_WARMUP then
   elseif self.state == self.STATE.STUNNED then
     self.view:setAnimation(self.anim_pain)
+    if self.airborne then
+      self.view.frame = 1
+    else
+      self.view.frame = 2
+    end
   end
     
   -- animate
@@ -236,9 +287,9 @@ end
 
 function Character:draw()
   if self.view then
-    
     self.view.flip_x = (self.facing < 0)
     self.view:draw(self)
+    love.graphics.print(self.life, self.x, self.y)
   else
     -- FIXME debug view
     love.graphics.print(Character.STATE[self.state], self.x, self.y)
