@@ -114,43 +114,49 @@ end
 Game loop
 --]]
 
-function Enemy:update(dt, level)
+function Enemy:update(dt, level, view)
 
   -- AI
+  local inView = self:isColliding(view)
   local player = level:getObject(GameObject.TYPE.PLAYER)
-  
-  -- desire move?
   local delta_x = player:centreX() - self:centreX()
   local dist = math.abs(delta_x)
-  if (dist < self.SIGHT_DIST) and (dist > self.TURN_DIST) then
-    self.requestMoveX = useful.sign(delta_x)
-  -- ... stop
-  else
-    self.requestMoveX = 0
-  end
   
-  -- desire attack?
-  if (dist < self.ATTACK_DIST) 
-  and (useful.sign(self.facing) == useful.sign(delta_x))
-  and (self.state == self.STATE.NORMAL)
-  and (self.reloadTime <= 0)
-  then
-    self:startAttack(self.ATTACK, player)
-  end
+  -- can see player?
+  if inView then
+    
+    -- desire move?
+    if (dist > self.TURN_DIST) then
+      self.requestMoveX = useful.sign(delta_x)
+    -- ... stop
+    else
+      self.requestMoveX = 0
+    end
+    
+    -- desire attack?
+    if (dist < self.ATTACK_DIST) 
+    and (useful.sign(self.facing) == useful.sign(delta_x))
+    and (self.state == self.STATE.NORMAL)
+    and (self.reloadTime <= 0)
+    then
+      self:startAttack(self.ATTACK, player)
+    end
+    
+    -- desire jump?
+    local delta_y = self.y - player.y
+    if delta_y > 0 then
+      if (delta_y > player.h*2) 
+      or ((delta_y / player.h / 2 * self.PERCENT_JUMPING) > math.random() ) then
+        self.requestJump = true
+      end
+    end
   
-  -- desire jump?
-  local delta_y = self.y - player.y
-  if delta_y > 0 then
-    if (delta_y > player.h*2) 
-    or ((delta_y / player.h / 2 * self.PERCENT_JUMPING) > math.random() ) then
-      self.requestJump = true
+    -- face player
+    if math.abs(delta_y) < self.h then
+      self.facing = useful.sign(delta_x)
     end
   end
-  
-  -- face player
-  if math.abs(delta_y) < self.h then
-    self.facing = useful.sign(delta_x)
-  end
+
 
   -- base update
   Character.update(self, dt, level)

@@ -109,7 +109,7 @@ function Character:eventCollision(other, level)
       -- let other know that it hasn't missed
       other.n_hit = other.n_hit + 1
       -- play sound
-      audio:play_sound(self.SOUND_STUNNED)
+      audio:play_sound(self.SOUND_STUNNED, 0.1, self.x, self.y)
       -- create blood
       Giblet.spawn(level, self.x, self.y, 5, 
           self.dx/3, self.dy/3)
@@ -142,7 +142,7 @@ function Character:startAttack(weapon, target)
 
   -- sound effect
   if weapon.SOUND_WARMUP then
-    audio:play_sound(weapon.SOUND_WARMUP)
+    audio:play_sound(weapon.SOUND_WARMUP, 0.2, self.x, self.y)
   end
 end
 
@@ -243,7 +243,7 @@ function Character:update(dt, level)
       -- check if on the ground
       if (not self.airborne) then
         -- boost
-        audio:play_sound("jump")
+        audio:play_sound("jump", 0.2, self.x, self.y)
         self.dy = -self.BOOST
       end
     end

@@ -50,14 +50,14 @@ function Attack:update(dt, level)
   if self.timer < 0 then
     self.purge = true
     if (self.n_hit == 0) then
-      audio:play_sound(self.weapon.SOUND_MISS)
+      audio:play_sound(self.weapon.SOUND_MISS, 0.2, self.x, self.y)
       if self.weapon.ON_MISS then
         self.weapon:ON_MISS(self.launcher)
       elseif self.weapon.ON_HIT then
         self.weapon:ON_HIT(self.launcher)
       end
     elseif self.weapon.SOUND_HIT then
-      audio:play_sound(self.weapon.SOUND_HIT)
+      audio:play_sound(self.weapon.SOUND_HIT, 0.2, self.x, self.y)
     end
   else
     self.timer = self.timer - dt

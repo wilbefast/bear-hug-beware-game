@@ -144,6 +144,11 @@ function state:keypressed(key, uni)
 end
 
 function state:update(dt)
+  -- calculate what is and isn't in view: useful for culling
+  self.view.x, self.view.y = self.camera:worldCoords(0, 0)
+  self.view.w, self.view.h = self.camera:worldCoords(
+                          love.graphics.getWidth(), 
+                          love.graphics.getHeight())
   
   -- do nothing if paused
   if paused then 

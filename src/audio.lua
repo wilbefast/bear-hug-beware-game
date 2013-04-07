@@ -13,6 +13,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 Lesser General Public License for more details.
 --]]
 
+local useful = require("useful")
 
 local audio = {}
 
@@ -24,7 +25,10 @@ end
 
 function audio:load_sound(filename, n_sources)
   n_sources = (n_sources or 1)
-  self[filename] = self:load(filename, "static")
+  self[filename] = {}
+  for i = 1, n_sources do 
+    self[filename][i] = self:load(filename, "static")
+  end
 end
 
 function audio:load_music(filename)
@@ -43,11 +47,25 @@ function audio:play_music(name)
   end
 end
 
-function audio:play_sound(name)
+function audio:play_sound(name, pitch_shift, x, y)
   if not name then return end
-  
-  --self[name]:play()
-  --TODO
+  for _, src in ipairs(self[name]) do
+    if src:isStopped() then
+      
+      -- shift the pitch
+      if pitch_shift and (pitch_shift ~= 0) then
+        src:setPitch(1 + useful.signedRand(pitch_shift))
+      end
+      
+      -- use 3D sound
+      if x and y then
+        src:setPosition(x, y, 0)
+      end
+      
+      src:play()
+      return
+    end
+  end
 end
 
 -- export
