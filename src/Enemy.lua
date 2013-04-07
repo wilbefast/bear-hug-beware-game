@@ -71,14 +71,20 @@ Enemy.ATTACK =
   DAMAGE = 10,
   MANA = 0,
   WARMUP_TIME = 0.5,
-  RELOAD_TIME = 0.9,
+  RELOAD_TIME = 0.4,
   STUN_TIME = 0.5,
   DURATION = 0.1,
   W = 118,
   H = 108,
   KNOCKBACK = 700,
   KNOCKUP = 300,
-  ANIM_WARMUP = ANIM_ATTACK
+  ANIM_WARMUP = ANIM_ATTACK,
+  SOUND_WARMUP = "bear_attack",
+  ON_MISS = function(weapon, launcher)
+    if (not launcher.airborne) then
+      launcher:setState(Character.STATE.STUNNED, 0.5)
+    end
+  end
 }
 
 -- ai
@@ -91,6 +97,11 @@ Enemy.ATTACK_DIST = Enemy.ATTACK.REACH + Enemy.ATTACK.W/2
 --[[------------------------------------------------------------
 Collisions
 --]]
+
+function Enemy:die()
+  self.purge = true
+  audio:play_sound("bear_die")
+end
 
 function Enemy:collidesType(type)
   return ((type == GameObject.TYPE.PLAYER)

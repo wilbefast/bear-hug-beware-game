@@ -22,6 +22,7 @@ conf = require("conf")
 title = require("menus/title")
 prologue = require("menus/prologue")
 game = require("game")
+audio = require("audio")
 
 
 --[[------------------------------------------------------------
@@ -83,6 +84,18 @@ function love.load(arg)
     love.event.push("quit")
   end
   
+  -- load sound and music
+  audio:load_sound("bear_attack")  
+  audio:load_sound("bear_die")
+  audio:load_sound("jump")  
+  audio:load_sound("magic")  
+  audio:load_sound("disgust")
+  audio:load_sound("punch")
+  audio:load_sound("miss")
+  audio:load_music("music_defeat")
+  audio:load_music("music_game") 
+  audio:load_music("music_title")
+
   -- initialise random
   math.randomseed(os.time())
   

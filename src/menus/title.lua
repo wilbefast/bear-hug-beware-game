@@ -36,7 +36,6 @@ local state = GameState.new()
 
 function state:init()
   -- load resources
-  MUSIC = love.audio.newSource("assets/audio/bisounours.ogg")
   BACKGROUND = love.graphics.newImage("assets/menus/menu_background.jpg")
   TITLE = love.graphics.newImage("assets/menus/title.png")
   PLAY = love.graphics.newImage("assets/menus/button_play.png")
@@ -53,12 +52,11 @@ function state:enter()
   self.credits = false
   
   -- restart music
-  --MUSIC:play()
+  audio:play_music("music_title")
 end
 
 
 function state:leave()
-  MUSIC:stop()
 end
 
 

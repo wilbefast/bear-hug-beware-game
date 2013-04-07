@@ -63,18 +63,18 @@ function state:init()
   QMOUNTAINS = love.graphics.newQuad(0, 0, DEFAULT_W*3, MOUNTAINS_H, 
                                   MOUNTAINS_W, MOUNTAINS_H)
   
-  --plan1 = love.graphics.newImage("assets/decors/plan1.png")
-  --plan = love.graphics.newImage("assets/decors/plan.png")
-  --plan3 = love.graphics.newImage("assets/decors/elem.png")
-  
+
   --baffe= love.audio.newSource("assets/audio/prise_de_degats.ogg", "static")
   --cri_mort = love.audio.newSource("assets/audio/cri_mort.ogg","static")
-    
-  --image_mort = love.graphics.newImage("assets/images/mort.png")
-  
   --explosion = love.audio.newSource("assets/audio/explosion_magique.ogg", "static")
   --jeu_son = love.audio.newSource("assets/audio/themejeu.ogg")
  -- happy = love.audio.newSource("assets/audio/happy.ogg", "static")
+   
+ 
+  --jeu_son:play()
+  --jeu_son:setLooping(true)
+  
+  --image_mort = love.graphics.newImage("assets/images/mort.png")
   
   
   --- GUI health bar
@@ -90,13 +90,15 @@ function state:init()
   self.gui_magic = newAnimation(im, 186, 62, 0.1, 0, 0, 0, {10})
   self.gui_magic:setMode("once") --]]
   
-  --jeu_son:play()
-  --jeu_son:setLooping(true)
+
 end
 
 
 function state:enter()
 
+  -- play music
+  audio:play_music("music_game")
+  
   -- reset objects
   self.player = Player(300, 500) --TODO reset player position based on level
   self.level:load("../assets/maps/map01")
@@ -111,7 +113,6 @@ end
 
 
 function state:leave()
-	--happy:stop()
 end
 
 
@@ -200,6 +201,9 @@ function state:update(dt)
   -- update camera
   self.camera:lookAt(self.cam_x, self.cam_y)
   
+  -- update listener position
+  love.audio.setPosition(self.player.x, self.player.y, 0)
+  
   -- update GUI
   --[[if self.player.life ~= 0 then
     self.gui_life:seek(((90 - self.player.life)/10) + 1)
@@ -251,15 +255,7 @@ function state:draw()
     
     -- draw the game objects
     self.level:draw(view)
-    
-    --[[for i=0,26 do
-      love.graphics.draw(horizon,0+i*(1280),400-((1280-self.camera.y)/40))
-      love.graphics.draw(plan1,0+i*(1280),580-((1280-self.camera.y)/40))
-      love.graphics.draw(plan,0+i*(1280),580-((1280-self.camera.y)/40))
-      love.graphics.draw(plan3,0+i*(1280),580-((1280-self.camera.y)/40))
-    end --]]
-    
-    --love.graphics.rectangle("fill", base_offset, 500, 3*DEFAULT_W, 100)
+
   self.camera:detach()
   
 

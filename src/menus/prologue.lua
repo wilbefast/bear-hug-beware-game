@@ -66,6 +66,7 @@ function state:init()
 end
 
 function state:enter()
+  audio:play_music("music_title")
   self.currentPage = 1
 	self.pageTime = PAGE_DURATION
 end

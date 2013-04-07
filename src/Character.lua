@@ -105,6 +105,10 @@ function Character:eventCollision(other, level)
       self.timer = other.weapon.STUN_TIME
       -- lose life
       self:addLife(-other.weapon.DAMAGE, level)
+      -- let other know that it hasn't missed
+      other.n_hit = other.n_hit + 1
+      -- play sound
+      audio:play_sound(self.SOUND_STUNNED)
     end
   
   -- collision with death
@@ -131,6 +135,11 @@ function Character:startAttack(weapon, target)
   self.deferred_weapon = weapon
   self.deferred_target = target
   self:setState(Character.STATE.WARMUP, (weapon.WARMUP_TIME or 0))
+
+  -- sound effect
+  if weapon.SOUND_WARMUP then
+    audio:play_sound(weapon.SOUND_WARMUP)
+  end
 end
 
 function Character:attack(weapon, target)
@@ -146,6 +155,7 @@ function Character:attack(weapon, target)
     -- spray and pray
     reach = weapon.REACH
   end
+
   -- create the attack object
   return (Attack(self:centreX() + (reach + self.w)*self.facing,
       self:centreY() + weapon.OFFSET_Y, weapon, self))
@@ -229,6 +239,7 @@ function Character:update(dt, level)
       -- check if on the ground
       if (not self.airborne) then
         -- boost
+        audio:play_sound("jump")
         self.dy = -self.BOOST
       end
     end

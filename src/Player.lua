@@ -84,6 +84,8 @@ Player.LIGHTATTACK =
   KNOCKBACK = 1500,
   KNOCKUP = 450,
   ANIM_WARMUP = ANIM_BUTT,
+  SOUND_HIT = "punch",
+  SOUND_MISS = "miss",
   DIRECTIONAL = true,
 
   reloadTime = 0
@@ -106,11 +108,13 @@ Player.MAGICATTACK =
   KNOCKUP = 1000,
   ANIM_WARMUP = ANIM_MAGIC,
   DIRECTIONAL = false,
+  SOUND_WARMUP = "magic",
   
   reloadTime = 0
 }
 
 Player.MAXMANA = 100
+Player.SOUND_STUNNED = "disgust"
 
 --[[------------------------------------------------------------
 Collisions

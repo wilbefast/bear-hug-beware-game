@@ -58,6 +58,10 @@ useful.bind(GameObject.TYPE, "DEADENEMY", 4)
 useful.bind(GameObject.TYPE, "DEATH", 5)
 useful.bind(GameObject.TYPE, "BONUS", 6)
 
+function GameObject:typename()
+  return GameObject.TYPE[self.type]
+end
+
 --[[----------------------------------------------------------------------------
 Collisions
 --]]
@@ -221,14 +225,18 @@ end
 function GameObject:draw()
   if self.view then
     self.view:draw(self)
-  else
-    -- FIXME debug view
-    love.graphics.rectangle("line", 
-        self.x, self.y, self.w, self.h)
-    love.graphics.print(GameObject.TYPE[self.type], 
-        self.x, self.y+32)
   end
 end
+
+GameObject.DEBUG_VIEW = 
+{
+  draw = function(self, target)
+    love.graphics.rectangle("line", 
+        target.x, target.y, target.w, target.h)
+    love.graphics.print(target:typename(), 
+        target.x, target.y+32)
+  end
+}
 
 --[[------------------------------------------------------------
 EXPORT
