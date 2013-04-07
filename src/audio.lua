@@ -42,7 +42,7 @@ function audio:play_music(name)
     if self.music then
       self.music:stop()
     end
-    --new_music:play()
+    new_music:play()
     self.music = new_music
   end
 end

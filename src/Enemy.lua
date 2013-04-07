@@ -100,7 +100,7 @@ Collisions
 
 function Enemy:die()
   self.purge = true
-  audio:play_sound("bear_die")
+  audio:play_sound("bear_die", 0.2, self.x, self.y)
 end
 
 function Enemy:collidesType(type)
