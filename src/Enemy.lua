@@ -50,8 +50,8 @@ end
 -- fisix
 Enemy.GRAVITY    = 1200
 Enemy.BOOST      = 700
-Enemy.MOVE_X     = 4000.0
-Enemy.MAX_DX     = 700.0
+Enemy.MOVE_X     = 3000.0
+Enemy.MAX_DX     = 3000.0
 Enemy.FRICTION_X = 50
 
 -- combat
@@ -106,8 +106,11 @@ function Enemy:eventCollision(other, level)
   -- collision with other characters
   elseif other.type == GameObject.TYPE.ENEMY 
   or other.type == GameObject.TYPE.PLAYER then
-    push = (self:centreX() - other:centreX())
-    self.dx = self.dx + push * 3
+    if (self.state ~= self.STATE.STUNNED)
+    and (other.state ~= other.STATE.STUNNED) then
+      push = (self:centreX() - other:centreX())
+      self.dx = self.dx + push * 3
+    end
   end
 end
 
