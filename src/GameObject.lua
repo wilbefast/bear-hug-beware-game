@@ -71,7 +71,7 @@ function GameObject:centreX()
 end
 
 function GameObject:centreY()
-  return self.x + self.h/2
+  return self.y + self.h/2
 end
 
 function GameObject:snap_from_collision(dx, dy, tilegrid, max, type)

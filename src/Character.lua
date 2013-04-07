@@ -31,7 +31,8 @@ CHARACTER CLASS
 
 local Character = Class
 {
-  init = function(self, x, y, w, h, astand, awalk, ajump, apain)
+  init = function(self, x, y, w, h, 
+                  astand, awalk, ajump, apain)
     GameObject.init(self, x, y, w, h)
     -- get animations
     self.anim_stand = astand
@@ -90,14 +91,15 @@ Collisions
 
 function Character:eventCollision(other, level)
   -- collision with attack
-  if other.type == GameObject.TYPE.ATTACK 
-  and other.launcher.type ~= self.self then
+  if (other.type == GameObject.TYPE.ATTACK)
+  and (other.launcher.type ~= self.type) then
     push = useful.sign(self:centreX() - other.launcher:centreX())
     if (not other.weapon.DIRECTIONAL) 
     or (push == other.launcher.facing) then
+      self.facing = -push
       -- knock-back and -up
-      self.dx = self.dx + push * other.weapon.KNOCKBACK
-      self.dy = self.dy - other.weapon.KNOCKUP
+      self.dx = push * other.weapon.KNOCKBACK
+      self.dy = -other.weapon.KNOCKUP
       -- set stunned
       self:setState(Character.STATE.STUNNED)
       self.timer = other.weapon.STUN_TIME
@@ -110,8 +112,7 @@ function Character:eventCollision(other, level)
     self:addLife(-math.huge)
   
   -- collision with other characters
-  elseif other.type == GameObject.TYPE.ENEMY 
-  or other.type == GameObject.TYPE.PLAYER then
+  elseif other.type == self.type then
     if (self.state ~= self.STATE.STUNNED)
     and (other.state ~= other.STATE.STUNNED) then
       push = (self:centreX() - other:centreX())
@@ -132,14 +133,22 @@ function Character:startAttack(weapon, target)
   self:setState(Character.STATE.WARMUP, (weapon.WARMUP_TIME or 0))
 end
 
-function Character:attack(weapon)
+function Character:attack(weapon, target)
   -- reload-time and mana-cost
-  weapon.reloadTime = weapon.RELOAD_TIME
+  local reloader = useful.tri(weapon.reloadTime, weapon, self)
+  reloader.reloadTime = weapon.RELOAD_TIME
   self:addMagic(-weapon.MANA)
+  
+  if target then
+    -- attack a specific target
+    reach = math.min(weapon.REACH, math.abs(target.x - self.x))
+  else
+    -- spray and pray
+    reach = weapon.REACH
+  end
   -- create the attack object
-  return (Attack(
-    self:centreX() + weapon.REACH*self.facing ,
-    self.y + weapon.OFFSET_Y, weapon, self))
+  return (Attack(self:centreX() + (reach + self.w)*self.facing,
+      self:centreY() + weapon.OFFSET_Y, weapon, self))
 end
 
 
@@ -173,7 +182,7 @@ function Character:update(dt, level)
   Timing
   --]]--
   
-  -- count-down the timer
+  -- count-down the generic timer
   if self.timer > 0 then
     self.timer = self.timer - dt
     -- time's up!
@@ -196,6 +205,11 @@ function Character:update(dt, level)
         self:setState(Character.STATE.DEAD)
       end
     end
+  end
+  
+  -- count-down the reload timer (if applicable)
+  if self.reloadTime and (self.reloadTime > 0) then
+    self.reloadTime = self.reloadTime - dt
   end
   
   --[[------
@@ -289,7 +303,6 @@ function Character:draw()
   if self.view then
     self.view.flip_x = (self.facing < 0)
     self.view:draw(self)
-    love.graphics.print(self.life, self.x, self.y)
   else
     -- FIXME debug view
     love.graphics.print(Character.STATE[self.state], self.x, self.y)

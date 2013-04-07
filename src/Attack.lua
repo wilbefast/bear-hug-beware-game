@@ -30,8 +30,8 @@ local Attack = Class
   init = function(self, x, y, weapon, launcher, directional)
     GameObject.init(self, x-weapon.W/2, y-weapon.H/2, 
                     weapon.W, weapon.H)
-    self.weapon = (weapon or self)
     self.launcher = (launcher or self)
+    self.weapon = (weapon or self.launcher or self)
     self.timer = 0 --FIXME (weapon.DURATION or 0)
   end,
       

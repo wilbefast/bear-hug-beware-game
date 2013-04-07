@@ -41,7 +41,7 @@ Game loop
 --]]
     
 function AnimationView:draw(object)
-  self.anim:draw(object.x, object.y, self.frame, 
+  self.anim:draw(object:centreX(), object.y, self.frame, 
                   self.flip_x, self.flip_y, object.w, self.offy)
 end
 

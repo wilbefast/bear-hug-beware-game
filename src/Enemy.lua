@@ -36,12 +36,15 @@ local ANIM_JUMP =
   Animation(SPRITE_SHEET, 128, 128, 3, 0, 128)
 local ANIM_PAIN = 
   Animation(SPRITE_SHEET, 128, 128, 2, 768, 0)
+local ANIM_ATTACK = 
+  Animation(SPRITE_SHEET, 128, 128, 3, 384, 128)
 --[[------------------------------------------------------------
 Initialise
 --]]
 local Enemy = Class
 {
   type  =  GameObject.TYPE["ENEMY"],
+  reloadTime = 0
 }
 Enemy:include(Character)
 
@@ -49,6 +52,7 @@ function Enemy:init(x, y, w, h)
   -- base constructor
   Character.init(self, x, y, w, h, 
       ANIM_STAND, ANIM_STAND, ANIM_JUMP, ANIM_PAIN)
+
 end
 
 -- fisix
@@ -61,22 +65,27 @@ Enemy.FRICTION_X = 50
 -- combat
 Enemy.ATTACK =
 {
-  REACH = 32,
-  OFFSET_Y = 74,
+  REACH = 0,
+  OFFSET_Y = 0,
   OFFSET_X = 0,
   DAMAGE = 10,
   MANA = 0,
-  WARMUP_TIME = 0.4,
-  RELOAD_TIME = 0.3,
+  WARMUP_TIME = 0.5,
+  RELOAD_TIME = 0.9,
   STUN_TIME = 0.5,
+  DURATION = 0.1,
   W = 118,
   H = 108,
-  KNOCKBACK = 300,
-  reloadTime = 0
+  KNOCKBACK = 700,
+  KNOCKUP = 300,
+  ANIM_WARMUP = ANIM_ATTACK
 }
 
 -- ai
 Enemy.PERCENT_JUMPING = 0.1
+Enemy.SIGHT_DIST = 800
+Enemy.TURN_DIST = 100
+Enemy.ATTACK_DIST = Enemy.ATTACK.REACH + Enemy.ATTACK.W/2
 
 
 --[[------------------------------------------------------------
@@ -91,24 +100,6 @@ function Enemy:collidesType(type)
 end
 
 --[[------------------------------------------------------------
-Combat
---]]
-
-function Enemy:attack(attack, target)
-  self.reloadTime = attack.RELOAD_TIME
-  local target_distance = math.abs(target.x - self.x)
-  local reach = math.min(attack.REACH, target_distance)
-  
-  local newAttack = Attack(
-    self.x + self.w/2 + reach*self.facing + attack.OFFSET_X,
-    self.y + attack.OFFSET_Y,
-    attack,
-    self)
-  newAttack.type = GameObject.TYPE.ENEMYATTACK
-  return newAttack
-end
-
---[[------------------------------------------------------------
 Game loop
 --]]
 
@@ -116,19 +107,24 @@ function Enemy:update(dt, level)
 
   -- AI
   local player = level:getObject(GameObject.TYPE.PLAYER)
-  local ecart = player:centreX() - self:centreX()
-    -- desire move?
-  if math.abs( ecart ) < 800 and math.abs( ecart ) > 30 then
-    -- ... left
-    if ecart < 1 then
-      self.requestMoveX = -1
-    end
-    -- ... right
-    if ecart > 1 then
-      self.requestMoveX = 1
-    end
+  
+  -- desire move?
+  local delta_x = player:centreX() - self:centreX()
+  local dist = math.abs(delta_x)
+  if (dist < self.SIGHT_DIST) and (dist > self.TURN_DIST) then
+    self.requestMoveX = useful.sign(delta_x)
+  -- ... stop
   else
     self.requestMoveX = 0
+  end
+  
+  -- desire attack?
+  if (dist < self.ATTACK_DIST) 
+  and (useful.sign(self.facing) == useful.sign(delta_x))
+  and (self.state == self.STATE.NORMAL)
+  and (self.reloadTime <= 0)
+  then
+    self:startAttack(self.ATTACK, player)
   end
   
   -- desire jump?
@@ -138,6 +134,11 @@ function Enemy:update(dt, level)
     or ((delta_y / player.h / 2 * self.PERCENT_JUMPING) > math.random() ) then
       self.requestJump = true
     end
+  end
+  
+  -- face player
+  if math.abs(delta_y) < self.h then
+    self.facing = useful.sign(delta_x)
   end
 
   -- base update

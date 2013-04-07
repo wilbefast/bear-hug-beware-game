@@ -70,8 +70,8 @@ Player.FRICTION_X = 100
 -- combat - light attack
 Player.LIGHTATTACK = 
 {
-  REACH = 32,
-  OFFSET_Y = 74,
+  REACH = 16,
+  OFFSET_Y = 0,
   OFFSET_X = 0,
   DAMAGE = 35,
   MANA = 0,
@@ -81,7 +81,7 @@ Player.LIGHTATTACK =
   STUN_TIME = 1.0,
   W = 118,
   H = 108,
-  KNOCKBACK = 2000,
+  KNOCKBACK = 1500,
   KNOCKUP = 450,
   ANIM_WARMUP = ANIM_BUTT,
   DIRECTIONAL = true,
@@ -92,9 +92,9 @@ Player.LIGHTATTACK =
 Player.MAGICATTACK = 
 {
   REACH = 0,
-  OFFSET_Y = 64,
+  OFFSET_Y = 0,
   OFFSET_X = -32,
-  DAMAGE = 20,
+  DAMAGE = 30,
   MANA = 10,
   WARMUP_TIME = 0.4,
   DURATION = 0.2,
@@ -102,7 +102,7 @@ Player.MAGICATTACK =
   STUN_TIME = 2.0,
   W = 256,
   H = 256,
-  KNOCKBACK = 2000,
+  KNOCKBACK = 750,
   KNOCKUP = 1000,
   ANIM_WARMUP = ANIM_MAGIC,
   DIRECTIONAL = false,
@@ -116,43 +116,28 @@ Player.MAXMANA = 100
 Collisions
 --]]
 
+function Player:die()
+  -- TODO
+end
+
 function Player:collidesType(type)
   return ((type == GameObject.TYPE.ENEMY)
-      or (type == GameObject.TYPE.ENEMYATTACK)
+      or (type == GameObject.TYPE.ATTACK)
       or (type == GameObject.TYPE.DEATH)
       or (type == GameObject.TYPE.BONUS))
 end
 
 function Player:eventCollision(other)
-  -- collision with enemy attack
-  if other.type == GameObject.TYPE.ENEMYATTACK then
-    self:addLife(-other.weapon.DAMAGE)
-    self.baffed = true
-    -- knock-back
-    push = useful.sign(self:centreX() - other.launcher:centreX())
-    self.dx = self.dx + push * other.weapon.KNOCKBACK
+  -- character collisions
+  Character.eventCollision(self, other)
   
-  -- collision with "death" (bottomless pit)
-  elseif other.type == GameObject.TYPE.DEATH then
-    self:addLife(-math.huge)
-
   -- collision with "bonus" 
-  elseif other.type == GameObject.TYPE.BONUS then
+  if other.type == GameObject.TYPE.BONUS then
     self.life = 90
 	self.magic = self.MAXMANA
     other.purge = true --! FIXME
   end
 end
-
-
---[[------------------------------------------------------------
-Animations
---]]
-
-function Player:onStateChange(new_state)
-  -- TODO
-end
-
 
 --[[------------------------------------------------------------
 Game loop
