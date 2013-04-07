@@ -33,7 +33,7 @@ local SPRITE_SHEET = love.graphics.newImage("assets/sprites/hero.png")
 local ANIM_WALK = Animation(SPRITE_SHEET, 128, 128, 8)
 local ANIM_STAND = Animation(SPRITE_SHEET, 128, 128, 8, 0, 128)
 local ANIM_JUMP = Animation(SPRITE_SHEET, 128, 128, 3, 0, 256)
-local ANIM_MAGIC = Animation(SPRITE_SHEET, 128, 128, 2, 768, 256)
+local ANIM_MAGIC = Animation(SPRITE_SHEET, 128, 128, 2, 640, 256)
 local ANIM_BUTT = Animation(SPRITE_SHEET, 128, 128, 3, 0, 384)
 local ANIM_PAIN = Animation(SPRITE_SHEET, 128, 128, 1, 384, 384)
 local ANIM_DEAD = Animation(SPRITE_SHEET, 128, 128, 1, 512, 384)
@@ -61,11 +61,11 @@ Constants
 --]]
 
 -- physics
-Player.MOVE_X = 3000.0
+Player.MOVE_X = 5000.0
 Player.MAX_DX = 1000.0
 Player.BOOST = 1000.0
 Player.GRAVITY = 1500.0
-Player.FRICTION_X = 50
+Player.FRICTION_X = 100
 
 -- combat - light attack
 Player.LIGHTATTACK = 
@@ -158,11 +158,9 @@ Game loop
 
 function Player:update(dt, level)
 
-  -- attack
+  -- try attack
   if self.state == Character.STATE.NORMAL then
-    -- attack
     local weapon = nil
-    
     -- ... light
     if self.requestLightAttack then
       weapon = self.LIGHTATTACK
@@ -173,7 +171,7 @@ function Player:update(dt, level)
         weapon = self.MAGICATTACK
       end
     end
-
+    -- launch attack
     if weapon and (weapon.reloadTime <= 0) then
       self:startAttack(weapon)
     end

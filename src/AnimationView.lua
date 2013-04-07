@@ -62,8 +62,13 @@ end
 Mutators
 --]]
 
-function AnimationView:randomSubimage()
-  self.subimage = math.random(self.anim.n_frames)
+function AnimationView:seekRandom()
+  self.frame = math.random(self.anim.n_frames)
+end
+
+function AnimationView:seekPercent(p)
+  if p > 1 then p = 1 elseif p < 0 then p = 0 end
+  self.frame = ((self.anim.n_frames-1) * p) + 1
 end
 
 function AnimationView:setAnimation(anim)

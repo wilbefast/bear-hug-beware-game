@@ -188,7 +188,7 @@ function Character:update(dt, level)
     else
     -- fly
       self.view:setAnimation(self.anim_jump) 
-      if self.dy < -500 then
+      if self.dy < -300 then
         -- up
         self.view.frame = 1
       elseif self.dy > 300 then
@@ -200,21 +200,22 @@ function Character:update(dt, level)
       end
     end
     
-    -- animate
-    if self.view then
-      self.view:update(dt)
-    end
   -- if self.state == self.STATE.NORMAL then
-  elseif self.state == self.STATE_WARMUP then
+  elseif self.state == self.STATE.WARMUP then
+    
     -- back-swing/warmup animation
-    if deferred_weapon.ANIM_WARMUP then
-      self.view:setAnimation(deferred_weapon.ANIM_WARMUP)
-      -- TODO
-      --self.view.frame = deferred_weapon.ANIM_WARMUP.n_frames
+    if self.deferred_weapon.ANIM_WARMUP then
+      self.view:setAnimation(self.deferred_weapon.ANIM_WARMUP)
+      self.view:seekPercent(1 - self.timer / self.deferred_weapon.WARMUP_TIME)
     end
+    
+  -- elseif self.state == self.STATE_WARMUP then
   end
     
-
+  -- animate
+  if self.view then
+    self.view:update(dt)
+  end
   
   --[[------
   Other
