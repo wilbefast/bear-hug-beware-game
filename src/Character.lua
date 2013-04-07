@@ -50,7 +50,10 @@ local Character = Class
   magic       = 100,
   damage      = 0,
   timer       = -1,
-  facing      = 1
+  facing      = 1,
+  requestMoveX = 0,
+  requestMoveY = 0,
+  requestJump = false
 }
 Character:include(GameObject)
 
@@ -153,37 +156,37 @@ function Character:update(dt, level)
   Control
   --]]--
   
-  -- run
-  local moveDir = useful.sign(self.requestMoveX)
-  if moveDir ~= 0 then
-    self.dx = self.dx + moveDir*self.MOVE_X*dt
-    self.facing = moveDir
-  end
- 
-  -- jump
-  if self.requestJump then
-    -- check if on the ground
-    if (not self.airborne) then
-      -- boost
-      self.dy = -self.BOOST
+  if self.state == self.STATE.NORMAL then
+    -- run
+    local moveDir = useful.sign(self.requestMoveX)
+    if moveDir ~= 0 then
+      self.dx = self.dx + moveDir*self.MOVE_X*dt
+      self.facing = moveDir
+    end
+  
+    -- jump
+    if self.requestJump then
+      -- check if on the ground
+      if (not self.airborne) then
+        -- boost
+        self.dy = -self.BOOST
+      end
     end
   end
-  
   
   --[[------
   Animation Logic
   --]]--
   
   if self.state == self.STATE.NORMAL then
-  
     -- ground-based animations
     if (not self.airborne) and (self.dy == 0) then
-      if moveDir ~= 0 then
-        -- walk
-        self.view:setAnimation(self.anim_walk) 
-      else
+      if self.requestMoveX == 0 then
         -- stand
         self.view:setAnimation(self.anim_stand) 
+      else
+        -- walk
+        self.view:setAnimation(self.anim_walk) 
       end
     else
     -- fly

@@ -31,6 +31,7 @@ ENEMY CLASS
 local SPRITE_SHEET = love.graphics.newImage("assets/sprites/enemy.png")
 
 local ANIM_STAND = Animation(SPRITE_SHEET, 128, 128, 6, 0, 0)
+local ANIM_PAIN = Animation(SPRITE_SHEET, 128, 128, 1, 768, 0)
 --[[------------------------------------------------------------
 Initialise
 --]]
@@ -42,9 +43,8 @@ Enemy:include(Character)
 
 function Enemy:init(x, y, w, h)
   -- base constructor
-  Character.init(self, x, y, w, h, ANIM_STAND)
-  self.requestJump = false
-  self.requestMoveX = 0
+  Character.init(self, x, y, w, h, 
+      ANIM_STAND, ANIM_STAND, ANIM_STAND, ANIM_PAIN)
 end
 
 -- fisix
@@ -159,22 +159,6 @@ function Enemy:update(dt, level)
     or ((delta_y / player.h / 2 * self.PERCENT_JUMPING) > math.random() ) then
       self.requestJump = true
     end
-  end
-
-  -- update speed: walk
-  local moveDir = useful.sign(self.requestMoveX)
-  if moveDir ~= 0 then
-    self.dx = self.dx + moveDir*self.MOVE_X*dt
-    self.facing = moveDir
-  end
-
-  -- update speed: walk
-  if self.requestJump then
-    -- check if on the ground
-    if (not self.airborne) then
-      self.dy = -self.BOOST
-    end
-    self.requestJump = false
   end
 
   -- base update
