@@ -188,10 +188,10 @@ function Character:update(dt, level)
     else
     -- fly
       self.view:setAnimation(self.anim_jump) 
-      if self.dy < -300 then
+      if self.dy < -500 then
         -- up
         self.view.frame = 1
-      elseif self.dy > 300 then
+      elseif self.dy >= 0 then
         -- down
         self.view.frame = 3
       else
@@ -210,6 +210,8 @@ function Character:update(dt, level)
     end
     
   -- elseif self.state == self.STATE_WARMUP then
+  elseif self.state == self.STATE.STUNNED then
+    self.view:setAnimation(self.anim_pain)
   end
     
   -- animate

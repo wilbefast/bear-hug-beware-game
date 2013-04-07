@@ -99,19 +99,15 @@ function Enemy:eventCollision(other, level)
     -- lose life
     self:addLife(-other.weapon.DAMAGE, level)
   
-  -- collision with player
-  elseif other.type == GameObject.TYPE.PLAYER then
-    self.facing = useful.tri(other:centreX() > self:centreX(), 1, -1)
-    -- TODO
-    
   -- collision with death
   elseif other.type == GameObject.TYPE.DEATH then
     self:addLife(-math.huge)
   
-  -- collision with other enemy
-  elseif other.type == GameObject.TYPE.ENEMY then
-    push = (self.w+other.w)/(self:centreX() - other:centreX())
-    self.dx = self.dx + push * 10
+  -- collision with other characters
+  elseif other.type == GameObject.TYPE.ENEMY 
+  or other.type == GameObject.TYPE.PLAYER then
+    push = (self:centreX() - other:centreX())
+    self.dx = self.dx + push * 3
   end
 end
 

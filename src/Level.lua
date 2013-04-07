@@ -64,7 +64,7 @@ function Level:load(filename)
   -- ... go through the layers and create objects!
   for z, layer in ipairs(mapfile.layers) do
     if layer.name == "bisounours" then
-      --parse_objects(layer, Enemy)
+      parse_objects(layer, Enemy)
     elseif layer.name == "death" then
       parse_objects(layer, Death)
     elseif layer.name == "bonus" then
