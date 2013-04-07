@@ -131,9 +131,9 @@ function Player:collidesType(type)
       or (type == GameObject.TYPE.BONUS))
 end
 
-function Player:eventCollision(other)
+function Player:eventCollision(other, level)
   -- character collisions
-  Character.eventCollision(self, other)
+  Character.eventCollision(self, other, level)
   
   -- collision with "bonus" 
   if other.type == GameObject.TYPE.BONUS then

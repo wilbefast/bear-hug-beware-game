@@ -45,6 +45,7 @@ function state:init()
   
   -- create objects
   self.level = Level()
+  self.view = {}
   
   -- set up camera
   self.camera = Camera(0, 0)
@@ -167,7 +168,7 @@ function state:update(dt)
   self.player.requestMoveY = ky
 
   -- update the objects in the Level
-  self.level:update(dt)
+  self.level:update(dt, self.view)
   
   -- camera follows player horizontally
   if self.player:centreX() < self.cam_x - FOLLOW_DIST then
@@ -177,7 +178,6 @@ function state:update(dt)
   end
   
   -- camera follows player vertically
-  -- TODO
   self.cam_y = self.player.y
   
   -- don't look outside the level bounds...
@@ -217,9 +217,8 @@ end
 
 function state:draw()
   -- calculate what is and isn't in view: useful for culling
-  local view = {}
-  view.x, view.y = self.camera:worldCoords(0, 0)
-  view.w, view.h = self.camera:worldCoords(
+  self.view.x, self.view.y = self.camera:worldCoords(0, 0)
+  self.view.w, self.view.h = self.camera:worldCoords(
                           love.graphics.getWidth(), 
                           love.graphics.getHeight())
 	
@@ -228,33 +227,39 @@ function state:draw()
   self.camera:attach()
   
     -- draw the sky
-    if view.y < 300 then
+    if self.view.y < 300 then
     love.graphics.setColor(168, 230, 227)
-      love.graphics.rectangle("fill", view.x, view.y, DEFAULT_W, 300 - view.y)
+      love.graphics.rectangle("fill", 
+          self.view.x, self.view.y, DEFAULT_W, 300 - self.view.y)
     love.graphics.setColor(255, 255, 255)
     end
-    love.graphics.draw(SKY, view.x, 300)
+    love.graphics.draw(SKY, self.view.x, 300)
     
     -- parallax offset
-    local base_offset = (math.floor(view.x / DEFAULT_W))*DEFAULT_W
+    local base_offset = 
+      (math.floor(self.view.x / DEFAULT_W))*DEFAULT_W
   
     -- draw the horizon mountains
-    local horizon_offset = base_offset - (view.x/20)%DEFAULT_W
+    local horizon_offset = 
+      base_offset - (self.view.x/20)%DEFAULT_W
     love.graphics.drawq(HORIZON, QHORIZON, horizon_offset, 400)
     love.graphics.setColor(160, 61, 96)
-      love.graphics.rectangle("fill", view.x, 400+HORIZON_H, DEFAULT_W, 400)
+      love.graphics.rectangle("fill", self.view.x, 
+          400+HORIZON_H, DEFAULT_W, 400)
     love.graphics.setColor(255, 255, 255)
       
     -- draw the background mountains
-    local mountains_offset = base_offset - (view.x/10)%DEFAULT_W
+    local mountains_offset = 
+      base_offset - (self.view.x/10)%DEFAULT_W
     love.graphics.drawq(MOUNTAINS, QMOUNTAINS, mountains_offset, 500)
     love.graphics.setColor(104, 161, 127)
-      love.graphics.rectangle("fill", view.x, 500+MOUNTAINS_H, DEFAULT_W, 
-                                      view.h - (500 + MOUNTAINS_H))
+      love.graphics.rectangle("fill", 
+          self.view.x, 500+MOUNTAINS_H, DEFAULT_W, 
+          self.view.h - (500 + MOUNTAINS_H))
     love.graphics.setColor(255, 255, 255)
     
     -- draw the game objects
-    self.level:draw(view)
+    self.level:draw(self.view)
 
   self.camera:detach()
   

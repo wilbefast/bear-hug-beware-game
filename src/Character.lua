@@ -21,6 +21,7 @@ local Class      = require("hump/class")
 local GameObject = require("GameObject")
 local useful      = require("useful")
 local Attack      = require("Attack")
+local Giblet      = require("Giblet")
 local Animation   = require("Animation")
 local AnimationView = require("AnimationView")
 
@@ -109,6 +110,9 @@ function Character:eventCollision(other, level)
       other.n_hit = other.n_hit + 1
       -- play sound
       audio:play_sound(self.SOUND_STUNNED)
+      -- create blood
+      Giblet.spawn(level, self.x, self.y, 5, 
+          self.dx/3, self.dy/3)
     end
   
   -- collision with death
@@ -321,5 +325,10 @@ function Character:draw()
     GameObject.draw(self)
   end
 end
+
+
+--[[------------------------------------------------------------
+EXPORT
+--]]------------------------------------------------------------
 
 return Character

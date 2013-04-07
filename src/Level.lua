@@ -99,7 +99,7 @@ end
 Game loop
 --]]
 
-function Level:update(dt)
+function Level:update(dt, view)
   
   -- update objects
   -- ...for each type of object
@@ -108,7 +108,7 @@ function Level:update(dt)
     useful.map(objects_of_type,
       function(object)
         -- ...update the object
-        object:update(dt, self)
+        object:update(dt, self, view)
         -- ...check collisions with other object
         -- ...... for each other type of object
         for othertype, objects_of_othertype 
@@ -129,13 +129,8 @@ function Level:update(dt)
 end
 
 function Level:draw(view)
-  --generation fond
-    
- 
   -- draw the tiles
   self.imagegrid:draw(view)
-  --self.tilegrid:draw(view) --FIXME
-  
   
   -- for each type of object
   for t, object_type in pairs(self.object_types) do

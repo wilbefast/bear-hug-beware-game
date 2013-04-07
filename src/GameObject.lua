@@ -57,6 +57,7 @@ useful.bind(GameObject.TYPE, "ENEMY", 3)
 useful.bind(GameObject.TYPE, "DEADENEMY", 4)
 useful.bind(GameObject.TYPE, "DEATH", 5)
 useful.bind(GameObject.TYPE, "BONUS", 6)
+useful.bind(GameObject.TYPE, "GIBLET", 7)
 
 function GameObject:typename()
   return GameObject.TYPE[self.type]
@@ -108,12 +109,10 @@ function GameObject:collidesType(type)
 end
 
 function GameObject:isColliding(other)
-  
   -- no self collisions
   if self == other then
     return false
   end
-
   -- horizontally seperate ? 
   local v1x = (other.x + other.w) - self.x
   local v2x = (self.x + self.w) - other.x
