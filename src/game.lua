@@ -242,7 +242,7 @@ function state:draw()
     love.graphics.setColor(255, 255, 255)
       
     -- draw the background mountains
-    local mountains_offset = base_offset - (view.x/15)%DEFAULT_W
+    local mountains_offset = base_offset - (view.x/10)%DEFAULT_W
     love.graphics.drawq(MOUNTAINS, QMOUNTAINS, mountains_offset, 500)
     love.graphics.setColor(104, 161, 127)
       love.graphics.rectangle("fill", view.x, 500+MOUNTAINS_H, DEFAULT_W, 
