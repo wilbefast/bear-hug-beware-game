@@ -62,9 +62,10 @@ local BLOOD_DROP =
 local BLOOD_SPLAT = 
   love.graphics.newImage("assets/sprites/blood_splat.png")
 
-Giblet.blood = function(level, bleeder)
+Giblet.blood = function(level, bleeder, amount)
+  amount = amount or 5
   Giblet.spawn(level, bleeder.x, bleeder.y, 
-      5 + useful.iSignedRand(2), 
+      amount + useful.iSignedRand(2), 
       function(gib)
         gib.w, gib.h = 0, 16
         gib.dx = bleeder.dx/3 
