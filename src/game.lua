@@ -87,6 +87,12 @@ function state:init()
   end 
 end
 
+function state:recalculate_view()
+  -- calculate what is and isn't in view: useful for culling
+  self.view.x, self.view.y = self.camera:worldCoords(0, 0)
+  self.view.w, self.view.h = DEFAULT_W*SCALE_X/SCALE_MIN, 
+                            DEFAULT_H*SCALE_Y/SCALE_MIN
+end
 
 function state:enter()
 
@@ -137,11 +143,6 @@ function state:keypressed(key, uni)
 end
 
 function state:update(dt)
-  -- calculate what is and isn't in view: useful for culling
-  self.view.x, self.view.y = self.camera:worldCoords(0, 0)
-  self.view.w, self.view.h = self.camera:worldCoords(
-                          love.graphics.getWidth(), 
-                          love.graphics.getHeight())
   
   -- do nothing if paused
   if paused then 
@@ -166,6 +167,7 @@ function state:update(dt)
   self.player.requestMoveY = ky
 
   -- update the objects in the Level
+  self:recalculate_view()
   self.level:update(dt, self.view)
   
   -- camera follows player horizontally
@@ -177,15 +179,14 @@ function state:update(dt)
   
   -- camera follows player vertically
   self.cam_y = self.player.y
-  
   -- don't look outside the level bounds...
   -- ... snap horizontal
-  local cam_left  = self.cam_x - DEFAULT_W/2
-  local cam_right = cam_left + DEFAULT_W
+  local cam_left  = self.cam_x - self.view.w/2
+  local cam_right = cam_left + self.view.w
   if cam_left < 0 then
-    self.cam_x = DEFAULT_W/2
+    self.cam_x = self.view.w/2
   elseif cam_right > self.level.w then
-    self.cam_x = self.level.w - DEFAULT_W/2
+    self.cam_x = self.level.w - self.view.w/2
   end
   -- ... snap vertical
   local cam_top   = self.cam_y - DEFAULT_H/2
@@ -206,10 +207,7 @@ end
 
 function state:draw()
   -- calculate what is and isn't in view: useful for culling
-  self.view.x, self.view.y = self.camera:worldCoords(0, 0)
-  self.view.w, self.view.h = self.camera:worldCoords(
-                          love.graphics.getWidth(), 
-                          love.graphics.getHeight())
+  self:recalculate_view()
 	
   
   -- draw objects from the camera's point of view
@@ -234,7 +232,7 @@ function state:draw()
     love.graphics.drawq(HORIZON, QHORIZON, horizon_offset, 400)
     love.graphics.setColor(160, 61, 96)
       love.graphics.rectangle("fill", self.view.x, 
-          400+HORIZON_H, DEFAULT_W, 400)
+          400+HORIZON_H, self.view.w, 400)
     love.graphics.setColor(255, 255, 255)
       
     -- draw the background mountains
@@ -243,8 +241,8 @@ function state:draw()
     love.graphics.drawq(MOUNTAINS, QMOUNTAINS, mountains_offset, 500)
     love.graphics.setColor(104, 161, 127)
       love.graphics.rectangle("fill", 
-          self.view.x, 500+MOUNTAINS_H, DEFAULT_W, 
-          self.view.h - (500 + MOUNTAINS_H))
+          self.view.x, DEFAULT_H+MOUNTAINS_H, 
+          self.view.w, self.view.h - (DEFAULT_H + MOUNTAINS_H))
     love.graphics.setColor(255, 255, 255)
     
     -- draw the game objects

@@ -30,6 +30,7 @@ local Giblet = Class
 {
   init = function(self, x, y, special_init)
     GameObject.init(self, x, y, 0, 0)
+    self.airborne = true
     if special_init then
       special_init(self)
     end
