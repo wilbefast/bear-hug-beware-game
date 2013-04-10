@@ -21,7 +21,7 @@ local Class = require("hump/class")
 local TileGrid = require("TileGrid")
 local ImageGrid = require("ImageGrid")
 local GameObject = require("GameObject")
-local Enemy = require("enemy")
+local Enemy = require("Enemy")
 local Death = require("Death")
 local Bonus = require("Bonus")
 local useful = require("useful")
@@ -39,20 +39,18 @@ local Level = Class
 }
 
 function Level:load(filename)
-
-   fond = love.image.newImageData("assets/decors/horizon.png")
-   horizon = love.graphics.newImage(fond)
-   plan_1 = love.image.newImageData("assets/decors/plan1.png")
-   plan1 = love.graphics.newImage(plan_1)
+  -- load lua-parsed "Tiled" map
   local mapfile = require(filename)
   
-  -- load collision grid
+  -- parse collision grid
   self.tilegrid = TileGrid(mapfile)
+  self.w = self.tilegrid.w*self.tilegrid.tilew
+  self.h = self.tilegrid.h*self.tilegrid.tileh
   
-  -- load graphics tile grid
+  -- parse graphics tile grid
   self.imagegrid = ImageGrid(mapfile)
   
-  -- load objects
+  -- parse objects
   self.object_types = {}
   -- ... using this function
   function parse_objects(table, constructor)
@@ -101,7 +99,7 @@ end
 Game loop
 --]]
 
-function Level:update(dt)
+function Level:update(dt, view)
   
   -- update objects
   -- ...for each type of object
@@ -110,7 +108,7 @@ function Level:update(dt)
     useful.map(objects_of_type,
       function(object)
         -- ...update the object
-        object:update(dt, self)
+        object:update(dt, self, view)
         -- ...check collisions with other object
         -- ...... for each other type of object
         for othertype, objects_of_othertype 
@@ -131,13 +129,8 @@ function Level:update(dt)
 end
 
 function Level:draw(view)
-  --generation fond
-    
- 
   -- draw the tiles
   self.imagegrid:draw(view)
-  --self.tilegrid:draw(view) --FIXME
-  
   
   -- for each type of object
   for t, object_type in pairs(self.object_types) do

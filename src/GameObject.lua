@@ -51,26 +51,16 @@ Types
 
 GameObject.TYPE = {}
 
-GameObject.TYPE["PLAYER"] = 1 
-GameObject.TYPE[1] = "PLAYER"
+useful.bind(GameObject.TYPE, "GIBLET", 1)
+useful.bind(GameObject.TYPE, "ATTACK", 2)
+useful.bind(GameObject.TYPE, "ENEMY", 3)
+useful.bind(GameObject.TYPE, "DEATH", 4)
+useful.bind(GameObject.TYPE, "BONUS", 5)
+useful.bind(GameObject.TYPE, "PLAYER", 6)
 
-GameObject.TYPE["ATTACK"] = 2
-GameObject.TYPE[2] = "ATTACK"
-
-GameObject.TYPE["ENEMY"] = 3
-GameObject.TYPE[3] = "ENEMY"
-
-GameObject.TYPE["ENEMYATTACK"] = 4
-GameObject.TYPE[4] = "ENEMYATTACK"
-
-GameObject.TYPE["DEADENEMY"] = 5
-GameObject.TYPE[5] = "DEADENEMY"
-
-GameObject.TYPE["DEATH"] = 6
-GameObject.TYPE[6] = "DEATH"
-
-GameObject.TYPE["BONUS"] = 7
-GameObject.TYPE[7] = "BONUS"
+function GameObject:typename()
+  return GameObject.TYPE[self.type]
+end
 
 --[[----------------------------------------------------------------------------
 Collisions
@@ -85,7 +75,7 @@ function GameObject:centreX()
 end
 
 function GameObject:centreY()
-  return self.x + self.h/2
+  return self.y + self.h/2
 end
 
 function GameObject:snap_from_collision(dx, dy, tilegrid, max, type)
@@ -118,12 +108,10 @@ function GameObject:collidesType(type)
 end
 
 function GameObject:isColliding(other)
-  
   -- no self collisions
   if self == other then
     return false
   end
-
   -- horizontally seperate ? 
   local v1x = (other.x + other.w) - self.x
   local v2x = (self.x + self.w) - other.x
@@ -233,15 +221,20 @@ function GameObject:update(dt, level)
 end
 
 function GameObject:draw()
-  -- FIXME debug
-  love.graphics.rectangle("line", self.x, self.y, self.w, self.h)
-  love.graphics.print(GameObject.TYPE[self.type], self.x, self.y+32)
-  
-  
-  if self.type == GameObject.TYPE.ENEMY then
-    love.graphics.print(self.dx, self.x, self.y-32)
+  if self.view then
+    self.view:draw(self)
   end
 end
+
+GameObject.DEBUG_VIEW = 
+{
+  draw = function(self, target)
+    love.graphics.rectangle("line", 
+        target.x, target.y, target.w, target.h)
+    love.graphics.print(target:typename(), 
+        target.x, target.y+32)
+  end
+}
 
 --[[------------------------------------------------------------
 EXPORT

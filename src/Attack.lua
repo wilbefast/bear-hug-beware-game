@@ -27,12 +27,13 @@ CHARACTER CLASS
 
 local Attack = Class
 {
-  init = function(self, x, y, weapon, launcher)
+  init = function(self, x, y, weapon, launcher, directional)
     GameObject.init(self, x-weapon.W/2, y-weapon.H/2, 
                     weapon.W, weapon.H)
-    self.weapon = (weapon or self)
     self.launcher = (launcher or self)
-    self.first_update = true
+    self.weapon = (weapon or self.launcher or self)
+    self.timer = 0 --FIXME (weapon.DURATION or 0)
+    self.n_hit = 0
   end,
       
   type  =  GameObject.TYPE["ATTACK"],
@@ -44,18 +45,28 @@ Attack:include(GameObject)
 Game loop
 --]]
 
-function Attack:update(dt, tilegrid)
+function Attack:update(dt, level)
   -- destroy self on *second* update
-  if self.first_update then
-    self.first_update = false
-  else
+  if self.timer < 0 then
     self.purge = true
+    if (self.n_hit == 0) then
+      audio:play_sound(self.weapon.SOUND_MISS, 0.2, self.x, self.y)
+      if self.weapon.ON_MISS then
+        self.weapon:ON_MISS(self.launcher)
+      elseif self.weapon.ON_HIT then
+        self.weapon:ON_HIT(self.launcher)
+      end
+    elseif self.weapon.SOUND_HIT then
+      audio:play_sound(self.weapon.SOUND_HIT, 0.2, self.x, self.y)
+    end
+  else
+    self.timer = self.timer - dt
   end
 end
 
 function Attack:draw()
-  -- FIXME debug
---  GameObject.draw(self)
+  -- debug
+  GameObject.draw(self)
 end
 
 return Attack

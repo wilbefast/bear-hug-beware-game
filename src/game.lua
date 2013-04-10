@@ -20,7 +20,25 @@ IMPORTS
 
 local Level = require("Level")
 local Camera = require("hump/camera")
-local Player = require("player")
+local Player = require("Player")
+local useful = require("useful")
+
+
+--[[------------------------------------------------------------
+CONSTANTS
+--]]------------------------------------------------------------
+
+-- camera
+local FOLLOW_DIST = 150
+
+-- background images
+local SKY
+local HORIZON, HORIZON_W, HORIZON_H, QHORIZON 
+local MOUNTAINS, MOUNTAINS_W, MOUNTAINS_H, QMOUTAINS
+local PORTRAITS, QPORTRAITS
+local BARS, QBARS
+local BAR_DIVISIONS = 10
+local DEFEAT_SPLASH
 
 --[[------------------------------------------------------------
 GAME GAMESTATE
@@ -29,131 +47,94 @@ GAME GAMESTATE
 local state = GameState.new()
 
 function state:init()
+  
   -- create objects
+  self.level = Level()
+  self.view = {}
+  
+  -- set up camera
+  self.camera = Camera(0, 0)
 
-  self.level         = Level()
-  self.camera        = Camera(0, 0)
-
-  self.xLifeBarre  = 150
-  self.yLifeBarre  = 100
-  self.xMagicBarre = 150
-  self.yMagicBarre = 150
+  SKY = love.graphics.newImage("assets/background/sky.jpg")
   
-  fond = love.image.newImageData("assets/decors/horizon.png")
-  horizon = love.graphics.newImage(fond)
-  plan_1 = love.image.newImageData("assets/decors/plan1.png")
-  plan1 = love.graphics.newImage(plan_1)
-  pl = love.image.newImageData("assets/decors/plan.png")
-  plan = love.graphics.newImage(pl)
-    pla = love.image.newImageData("assets/decors/elem.png")
-  plan3 = love.graphics.newImage(pla)
+  HORIZON = love.graphics.newImage("assets/background/horizon.png")
+  HORIZON:setWrap('repeat', 'clamp')
+  HORIZON_W, HORIZON_H = HORIZON:getWidth(), HORIZON:getHeight()
+  QHORIZON = love.graphics.newQuad(0, 0, DEFAULT_W*3, HORIZON_H, 
+                                  HORIZON_W, HORIZON_H)
   
-  path = "assets/audio/prise_de_degats.ogg"
-  baffe= love.audio.newSource(path, "static")
+  MOUNTAINS = love.graphics.newImage("assets/background/mountains.png")
+  MOUNTAINS:setWrap('repeat', 'clamp')
+  MOUNTAINS_W, MOUNTAINS_H = MOUNTAINS:getWidth(), MOUNTAINS:getHeight()
+  QMOUNTAINS = love.graphics.newQuad(0, 0, DEFAULT_W*3, MOUNTAINS_H, 
+                                  MOUNTAINS_W, MOUNTAINS_H)
   
-  fic="assets/audio/cri_mort.ogg"
-  cri_mort = love.audio.newSource(fic,"static")
-    
-  image_mort = love.graphics.newImage("assets/images/mort.png")
+  PORTRAITS = love.graphics.newImage("assets/hud/portraits.png")
+  QPORTRAITS = {}
+  for i = 1,3 do
+    QPORTRAITS[i] = love.graphics.newQuad((i-1)*64, 0, 64, 64, 
+        PORTRAITS:getWidth(), PORTRAITS:getHeight())
+  end
   
-  son_explosion = "assets/audio/explosion_magique.ogg"
-  explosion = love.audio.newSource(son_explosion,"static")
+  BARS = love.graphics.newImage("assets/hud/bars.png")
+  QBARS = {}
+  for i = 1,4 do
+    QBARS[i] = {}
+    for j = 1,BAR_DIVISIONS do
+      QBARS[i][j] = love.graphics.newQuad(
+        0, (i-1)*32, (128/BAR_DIVISIONS)*j, 32, 
+        BARS:getWidth(), BARS:getHeight()) 
+    end
+  end 
   
-  son_jeu = "assets/audio/themejeu.ogg"
-  jeu_son = love.audio.newSource(son_jeu)
-  
-  happy_tree = "assets/audio/happy.ogg"
-  happy = love.audio.newSource(happy_tree,"static")
-  
-    im = love.graphics.newImage("assets/hud/spriteVie.png")
-  self.barre_life = newAnimation(im, 186, 62, 0.1, 0, 0, 0, {1,2,3,4,5,6,7,8,9})
-  self.barre_life:setMode("once")
-  self.barre_mana = newAnimation(im, 186, 62, 0.1, 0, 0, 0, {10})
-  self.barre_mana:setMode("once")
-  
-  jeu_son:play()
-  jeu_son:setLooping(true)
+  DEFEAT_SPLASH = love.graphics.newImage("assets/hud/dead_fr.png")
 end
 
+function state:recalculate_view()
+  -- calculate what is and isn't in view: useful for culling
+  self.view.x, self.view.y = self.camera:worldCoords(0, 0)
+  
+  self.view.endx, self.view.endy = self.camera:worldCoords(
+    love.graphics.getWidth() + self.level.tilegrid.tilew, 
+    love.graphics.getHeight() + self.level.tilegrid.tileh)
+    
+  self.view.w, self.view.h = self.view.endx - self.view.x,
+                             self.view.endy - self.view.y
+end
 
 function state:enter()
+
+  -- play music
+  audio:play_music("music_game")
   
-  love.mouse.setVisible( false )
   -- reset objects
-  self.player = Player(300, 1000)
+  self.player = Player(300, 500) --TODO reset player position based on level
   self.level:load("../assets/maps/map01")
   self.level:addObject(self.player)
-  --TODO reset player position base on level
-
-  self.CAMERA_AREA_WIDTH = (love.graphics.getWidth() / 4)
-
-  self.cameraAreaLeft = self.player.x - (self.CAMERA_AREA_WIDTH / 2) + (love.graphics.getWidth() / 2)
-  self.cameraAreaRight = self.player.x + (self.CAMERA_AREA_WIDTH / 2) + (love.graphics.getWidth() / 2)
-
-end
-
-
-function state:focus()
-end
-
-
-function state:mousepressed(x, y, btn)
-
-end
-
-
-function state:mousereleased(x, y, btn)
   
+  -- reset camera
+  self.cam_x, self.cam_y = self.player.x, self.player.y
+  self.camera:zoomTo(SCALE_MAX)
+  self.camera:lookAt(self.cam_x, self.cam_y)
+
 end
 
-
-function state:joystickpressed(joystick, button)
-  
-end
-
-
-function state:joystickreleased(joystick, button)
-  
-end
-
-
-function state:quit()
-  
-end
 
 function state:leave()
-	happy:stop()
 end
 
 
 function state:keypressed(key, uni)
+  
+  -- exit
   if key=="escape" then
     GameState.switch(title)
+    
+  -- pause
   elseif key == "p" then
-    if paused then
-		paused = false
-	else 
-		paused = true
-	end
-  --! TODO remove debug test when no longer needed
-  -----------------------------
-  elseif key == "m" then
-    self.player:life_change(-10)
-    self.player:magic_change(-5)
-	-- TEST DE SONS :
-  elseif key =="f" then
-    degats_subis:stop()
-    degats_subis:play()
-    --print("fuck")
-  elseif key =="g" then
-    cri_mort:play()
-  elseif key =="h" then 
-	saut:play()
-  elseif key == "j" then 
-    explosion:play()
+    paused = (not paused)
   end
------------------------------
-  
+
   -- player 1 jump
   self.player.requestJump
     = (key == " " or key == "up" 
@@ -169,136 +150,162 @@ function state:keypressed(key, uni)
   
 end
 
-
-function state:keyreleased(key, uni)
-end
-
-
 function state:update(dt)
-  if not paused then 
-	  -- deal with input
-	  local kx, ky = 0, 0
-	  if love.keyboard.isDown("left", "q", "a") then
-		kx = kx - 1 
-	  end
-	  if love.keyboard.isDown("right", "d") then
-		kx = kx + 1 
-	  end
-	  if love.keyboard.isDown("up", "z", "w") then
-		ky = ky - 1 
-	  end
-	  if love.keyboard.isDown("down", "s") then 
-		ky = ky + 1 
-	  end
-	  self.player.requestMoveX = kx
-	  self.player.requestMoveY = ky
-
-	  -- update the objects in the Level
-	  self.level:update(dt)
-	  
-	  -- point camera at player object
-    local hauteur = love.graphics.getHeight() / 2
-    local largeur = love.graphics.getWidth() / 2
-
-    local cam_x = self.player:centreX()
-    local cam_y = self.player.y
-
-    local levelh = (self.level.tilegrid.h-1) * self.level.tilegrid.tileh
-    local levelw = (self.level.tilegrid.w+10) * self.level.tilegrid.tilew
-
-    if self.player:centreX() < self.cameraAreaLeft then
-      self.cameraAreaLeft = self.player:centreX()
-      self.cameraAreaRight = self.cameraAreaLeft + self.CAMERA_AREA_WIDTH
-    elseif self.player:centreX() > self.cameraAreaRight then
-      self.cameraAreaRight = self.player:centreX()
-      self.cameraAreaLeft = self.cameraAreaRight - self.CAMERA_AREA_WIDTH
-    end
-    
-    -- LEFT BOUNDS OF CAMERA
-    if self.cameraAreaLeft < 415 then
-      self.cameraAreaLeft = 415
-      self.cameraAreaRight = self.cameraAreaLeft + self.CAMERA_AREA_WIDTH
-    end
-    
-    if self.player:centreX() <= largeur then
-      cam_x = largeur
-    end
-    if(self.player:centreX() >= levelw - largeur ) then
-      cam_x = levelw - largeur
-    end
-
-    if self.player.y <= hauteur then
-      cam_y = hauteur
-    end
-    if( self.player.y >= levelh - hauteur ) then
-      cam_y = levelh - hauteur
-    end
-    
-    
-if self.player.life~=0 then
-	nb = ((90-self.player.life)/10)+1
-	self.barre_life:seek(nb)
-	
-	self.barre_mana:seek(1)
-	
-end
-self.barre_mana:update(dt)
-	self.barre_life:update(dt)
-
-
-  if cam_y < 700 then cam_y = 700 end
-	
   
-  
-    if cam_y < 700 then cam_y = 700 end
-
-  
-    cam_x = (self.cameraAreaLeft + self.cameraAreaRight) / 2
-    self.camera:lookAt( cam_x + self.level.tilegrid.tilew, cam_y + self.level.tilegrid.tileh )
+  -- do nothing if paused
+  if paused then 
+    return
   end
+  
+  -- deal with input
+  local kx, ky = 0, 0
+  if love.keyboard.isDown("left", "q", "a") then
+    kx = kx - 1 
+  end
+  if love.keyboard.isDown("right", "d") then
+    kx = kx + 1 
+  end
+  if love.keyboard.isDown("up", "z", "w") then
+    ky = ky - 1 
+  end
+  if love.keyboard.isDown("down", "s") then 
+    ky = ky + 1 
+  end
+  self.player.requestMoveX = kx
+  self.player.requestMoveY = ky
+
+  -- update the objects in the Level
+  self:recalculate_view()
+  self.level:update(dt, self.view)
+  
+  -- camera follows player horizontally
+  if self.player:centreX() < self.cam_x - FOLLOW_DIST then
+    self.cam_x = self.player:centreX() + FOLLOW_DIST
+  elseif self.player:centreX() > self.cam_x + FOLLOW_DIST then
+    self.cam_x = self.player:centreX() - FOLLOW_DIST
+  end
+  
+  -- camera follows player vertically
+  self.cam_y = self.player.y
+  -- don't look outside the level bounds...
+  -- ... snap horizontal
+  local cam_left  = self.cam_x - self.view.w/2
+  local cam_right = cam_left + self.view.w
+  if cam_left < 0 then
+    self.cam_x = self.view.w/2
+  elseif cam_right > self.level.w then
+    self.cam_x = self.level.w - self.view.w/2
+  end
+  -- ... snap vertical
+  local cam_top   = self.cam_y - DEFAULT_H/2
+  local cam_bottom = cam_top + DEFAULT_H
+  if cam_top < 0 then
+    self.cam_y = DEFAULT_H/2
+  elseif cam_bottom > self.level.h then
+    self.cam_y = self.level.h - DEFAULT_H/2
+  end
+  
+  -- update camera
+  self.camera:lookAt(self.cam_x, self.cam_y)
+  
+  -- update listener position
+  love.audio.setPosition(self.player.x, self.player.y, 0)
 end
 
 
 function state:draw()
-
-  --love.graphics.print("Game screen", 32, 32)
+  -- calculate what is and isn't in view: useful for culling
+  self:recalculate_view()
+	
   
-  local view = {}
-  view.x, view.y = self.camera:worldCoords(0, 0)
-  view.w, view.h = self.camera:worldCoords(
-                          love.graphics.getWidth(), 
-                          love.graphics.getHeight())
-	
-
+  -- draw objects from the camera's point of view
   self.camera:attach()
-    for i=0,26 do
-	  love.graphics.draw(horizon,0+i*(1280),400-((1280-self.camera.y)/40))
-	  love.graphics.draw(plan1,0+i*(1280),580-((1280-self.camera.y)/40))
-	  love.graphics.draw(plan,0+i*(1280),580-((1280-self.camera.y)/40))
-	   love.graphics.draw(plan3,0+i*(1280),580-((1280-self.camera.y)/40))
+  
+    -- draw the sky
+    if self.view.y < 300 then
+    love.graphics.setColor(168, 230, 227)
+      love.graphics.rectangle("fill", 
+          self.view.x, self.view.y, DEFAULT_W, 300 - self.view.y)
+    love.graphics.setColor(255, 255, 255)
     end
-    self.level:draw(view)
+    love.graphics.draw(SKY, self.view.x, 300)
+    
+    -- parallax offset
+    local base_offset = 
+      (math.floor(self.view.x / DEFAULT_W))*DEFAULT_W
+  
+    -- draw the horizon mountains
+    local horizon_offset = 
+      base_offset - (self.view.x/20)%DEFAULT_W
+    love.graphics.drawq(HORIZON, QHORIZON, horizon_offset, 400)
+    love.graphics.setColor(160, 61, 96)
+      love.graphics.rectangle("fill", self.view.x, 
+          400+HORIZON_H, self.view.w, 400)
+    love.graphics.setColor(255, 255, 255)
+      
+    -- draw the background mountains
+    
+    local w, h = DEFAULT_W*SCALE_X/SCALE_MIN,
+                  DEFAULT_H*SCALE_Y/SCALE_MIN
+    
+    local mountains_offset = 
+      base_offset - (self.view.x/10)%DEFAULT_W
+    love.graphics.drawq(MOUNTAINS, QMOUNTAINS, 
+                        mountains_offset, 500)
+    love.graphics.setColor(104, 161, 127)
+    
+      love.graphics.rectangle("fill", 
+          self.view.x, 500 + MOUNTAINS_H, 
+          self.view.w, 280)
+    love.graphics.setColor(255, 255, 255)
+    
+    -- draw the game objects
+    self.level:draw(self.view)
+
   self.camera:detach()
+  
+  
+  -- GUI
+  --------------------------------------------
+  
+  
+  -- if alive draw health-bars, etc
+  if self.player.state ~= self.player.STATE.DEAD then
+  
+    -- calculate frames (quads) of life-bar and portraits
+    local life_per_portrait = math.floor(100/(#QPORTRAITS))
+    local portrait = useful.clamp(
+      math.floor(self.player.life / life_per_portrait) + 1,
+      1, #QPORTRAITS)
+    local portrait_life = 
+      self.player.life - (portrait-1)*life_per_portrait
 
+    local life_i = useful.clamp(math.floor(
+        portrait_life/life_per_portrait*BAR_DIVISIONS) + 1, 
+            1, BAR_DIVISIONS)
+    local magic_i = useful.clamp(math.floor(
+        self.player.magic/100*BAR_DIVISIONS),
+            1, BAR_DIVISIONS)
+    local portrait_i = #QPORTRAITS - portrait + 1
 
-  -- barre de magie et life :
-
-  if self.player.life>0 then
-	self.barre_life:draw(100,20)
-	self.barre_mana:draw(100,40)
+    -- draw health-bar
+    love.graphics.drawq(BARS, 
+        QBARS[portrait_i][life_i], 64, 32)
+    
+    -- draw mana-bar 
+    love.graphics.drawq(BARS, 
+        QBARS[#QPORTRAITS + 1][magic_i], 64, 64)
+    
+    -- draw portrait
+    love.graphics.drawq(PORTRAITS, 
+        QPORTRAITS[portrait_i], 32, 32)
+    
+  else
+    scaled_draw(DEFEAT_SPLASH,
+        DEFAULT_W/2 - DEFEAT_SPLASH:getWidth()/2,
+        DEFAULT_H/2 - DEFEAT_SPLASH:getHeight()/2)
   end
-
-	if self.player.life == 0 then
-		love.graphics.draw(image_mort, 10, 10)
-		jeu_son:setLooping(false)
-		jeu_son:stop()
-		happy:play()
-	end
-	
-  if paused then 
-    love.graphics.rectangle("line",700,50, 200,40)
-    love.graphics.print(" Game Paused !! \n Taper \"p\" pour redemarrer. ",705,55)
-  end
+ 
 end
 
 return state

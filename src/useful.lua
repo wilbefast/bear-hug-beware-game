@@ -127,4 +127,24 @@ function useful.dist2(x1, y1, x2, y2)
   return (dx*dx + dy*dy)
 end
 
+-- two-directional look-up
+function useful.bind(table, a, b)
+  table[a] = b
+  table[b] = a
+end
+
+function useful.signedRand(value)
+  local r = math.random()
+  return useful.tri(r < 0.5, value*2*r, value*2*(r-0.5))
+end
+
+function useful.iSignedRand(value)
+  local r = math.random()
+  return math.floor(useful.tri(r < 0.5, value*2*r, value*2*(r-0.5)))
+end
+
+function useful.clamp(val, lower_bound, upper_bound)
+  return math.max(lower_bound, math.min(upper_bound, val))
+end
+
 return useful

@@ -1,4 +1,4 @@
 *.orig
 *.DS_Store
-*.com.apple.timemachine.supported
 *.Thumbs.db
+*.com.apple.timemachine.supported

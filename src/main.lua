@@ -13,40 +13,102 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 Lesser General Public License for more details.
 --]]
 
+--[[------------------------------------------------------------
+IMPORTS
+--]]------------------------------------------------------------
 
-function love.load(arg)
-  GameState = require("hump/gamestate")
-  conf = require("conf")
-	love.graphics.setMode(1280, 720, true, true)
-  title = require("title")
-  game = require("game")
-  fin = require("end")
-  credits = require("credits")
-  histoire = require("histoire")
-  GameState.switch(title)
+GameState = require("hump/gamestate")
+conf = require("conf")
+title = require("menus/title")
+prologue = require("menus/prologue")
+game = require("game")
+audio = require("audio")
 
-  
+
+--[[------------------------------------------------------------
+DEAL WITH DIFFERENT RESOLUTIONS (scale images)
+--]]------------------------------------------------------------
+
+DEFAULT_W, DEFAULT_H, SCALE_X, SCALE_Y, SCALE_MIN, SCALE_MAX = 1280, 720, 1, 1, 1, 1
+
+function scaled_draw(img, x, y, rot, sx, sy)
+  x, y, rot, sx, sy = (x or 0), (y or 0), (rot or 0), (sx or 1), (sy or 1)
+  love.graphics.draw(img, x*SCALE_MIN + DEFAULT_W*(SCALE_X-SCALE_MIN)/2, 
+                          y*SCALE_MIN + DEFAULT_H*(SCALE_Y-SCALE_MIN)/2, 
+                          rot, 
+                          sx*SCALE_MIN, 
+                          sy*SCALE_MIN)
 end
 
+function scaled_drawq(img, quad, x, y, rot, sx, sy)
+  x, y, rot, sx, sy = (x or 0), (y or 0), (rot or 0), (sx or 1), (sy or 1)
+  love.graphics.drawq(img, quad, x*SCALE_MIN + DEFAULT_W*(SCALE_X-SCALE_MIN)/2, 
+                                  y*SCALE_MIN + DEFAULT_H*(SCALE_Y-SCALE_MIN)/2, 
+                                  rot, 
+                                  sx*SCALE_MIN, 
+                                  sy*SCALE_MIN)
+end
+
+local function setBestResolution(desired_w, desired_h, fullscreen)
+  DEFAULT_W, DEFAULT_H = desired_w, desired_h
+  -- get and sort the available screen modes from best to worst
+  local modes = love.graphics.getModes()
+  table.sort(modes, function(a, b) 
+    return a.width*a.height > b.width*b.height end)
+    
+  -- try each mode from best to worst
+  for i, m in ipairs(modes) do
+    if not (i < 4) then --FIXME
+    -- try to set the resolution
+    local success = love.graphics.setMode(m.width, m.height, fullscreen)
+    if success then
+      SCALE_X, SCALE_Y = m.width/desired_w, m.height/desired_h
+      SCALE_MIN, SCALE_MAX = math.min(SCALE_X, SCALE_Y), math.max(SCALE_X, SCALE_Y)
+      return true -- success!
+    end
+    end --FIXME
+  end
+  return false -- failure!
+end
+
+--[[------------------------------------------------------------
+LOVE CALLBACKS
+--]]------------------------------------------------------------
+
+function love.load(arg)
+    
+  -- set up the screen resolution
+  if (not setBestResolution(1280, 720, false)) then
+  --if (not setBestResolution(1280, 720, true)) then --FIXME
+    print("Failed to set mode")
+    love.event.push("quit")
+  end
+  
+  -- load sound and music
+  audio:load_sound("bear_attack", 3)  
+  audio:load_sound("bear_die", 3)
+  audio:load_sound("jump", 2)  
+  audio:load_sound("magic", 2)  
+  audio:load_sound("disgust", 2)
+  audio:load_sound("punch", 4)
+  audio:load_sound("miss", 4)
+  audio:load_music("music_defeat")
+  audio:load_music("music_game") 
+  audio:load_music("music_title")
+
+  -- initialise random
+  math.randomseed(os.time())
+  
+  -- hide the mouse
+  love.mouse.setVisible(false)
+
+  -- go to the initial gamestate
+  --GameState.switch(title) --FIXME
+  GameState.switch(game)
+end
 
 function love.focus(f)
   GameState.focus(f)
-end
-
-function love.mousepressed(x, y, btn)
-  GameState.mousepressed(x, y, btn)
-end
-
-function love.mousereleased(x, y, btn)
-  GameState.mousereleased(x, y, btn)
-end
-
-function love.joystickpressed(joystick, button)
-  GameState.joystickpressed(joystick, button)
-end
-
-function love.joystickreleased(joystick, button)
-  GameState.joystickreleased(joystick, button)
 end
 
 function love.quit()
@@ -61,13 +123,13 @@ function keyreleased(key, uni)
   GameState.keyreleased(key)
 end
 
-MAX_DT = 1/30 -- global!
+MIN_DT = 1/60
+MAX_DT = 1/30
 function love.update(dt)
-  dt = math.min(MAX_DT, dt)
+  dt = math.max(MIN_DT, math.min(MAX_DT, dt))
   GameState.update(dt)
 end
 
 function love.draw()
   GameState.draw()
-  --love.graphics.print(love.timer.getFPS(), 10, 10)
 end
