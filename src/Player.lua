@@ -22,6 +22,7 @@ local Character   = require("Character")
 local GameObject  = require("GameObject")
 local Attack      = require("Attack")
 local useful      = require("useful")
+local audio      = require("audio")
 local Animation   = require("Animation")
 local AnimationView = require("AnimationView")
 
@@ -51,7 +52,7 @@ local Player = Class
   
     ---- Character
     Character.init(self, x, y, 64, 128,
-        ANIM_STAND, ANIM_WALK, ANIM_JUMP, ANIM_PAIN)
+        ANIM_STAND, ANIM_WALK, ANIM_JUMP, ANIM_PAIN, ANIM_DEAD)
   end,
 }
 Player:include(Character)
@@ -121,7 +122,8 @@ Collisions
 --]]
 
 function Player:die()
-  -- TODO
+  audio:play_music("music_defeat")
+  self:setState(self.STATE.DEAD)
 end
 
 function Player:collidesType(type)

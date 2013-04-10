@@ -38,6 +38,7 @@ local MOUNTAINS, MOUNTAINS_W, MOUNTAINS_H, QMOUTAINS
 local PORTRAITS, QPORTRAITS
 local BARS, QBARS
 local BAR_DIVISIONS = 10
+local DEFEAT_SPLASH
 
 --[[------------------------------------------------------------
 GAME GAMESTATE
@@ -85,6 +86,8 @@ function state:init()
         BARS:getWidth(), BARS:getHeight()) 
     end
   end 
+  
+  DEFEAT_SPLASH = love.graphics.newImage("assets/hud/dead_fr.png")
 end
 
 function state:recalculate_view()
@@ -265,33 +268,43 @@ function state:draw()
   -- GUI
   --------------------------------------------
   
-  -- calculate frames (quads) of life-bar and portraits
-  local life_per_portrait = math.floor(100/(#QPORTRAITS))
-  local portrait = useful.clamp(
-    math.floor(self.player.life / life_per_portrait) + 1,
-    1, #QPORTRAITS)
-  local portrait_life = 
-    self.player.life - (portrait-1)*life_per_portrait
-
-  local life_i = useful.clamp(math.floor(
-      portrait_life/life_per_portrait*BAR_DIVISIONS) + 1, 
-          1, BAR_DIVISIONS)
-  local magic_i = useful.clamp(math.floor(
-      self.player.magic/100*BAR_DIVISIONS),
-          1, BAR_DIVISIONS)
-  local portrait_i = #QPORTRAITS - portrait + 1
-
-  -- draw health-bar
-  love.graphics.drawq(BARS, 
-      QBARS[portrait_i][life_i], 132, 100)
   
-  -- draw mana-bar 
-  love.graphics.drawq(BARS, 
-      QBARS[#QPORTRAITS + 1][magic_i], 132, 132)
+  -- if alive draw health-bars, etc
+  if self.player.state ~= self.player.STATE.DEAD then
   
-  -- draw portrait
-  love.graphics.drawq(PORTRAITS, 
-      QPORTRAITS[portrait_i], 100, 100)
+    -- calculate frames (quads) of life-bar and portraits
+    local life_per_portrait = math.floor(100/(#QPORTRAITS))
+    local portrait = useful.clamp(
+      math.floor(self.player.life / life_per_portrait) + 1,
+      1, #QPORTRAITS)
+    local portrait_life = 
+      self.player.life - (portrait-1)*life_per_portrait
+
+    local life_i = useful.clamp(math.floor(
+        portrait_life/life_per_portrait*BAR_DIVISIONS) + 1, 
+            1, BAR_DIVISIONS)
+    local magic_i = useful.clamp(math.floor(
+        self.player.magic/100*BAR_DIVISIONS),
+            1, BAR_DIVISIONS)
+    local portrait_i = #QPORTRAITS - portrait + 1
+
+    -- draw health-bar
+    love.graphics.drawq(BARS, 
+        QBARS[portrait_i][life_i], 64, 32)
+    
+    -- draw mana-bar 
+    love.graphics.drawq(BARS, 
+        QBARS[#QPORTRAITS + 1][magic_i], 64, 64)
+    
+    -- draw portrait
+    love.graphics.drawq(PORTRAITS, 
+        QPORTRAITS[portrait_i], 32, 32)
+    
+  else
+    scaled_draw(DEFEAT_SPLASH,
+        DEFAULT_W/2 - DEFEAT_SPLASH:getWidth()/2,
+        DEFAULT_H/2 - DEFEAT_SPLASH:getHeight()/2)
+  end
  
 end
 

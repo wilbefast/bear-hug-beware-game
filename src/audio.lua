@@ -42,7 +42,8 @@ function audio:play_music(name)
     if self.music then
       self.music:stop()
     end
-    --new_music:play()
+    new_music:setLooping(true)
+    new_music:play()
     self.music = new_music
   end
 end
@@ -62,7 +63,7 @@ function audio:play_sound(name, pitch_shift, x, y)
         src:setPosition(x, y, 0)
       end
       
-      --src:play()
+      src:play()
       return
     end
   end

@@ -33,14 +33,15 @@ CHARACTER CLASS
 local Character = Class
 {
   init = function(self, x, y, w, h, 
-                  astand, awalk, ajump, apain)
+                  astand, awalk, ajump, apain, adead)
     GameObject.init(self, x, y, w, h)
     -- get animations
     self.anim_stand = astand
     self.anim_walk = awalk
     self.anim_jump = ajump
     self.anim_pain = apain
-    -- creat view
+    self.anim_dead = adead
+    -- create view
     self.view = AnimationView(self.anim_stand)
     self.view.offy = -7
     self.view.speed = 6
@@ -79,6 +80,10 @@ function Character:setState(new_state, timer)
   if state ~= new_state then
     self:onStateChange(new_state)
     self.state = new_state
+    -- set dead animation on death
+    if new_state == self.STATE.DEAD and self.anim_dead then
+      self.view:setAnimation(self.anim_dead)
+    end
   end
   if timer then
     self.timer = timer
@@ -91,6 +96,12 @@ Collisions
 --]]
 
 function Character:eventCollision(other, level)
+  
+  -- no collisions if dead
+  if self.state == self.STATE.DEAD then
+    return
+  end
+  
   -- collision with attack
   if (other.type == GameObject.TYPE.ATTACK)
   and (other.launcher.type ~= self.type) then
