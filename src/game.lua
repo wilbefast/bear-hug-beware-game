@@ -21,6 +21,7 @@ IMPORTS
 local Level = require("Level")
 local Camera = require("hump/camera")
 local Player = require("Player")
+local useful = require("useful")
 
 
 --[[------------------------------------------------------------
@@ -36,6 +37,7 @@ local HORIZON, HORIZON_W, HORIZON_H, QHORIZON
 local MOUNTAINS, MOUNTAINS_W, MOUNTAINS_H, QMOUTAINS
 local PORTRAITS, QPORTRAITS
 local BARS, QBARS
+local BAR_DIVISIONS = 10
 
 --[[------------------------------------------------------------
 GAME GAMESTATE
@@ -77,9 +79,9 @@ function state:init()
   QBARS = {}
   for i = 1,3 do
     QBARS[i] = {}
-    for j = 1,10 do
+    for j = 1,BAR_DIVISIONS do
       QBARS[i][j] = love.graphics.newQuad(
-        0, (i-1)*32, (128/10)*j, 32, 
+        0, (i-1)*32, (128/BAR_DIVISIONS)*j, 32, 
         BARS:getWidth(), BARS:getHeight()) 
     end
   end
@@ -252,30 +254,26 @@ function state:draw()
   
   
   -- GUI
+  --------------------------------------------
   
-  ---!-------------FIXME
-  local portrait_i = math.min(#QPORTRAITS, 
-      math.floor(#QPORTRAITS * ((100 - self.player.life)/100) + 1))
-  self.player.life = self.player.life - 0.5
-  ---!-----------FIXME
-      
-  local portrait_life = math.floor(100/(#QPORTRAITS))
-  local next_portrait_
-  
-  
-  
-  
-  local mod_life = self.player.life % portrait_life
-  local hipoints_i = math.floor((#QBARS[1]-1)
-      * ((portrait_life - mod_life)/portrait_life) + 1)
+  -- calculate frames (quads) of life-bar and portraits to display
+  local life_per_portrait = math.floor(100/(#QPORTRAITS))
+  local portrait = useful.clamp(
+    math.floor(self.player.life / life_per_portrait) + 1,
+    1, #QPORTRAITS)
+  local portrait_life = 
+    self.player.life - (portrait-1)*life_per_portrait
+  local life_i = useful.clamp(math.floor(
+      portrait_life / life_per_portrait * BAR_DIVISIONS) + 1, 
+          1, BAR_DIVISIONS)
 
   -- draw health-bar
   love.graphics.drawq(BARS, 
-      QBARS[portrait_i][hipoints_i], 100, 100)
+      QBARS[#QPORTRAITS - portrait + 1][life_i], 100, 100)
   
   -- draw portrait
   love.graphics.drawq(PORTRAITS, 
-      QPORTRAITS[portrait_i], 100, 100)
+      QPORTRAITS[#QPORTRAITS - portrait + 1], 100, 100)
  
 end
 
