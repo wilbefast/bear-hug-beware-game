@@ -90,8 +90,13 @@ end
 function state:recalculate_view()
   -- calculate what is and isn't in view: useful for culling
   self.view.x, self.view.y = self.camera:worldCoords(0, 0)
-  self.view.w, self.view.h = DEFAULT_W*SCALE_X/SCALE_MIN, 
-                            DEFAULT_H*SCALE_Y/SCALE_MIN
+  
+  self.view.endx, self.view.endy = self.camera:worldCoords(
+    love.graphics.getWidth() + self.level.tilegrid.tilew, 
+    love.graphics.getHeight() + self.level.tilegrid.tileh)
+    
+  self.view.w, self.view.h = self.view.endx - self.view.x,
+                             self.view.endy - self.view.y
 end
 
 function state:enter()
@@ -236,13 +241,19 @@ function state:draw()
     love.graphics.setColor(255, 255, 255)
       
     -- draw the background mountains
+    
+    local w, h = DEFAULT_W*SCALE_X/SCALE_MIN,
+                  DEFAULT_H*SCALE_Y/SCALE_MIN
+    
     local mountains_offset = 
       base_offset - (self.view.x/10)%DEFAULT_W
-    love.graphics.drawq(MOUNTAINS, QMOUNTAINS, mountains_offset, 500)
+    love.graphics.drawq(MOUNTAINS, QMOUNTAINS, 
+                        mountains_offset, 500)
     love.graphics.setColor(104, 161, 127)
+    
       love.graphics.rectangle("fill", 
-          self.view.x, DEFAULT_H+MOUNTAINS_H, 
-          self.view.w, self.view.h - (DEFAULT_H + MOUNTAINS_H))
+          self.view.x, 500 + MOUNTAINS_H, 
+          self.view.w, 280)
     love.graphics.setColor(255, 255, 255)
     
     -- draw the game objects
