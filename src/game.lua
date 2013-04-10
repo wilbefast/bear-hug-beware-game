@@ -77,14 +77,14 @@ function state:init()
   
   BARS = love.graphics.newImage("assets/hud/bars.png")
   QBARS = {}
-  for i = 1,3 do
+  for i = 1,4 do
     QBARS[i] = {}
     for j = 1,BAR_DIVISIONS do
       QBARS[i][j] = love.graphics.newQuad(
         0, (i-1)*32, (128/BAR_DIVISIONS)*j, 32, 
         BARS:getWidth(), BARS:getHeight()) 
     end
-  end
+  end 
 end
 
 
@@ -256,24 +256,33 @@ function state:draw()
   -- GUI
   --------------------------------------------
   
-  -- calculate frames (quads) of life-bar and portraits to display
+  -- calculate frames (quads) of life-bar and portraits
   local life_per_portrait = math.floor(100/(#QPORTRAITS))
   local portrait = useful.clamp(
     math.floor(self.player.life / life_per_portrait) + 1,
     1, #QPORTRAITS)
   local portrait_life = 
     self.player.life - (portrait-1)*life_per_portrait
+
   local life_i = useful.clamp(math.floor(
-      portrait_life / life_per_portrait * BAR_DIVISIONS) + 1, 
+      portrait_life/life_per_portrait*BAR_DIVISIONS) + 1, 
           1, BAR_DIVISIONS)
+  local magic_i = useful.clamp(math.floor(
+      self.player.magic/100*BAR_DIVISIONS),
+          1, BAR_DIVISIONS)
+  local portrait_i = #QPORTRAITS - portrait + 1
 
   -- draw health-bar
   love.graphics.drawq(BARS, 
-      QBARS[#QPORTRAITS - portrait + 1][life_i], 100, 100)
+      QBARS[portrait_i][life_i], 132, 100)
+  
+  -- draw mana-bar 
+  love.graphics.drawq(BARS, 
+      QBARS[#QPORTRAITS + 1][magic_i], 132, 132)
   
   -- draw portrait
   love.graphics.drawq(PORTRAITS, 
-      QPORTRAITS[#QPORTRAITS - portrait + 1], 100, 100)
+      QPORTRAITS[portrait_i], 100, 100)
  
 end
 
