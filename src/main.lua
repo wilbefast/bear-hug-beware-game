@@ -22,6 +22,7 @@ conf = require("conf")
 title = require("menus/title")
 prologue = require("menus/prologue")
 game = require("game")
+audio = require("audio")
 
 
 --[[------------------------------------------------------------
@@ -57,7 +58,7 @@ local function setBestResolution(desired_w, desired_h, fullscreen)
     
   -- try each mode from best to worst
   for i, m in ipairs(modes) do
-    if not (i < 4) then --FIXME
+    --if not (i < 4) then --FIXME
     -- try to set the resolution
     local success = love.graphics.setMode(m.width, m.height, fullscreen)
     if success then
@@ -65,7 +66,7 @@ local function setBestResolution(desired_w, desired_h, fullscreen)
       SCALE_MIN, SCALE_MAX = math.min(SCALE_X, SCALE_Y), math.max(SCALE_X, SCALE_Y)
       return true -- success!
     end
-    end --FIXME
+    --end --FIXME
   end
   return false -- failure!
 end
@@ -77,12 +78,24 @@ LOVE CALLBACKS
 function love.load(arg)
     
   -- set up the screen resolution
-  if (not setBestResolution(1280, 720, false)) then
-  --if (not setBestResolution(1280, 720, true)) then --FIXME
+  --if (not setBestResolution(1280, 720, false)) then --FIXME
+  if (not setBestResolution(1280, 720, true)) then 
     print("Failed to set mode")
     love.event.push("quit")
   end
   
+  -- load sound and music
+  audio:load_sound("bear_attack", 3)  
+  audio:load_sound("bear_die", 3)
+  audio:load_sound("jump", 2)  
+  audio:load_sound("magic", 2)  
+  audio:load_sound("disgust", 2)
+  audio:load_sound("punch", 4)
+  audio:load_sound("miss", 4)
+  audio:load_music("music_defeat")
+  audio:load_music("music_game") 
+  audio:load_music("music_title")
+
   -- initialise random
   math.randomseed(os.time())
   
@@ -90,8 +103,8 @@ function love.load(arg)
   love.mouse.setVisible(false)
 
   -- go to the initial gamestate
-  --GameState.switch(title) --FIXME
-  GameState.switch(game)
+  GameState.switch(title) 
+  --GameState.switch(game) --FIXME
 end
 
 function love.focus(f)

@@ -22,7 +22,7 @@ local GameObject  = require("GameObject")
 local Attack      = require("Attack")
 local Class       = require("hump/class")
 local useful      = require("useful")
-local DeadEnemy   = require("DeadEnemy")
+local Animation   = require("Animation")
 
 --[[------------------------------------------------------------
 ENEMY CLASS
@@ -30,66 +30,78 @@ ENEMY CLASS
 
 local SPRITE_SHEET = love.graphics.newImage("assets/sprites/enemy.png")
 
+local ANIM_STAND = 
+  Animation(SPRITE_SHEET, 128, 128, 6, 0, 0)
+local ANIM_JUMP = 
+  Animation(SPRITE_SHEET, 128, 128, 3, 0, 128)
+local ANIM_PAIN = 
+  Animation(SPRITE_SHEET, 128, 128, 2, 768, 0)
+local ANIM_ATTACK = 
+  Animation(SPRITE_SHEET, 128, 128, 3, 384, 128)
 --[[------------------------------------------------------------
 Initialise
 --]]
 local Enemy = Class
 {
   type  =  GameObject.TYPE["ENEMY"],
+  reloadTime = 0
 }
 Enemy:include(Character)
 
 function Enemy:init(x, y, w, h)
   -- base constructor
-  Character.init(self, x, y, w, h, SPRITE_SHEET)
-  self.requestJump = false
-  self.requestMoveX = 0
-
-  --self.animationmarche = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 1, 2, 3, 4, 5, 6 })
-  --self.animationmarche:setSpeed(1,2)
-
-  --self.animationtouched = newAnimation(self.image, 128, 128, 0.1, 0, 0, 0, { 7 })
-  --self.animationtouched:setSpeed(1,2)
-  --self.animationtouched:setMode("once")
-
-  --self.animationcurrent = self.animationmarche
-
-  self.stunned = false
-  --cri_mort = love.audio.newSource("assets/audio/cri_mort.ogg", "static")
+  Character.init(self, x, y, w, h, 
+      ANIM_STAND, ANIM_STAND, ANIM_JUMP, ANIM_PAIN)
 
 end
 
 -- fisix
 Enemy.GRAVITY    = 1200
 Enemy.BOOST      = 700
-Enemy.MOVE_X     = 4000.0
-Enemy.MAX_DX     = 700.0
+Enemy.MOVE_X     = 3000.0
+Enemy.MAX_DX     = 3000.0
 Enemy.FRICTION_X = 50
 
 -- combat
 Enemy.ATTACK =
 {
-  REACH = 32,
-  OFFSET_Y = 74,
+  REACH = 0,
+  OFFSET_Y = 0,
   OFFSET_X = 0,
   DAMAGE = 10,
   MANA = 0,
-  WARMUP_TIME = 0.4,
-  RELOAD_TIME = 0.3,
-  STUN_TIME = 0.5,
-  W = 118,
-  H = 108,
-  KNOCKBACK = 300,
-  reloadTime = 0
+  WARMUP_TIME = 0.5,
+  RELOAD_TIME = 0.4,
+  STUN_TIME = 0.3,
+  DURATION = 0.1,
+  W = 48,
+  H = 48,
+  KNOCKBACK = 1000,
+  KNOCKUP = 400,
+  ANIM_WARMUP = ANIM_ATTACK,
+  SOUND_WARMUP = "bear_attack",
+  ON_MISS = function(weapon, launcher)
+    if (not launcher.airborne) then
+      launcher:setState(Character.STATE.STUNNED, 0.5)
+    end
+  end
 }
 
 -- ai
 Enemy.PERCENT_JUMPING = 0.1
+Enemy.SIGHT_DIST = 800
+Enemy.TURN_DIST = 100
+Enemy.ATTACK_DIST = Enemy.ATTACK.REACH + Enemy.ATTACK.W/2
 
 
 --[[------------------------------------------------------------
 Collisions
 --]]
+
+function Enemy:die()
+  self.purge = true
+  audio:play_sound("bear_die", 0.2, self.x, self.y)
+end
 
 function Enemy:collidesType(type)
   return ((type == GameObject.TYPE.PLAYER)
@@ -98,122 +110,57 @@ function Enemy:collidesType(type)
       or (type == GameObject.TYPE.ENEMY))
 end
 
-function Enemy:eventCollision(other, level)
-  -- collision with attack
-  if other.type == GameObject.TYPE.ATTACK then
-    -- knock-back and -up
-    push = useful.sign(self:centreX() - other.launcher:centreX())
-    self.dx = self.dx + push * other.weapon.KNOCKBACK
-    self.dy = self.dy - other.weapon.KNOCKUP
-    -- set stunned
-    self:setState(Character.STATE.STUNNED)
-    self.timer = other.weapon.STUN_TIME
-    -- lose life
-    self:addLife(-other.weapon.DAMAGE, level)
-  
-  -- collision with player
-  elseif other.type == GameObject.TYPE.PLAYER then
-    self.facing = useful.tri(other:centreX() > self:centreX(), 1, -1)
-    --if self.reloadTime <= 0 and self.warmupTime <= 0 then
-    --  self:startAttack(self.ATTACK, other)
-    --end
-  
-  -- collision with death
-  elseif other.type == GameObject.TYPE.DEATH then
-    self:addLife(-math.huge)
-  
-  -- collision with other enemy
-  elseif other.type == GameObject.TYPE.ENEMY then
-    push = (self.w+other.w)/(self:centreX() - other:centreX())
-    self.dx = self.dx + push * 10
-  end
-end
-
---[[------------------------------------------------------------
-Combat
---]]
-
-function Enemy:attack(attack, target)
-  self.reloadTime = attack.RELOAD_TIME
-  local target_distance = math.abs(target.x - self.x)
-  local reach = math.min(attack.REACH, target_distance)
-  
-  local newAttack = Attack(
-    self.x + self.w/2 + reach*self.facing + attack.OFFSET_X,
-    self.y + attack.OFFSET_Y,
-    attack,
-    self)
-  newAttack.type = GameObject.TYPE.ENEMYATTACK
-  return newAttack
-end
-
 --[[------------------------------------------------------------
 Game loop
 --]]
 
-function Enemy:update(dt, level)
+function Enemy:update(dt, level, view)
 
   -- AI
+  local inView = self:isColliding(view)
   local player = level:getObject(GameObject.TYPE.PLAYER)
-  local ecart = player:centreX() - self:centreX()
+  local delta_x = player:centreX() - self:centreX()
+  local dist = math.abs(delta_x)
+  
+  -- can see player?
+  if inView or self.aggro then
+    
+    -- once active, follow the player TO THE ENDS OF THE EARTH!
+    self.aggro = true
+    
     -- desire move?
-  if math.abs( ecart ) < 800 and math.abs( ecart ) > 30 then
-    -- ... left
-    if ecart < 1 then
-      self.requestMoveX = -1
+    if (dist > self.TURN_DIST) then
+      self.requestMoveX = useful.sign(delta_x)
+    -- ... stop
+    else
+      self.requestMoveX = 0
     end
-    -- ... right
-    if ecart > 1 then
-      self.requestMoveX = 1
+    
+    -- desire attack?
+    if (dist < self.ATTACK_DIST) 
+    and (useful.sign(self.facing) == useful.sign(delta_x))
+    and (self.state == self.STATE.NORMAL)
+    and (self.reloadTime <= 0)
+    then
+      self:startAttack(self.ATTACK, player)
     end
-  else
-    self.requestMoveX = 0
-  end
+    
+    -- desire jump?
+    local delta_y = self.y - player.y
+    if delta_y > 0 then
+      if (delta_y > player.h*2) 
+      or ((delta_y / player.h / 2 * self.PERCENT_JUMPING) > math.random() ) then
+        self.requestJump = true
+      end
+    end
   
-  -- desire jump?
-  local delta_y = self.y - player.y
-  if delta_y > 0 then
-    if (delta_y > player.h*2) 
-    or ((delta_y / player.h / 2 * self.PERCENT_JUMPING) > math.random() ) then
-      self.requestJump = true
+    -- face player
+    if math.abs(delta_y) < self.h then
+      self.facing = useful.sign(delta_x)
     end
   end
 
 
-
-  local moveDir = useful.sign(self.requestMoveX)
-  if moveDir ~= 0 then
-    self.dx = self.dx + moveDir*self.MOVE_X*dt
-    self.facing = moveDir
-  end
-
-  -- jump
-  if self.requestJump then
-    -- check if on the ground
-    if (not self.airborne) then
-      self.dy = -Enemy.BOOST
-    end
-    self.requestJump = false
-  end
-
-  
-
-
-  --[[if self.animationcurrent == self.animationtouched and not self.animationtouched:isPlaying()
-  then
-    self.animationcurrent = self.animationmarche
-    self.animationcurrent:play()
-  end
-
-  if self.baffed then
-    self.animationcurrent = self.animationtouched
-    self.animationcurrent:reset()
-    self.animationcurrent:play()
-    self.baffed = false
-  end 
-
-  self.animationcurrent:update(dt) --]]
-  
   -- base update
   Character.update(self, dt, level)
 end
@@ -222,11 +169,6 @@ end
 
 function Enemy:draw()
   Character.draw(self)
-  --[[local x = self.x + 96 * self.facing
-  if self.facing < 0 then
-    x = x + self.w
-  end
-  self.animationcurrent:draw(x, self.y + 16, 0, -self.facing, 1)--]]
 end
 
 

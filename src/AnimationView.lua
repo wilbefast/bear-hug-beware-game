@@ -41,13 +41,13 @@ Game loop
 --]]
     
 function AnimationView:draw(object)
-  self.anim:draw(object.x, object.y, self.frame, 
+  self.anim:draw(object:centreX(), object.y, self.frame, 
                   self.flip_x, self.flip_y, object.w, self.offy)
 end
 
 function AnimationView:update(dt)
   self.frame = self.frame + self.speed*dt
-  if self.frame > self.anim.n_frames then
+  if self.frame >= self.anim.n_frames + 1 then
     self.frame = self.frame - self.anim.n_frames + 1
     return true -- animation end
   end
@@ -62,8 +62,20 @@ end
 Mutators
 --]]
 
-function AnimationView:randomSubimage()
-  self.subimage = math.rand()
+function AnimationView:seekRandom()
+  self.frame = math.random(self.anim.n_frames)
+end
+
+function AnimationView:seekPercent(p)
+  if p > 1 then p = 1 elseif p < 0 then p = 0 end
+  self.frame = ((self.anim.n_frames-1) * p) + 1
+end
+
+function AnimationView:setAnimation(anim)
+  if anim and (self.anim ~= anim) then
+    self.anim = anim
+    self.frame = 1
+  end
 end
 
 
