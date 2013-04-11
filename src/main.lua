@@ -78,8 +78,8 @@ LOVE CALLBACKS
 function love.load(arg)
     
   -- set up the screen resolution
-  --if (not setBestResolution(1280, 720, false)) then
-  if (not setBestResolution(1280, 720, true)) then --FIXME
+  --if (not setBestResolution(1280, 720, false)) then --FIXME
+  if (not setBestResolution(1280, 720, true)) then 
     print("Failed to set mode")
     love.event.push("quit")
   end
