@@ -65,7 +65,7 @@ Enemy.FRICTION_X = 50
 -- combat
 Enemy.ATTACK =
 {
-  REACH = 0,
+  REACH = 16,
   OFFSET_Y = 0,
   OFFSET_X = 0,
   DAMAGE = 10,
@@ -74,8 +74,8 @@ Enemy.ATTACK =
   RELOAD_TIME = 0.4,
   STUN_TIME = 0.3,
   DURATION = 0.1,
-  W = 48,
-  H = 48,
+  W = 64,
+  H = 52,
   KNOCKBACK = 1000,
   KNOCKUP = 400,
   ANIM_WARMUP = ANIM_ATTACK,
@@ -90,7 +90,8 @@ Enemy.ATTACK =
 -- ai
 Enemy.PERCENT_JUMPING = 0.1
 Enemy.SIGHT_DIST = 800
-Enemy.TURN_DIST = 100
+Enemy.TURN_DIST = 70
+Enemy.AI_H_DIST = 200
 Enemy.ATTACK_DIST = Enemy.ATTACK.REACH + Enemy.ATTACK.W/2
 
 
@@ -120,7 +121,8 @@ function Enemy:update(dt, level, view)
   local inView = self:isColliding(view)
   local player = level:getObject(GameObject.TYPE.PLAYER)
   local delta_x = player:centreX() - self:centreX()
-  local dist = math.abs(delta_x)
+  local delta_y = player:centreY() - self:centreY()
+  local dist_x, dist_y = math.abs(delta_x), math.abs(delta_y)
   
   -- can see player?
   if inView or self.aggro then
@@ -129,15 +131,15 @@ function Enemy:update(dt, level, view)
     self.aggro = true
     
     -- desire move?
-    if (dist > self.TURN_DIST) then
+    if (dist_y < self.AI_H_DIST) 
+    and (dist_x > self.TURN_DIST) then
       self.requestMoveX = useful.sign(delta_x)
-    -- ... stop
     else
-      self.requestMoveX = 0
+      self.requestMoveX = self.facing
     end
     
     -- desire attack?
-    if (dist < self.ATTACK_DIST) 
+    if (dist_x < self.ATTACK_DIST) 
     and (useful.sign(self.facing) == useful.sign(delta_x))
     and (self.state == self.STATE.NORMAL)
     and (self.reloadTime <= 0)
@@ -158,8 +160,11 @@ function Enemy:update(dt, level, view)
     if math.abs(delta_y) < self.h then
       self.facing = useful.sign(delta_x)
     end
+  
+  else
+    -- stop if not aggro, if not player in view
+    self.requestMoveX = 0
   end
-
 
   -- base update
   Character.update(self, dt, level)
