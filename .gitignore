@@ -3,3 +3,7 @@
 *.Thumbs.db
 *.com.apple.timemachine.supported
 .merge_file_*
+*.dll
+run.bat
+love.exe
+npsession

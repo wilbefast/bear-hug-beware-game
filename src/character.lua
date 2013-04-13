@@ -21,6 +21,9 @@ local Class      = require("hump/class")
 local GameObject = require("GameObject")
 local useful      = require("useful")
 local Attack      = require("Attack")
+local Giblet      = require("Giblet")
+local Animation   = require("Animation")
+local AnimationView = require("AnimationView")
 
 --[[------------------------------------------------------------
 CHARACTER CLASS
@@ -29,20 +32,112 @@ CHARACTER CLASS
 
 local Character = Class
 {
-  init = function(self, x, y, w, h, imagefile)
+  init = function(self, x, y, w, h, 
+                  astand, awalk, ajump, apain, adead)
     GameObject.init(self, x, y, w, h)
-    self.image     = love.graphics.newImage(imagefile)
+    -- get animations
+    self.anim_stand = astand
+    self.anim_walk = awalk
+    self.anim_jump = ajump
+    self.anim_pain = apain
+    self.anim_dead = adead
+    -- create view
+    self.view = AnimationView(self.anim_stand)
+    self.view.offy = -7
+    self.view.speed = 6
   end,
 
-  life       = 100,
-  magic      = 100,
-  damage     = 0,
-  warmupTime = 0,
-  reloadTime = 0,
-  stunnedTime = 0,
-  facing     = 1
+  -- defaults
+  state       = 1,
+  life        = 100,
+  magic       = 100,
+  damage      = 0,
+  timer       = -1,
+  facing      = 1,
+  requestMoveX = 0,
+  requestMoveY = 0,
+  requestJump = false
 }
 Character:include(GameObject)
+
+--[[------------------------------------------------------------
+State machine
+--]]
+
+Character.STATE = {}
+useful.bind(Character.STATE, "NORMAL", 1)
+useful.bind(Character.STATE, "STUNNED", 2)
+useful.bind(Character.STATE, "WARMUP", 3)
+useful.bind(Character.STATE, "ATTACKING", 4)
+useful.bind(Character.STATE, "DYING", 5)
+useful.bind(Character.STATE, "DEAD", 6)
+
+function Character:onStateChange(new_state)
+  -- override me!
+end
+
+function Character:setState(new_state, timer)
+  if state ~= new_state then
+    self:onStateChange(new_state)
+    self.state = new_state
+    -- set dead animation on death
+    if new_state == self.STATE.DEAD and self.anim_dead then
+      self.view:setAnimation(self.anim_dead)
+    end
+  end
+  if timer then
+    self.timer = timer
+  end
+end
+
+
+--[[------------------------------------------------------------
+Collisions
+--]]
+
+function Character:eventCollision(other, level)
+  
+  -- no collisions if dead
+  if self.state == self.STATE.DEAD then
+    return
+  end
+  
+  -- collision with attack
+  if (other.type == GameObject.TYPE.ATTACK)
+  and (other.launcher.type ~= self.type) then
+    push = useful.sign(self:centreX() - other.launcher:centreX())
+    if (not other.weapon.DIRECTIONAL) 
+    or (push == other.launcher.facing) then
+      self.facing = -push
+      -- knock-back and -up
+      self.dx = push * other.weapon.KNOCKBACK
+      self.dy = -other.weapon.KNOCKUP
+      -- set stunned
+      self:setState(Character.STATE.STUNNED)
+      self.timer = other.weapon.STUN_TIME
+      -- lose life
+      self:addLife(-other.weapon.DAMAGE, level)
+      -- let other know that it hasn't missed
+      other.n_hit = other.n_hit + 1
+      -- play sound
+      audio:play_sound(self.SOUND_STUNNED, 0.1, self.x, self.y)
+      -- create blood
+      Giblet.blood(level, self, other.weapon.DAMAGE/10)
+    end
+  
+  -- collision with death
+  elseif other.type == GameObject.TYPE.DEATH then
+    self:addLife(-math.huge)
+  
+  -- collision with other characters
+  elseif other.type == self.type then
+    if (self.state ~= self.STATE.STUNNED)
+    and (other.state ~= other.STATE.STUNNED) then
+      push = (self:centreX() - other:centreX())
+      self.dx = self.dx + push * 3
+    end
+  end
+end
 
 
 --[[------------------------------------------------------------
@@ -50,22 +145,34 @@ Combat
 --]]
 
 function Character:startAttack(weapon, target)
-  
-  self.deferred_attack = weapon
+  -- attack will be launched next update
+  self.deferred_weapon = weapon
   self.deferred_target = target
-  self.warmupTime = useful.tri(weapon.WARMUP_TIME > 0, 
-                              weapon.WARMUP_TIME, 0.01)
-  
+  self:setState(Character.STATE.WARMUP, (weapon.WARMUP_TIME or 0))
+
+  -- sound effect
+  if weapon.SOUND_WARMUP then
+    audio:play_sound(weapon.SOUND_WARMUP, 0.2, self.x, self.y)
+  end
 end
 
-function Character:attack(weapon)
-  weapon.reloadTime = weapon.RELOAD_TIME
+function Character:attack(weapon, target)
+  -- reload-time and mana-cost
+  local reloader = useful.tri(weapon.reloadTime, weapon, self)
+  reloader.reloadTime = weapon.RELOAD_TIME
+  self:addMagic(-weapon.MANA)
+  
+  if target then
+    -- attack a specific target
+    reach = math.min(weapon.REACH, math.abs(target.x - self.x))
+  else
+    -- spray and pray
+    reach = weapon.REACH
+  end
 
-  self:magic_change(-weapon.MANA)
-
-  return (Attack(
-    self.x + self.w/2 + weapon.REACH*self.facing ,
-    self.y + weapon.OFFSET_Y, weapon, self))
+  -- create the attack object
+  return (Attack(self:centreX() + (reach + self.w)*self.facing,
+      self:centreY() + weapon.OFFSET_Y, weapon, self))
 end
 
 
@@ -73,24 +180,20 @@ end
 Resources
 --]]
 
-function Character:life_change(nb)
-  local newLife = self.life + nb
-  if newLife <= 0 then
-    newLife = 0
-  end
-  self.life = newLife
+function Character:die()
+  -- override me!
+  self.purge = true
 end
 
-function Character:magic_change(nb)
-  local newMagic = self.magic + nb
-  if newMagic <= 0 then
-    newMagic = 0
+function Character:addLife(amount)
+  self.life = math.min(100, math.max(0, self.life + amount))
+  if self.life == 0 then
+    self:die()
   end
-  if newMagic > self.MAXMANA then
-    newMagic = self.MAXMANA
-  end
+end
 
-  self.magic = newMagic
+function Character:addMagic(amount)
+  self.magic = math.min(100, math.max(0, self.magic + amount))
 end
 
 --[[------------------------------------------------------------
@@ -98,35 +201,144 @@ Game loop
 --]]
 
 function Character:update(dt, level)
-  -- warm-up attack
-  if self.warmupTime > 0 then
-    self.warmupTime = self.warmupTime - dt
-    if (self.warmupTime <= 0) and self.deferred_attack then
-      level:addObject(self:attack(self.deferred_attack,
-                                  self.deferred_target))
+  
+  --[[------
+  Timing
+  --]]--
+  
+  -- count-down the generic timer
+  if self.timer > 0 then
+    self.timer = self.timer - dt
+    -- time's up!
+    if (self.timer < 0) then
+      -- launch the attack when ready
+      if self.state == Character.STATE.WARMUP then
+        level:addObject(self:attack(self.deferred_weapon, self.deferred_target))      
+        self:setState(Character.STATE.ATTACKING, self.deferred_weapon.DURATION)
+        
+      -- finish attack
+      elseif self.state == Character.STATE.ATTACKING then
+        self:setState(Character.STATE.NORMAL)
+        
+      -- finish stun
+      elseif self.state == Character.STATE.STUNNED then
+        self:setState(Character.STATE.NORMAL)
+      
+      -- finish dying
+      elseif self.state == Character.STATE.DYING then
+        self:setState(Character.STATE.DEAD)
+      end
     end
   end
   
-  -- reload weapon
-  if self.reloadTime > 0 then
+  -- count-down the reload timer (if applicable)
+  if self.reloadTime and (self.reloadTime > 0) then
     self.reloadTime = self.reloadTime - dt
   end
   
-  -- recover from stun
-  if self.stunnedTime > 0 then
-    self.stunnedTime = self.stunnedTime - dt
+  --[[------
+  Control
+  --]]--
+  
+  if self.state == self.STATE.NORMAL then
+    -- run
+    local moveDir = useful.sign(self.requestMoveX)
+    if moveDir ~= 0 then
+      self.dx = self.dx + moveDir*self.MOVE_X*dt
+      self.facing = moveDir
+    end
+  
+    -- jump
+    if self.requestJump then
+      -- check if on the ground
+      if (not self.airborne) then
+        -- boost
+        audio:play_sound("jump", 0.2, self.x, self.y)
+        self.dy = -self.BOOST
+      end
+    end
   end
+  
+  --[[------
+  Animation Logic
+  --]]--
+  
+  if self.state == self.STATE.NORMAL then
+    -- ground-based animations
+    if (not self.airborne) and (self.dy == 0) then
+      if self.requestMoveX == 0 then
+        -- stand
+        self.view:setAnimation(self.anim_stand) 
+      else
+        -- walk
+        self.view:setAnimation(self.anim_walk) 
+      end
+    else
+    -- fly
+      self.view:setAnimation(self.anim_jump) 
+      if self.dy < -500 then
+        -- up
+        self.view.frame = 1
+      elseif self.dy >= 0 then
+        -- down
+        self.view.frame = 3
+      else
+        -- apex
+        self.view.frame = 2
+      end
+    end
+    
+  -- if self.state == self.STATE.NORMAL then
+  elseif self.state == self.STATE.WARMUP then
+    
+    -- back-swing/warmup animation
+    if self.deferred_weapon.ANIM_WARMUP then
+      self.view:setAnimation(self.deferred_weapon.ANIM_WARMUP)
+      self.view:seekPercent(1 - self.timer / self.deferred_weapon.WARMUP_TIME)
+    end
+    
+  -- elseif self.state == self.STATE_WARMUP then
+  elseif self.state == self.STATE.STUNNED then
+    self.view:setAnimation(self.anim_pain)
+    if self.airborne then
+      self.view.frame = 1
+    else
+      self.view.frame = 2
+    end
+  end
+    
+  -- animate
+  if self.view then
+    self.view:update(dt)
+  end
+  
+  --[[------
+  Other
+  --]]--
+  
+  -- reset input
+  self.requestMoveX, self.requestMoveY = 0, 0
+  self.requestJump = false
   
   -- base update
   GameObject.update(self, dt, level)
 end
 
 function Character:draw()
-  -- FIXME animation
-  love.graphics.draw(self.image, self.x, self.y)
-  love.graphics.print(self.life, self.x, self.y)
-  -- FIXME debug
-  GameObject.draw(self)
+  if self.view then
+    self.view.flip_x = (self.facing < 0)
+    self.view:draw(self)
+  else
+    -- FIXME debug view
+    love.graphics.print(Character.STATE[self.state], self.x, self.y)
+    love.graphics.print(self.timer, self.x + 64, self.y)
+    GameObject.draw(self)
+  end
 end
+
+
+--[[------------------------------------------------------------
+EXPORT
+--]]------------------------------------------------------------
 
 return Character
