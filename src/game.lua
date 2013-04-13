@@ -37,7 +37,7 @@ local HORIZON, HORIZON_W, HORIZON_H, QHORIZON
 local MOUNTAINS, MOUNTAINS_W, MOUNTAINS_H, QMOUTAINS
 local PORTRAITS, QPORTRAITS
 local BARS, QBARS
-local BAR_DIVISIONS = 10
+local BAR_DIVISIONS = 30
 local DEFEAT_SPLASH
 
 --[[------------------------------------------------------------
