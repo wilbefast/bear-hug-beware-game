@@ -277,11 +277,14 @@ function state:draw()
     local portrait = useful.clamp(
       math.floor(self.player.life / life_per_portrait) + 1,
       1, #QPORTRAITS)
-    local portrait_life = 
-      self.player.life - (portrait-1)*life_per_portrait
+      
+    local life_per_colour = math.floor(100/(#QBARS - 1))
+    local colour_i = useful.clamp(
+      #QBARS - 1 - math.floor(self.player.life / life_per_colour),
+      1, #QBARS - 1)  
 
     local life_i = useful.clamp(math.floor(
-        portrait_life/life_per_portrait*BAR_DIVISIONS) + 1, 
+        self.player.life/100*BAR_DIVISIONS) + 1, 
             1, BAR_DIVISIONS)
     local magic_i = useful.clamp(math.floor(
         self.player.magic/100*BAR_DIVISIONS),
@@ -290,7 +293,7 @@ function state:draw()
 
     -- draw health-bar
     love.graphics.drawq(BARS, 
-        QBARS[portrait_i][life_i], 64, 32)
+        QBARS[colour_i][life_i], 64, 32)
     
     -- draw mana-bar 
     love.graphics.drawq(BARS, 
