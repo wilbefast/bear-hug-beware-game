@@ -162,16 +162,14 @@ function Character:attack(weapon, target)
   reloader.reloadTime = weapon.RELOAD_TIME
   self:addMagic(-weapon.MANA)
   
+  local reach = weapon.REACH + self.w/2
   if target then
     -- attack a specific target
-    reach = math.min(weapon.REACH, math.abs(target.x - self.x))
-  else
-    -- spray and pray
-    reach = weapon.REACH
+    reach = math.min(reach, math.abs(target.x - self.x))
   end
-
+    
   -- create the attack object
-  return (Attack(self:centreX() + (reach + self.w)*self.facing,
+  return (Attack(self:centreX() + reach*self.facing,
       self:centreY() + weapon.OFFSET_Y, weapon, self))
 end
 
