@@ -43,7 +43,7 @@ local QORB = love.graphics.newQuad(896, 256, 64, 64,
   SPRITE_SHEET:getWidth(), SPRITE_SHEET:getHeight())
 local ANIM_ORB_IN = Animation(SPRITE_SHEET, 32, 32, 4, 896, 320)
 local ANIM_ORB_OUT = Animation(SPRITE_SHEET, 32, 32, 4, 896, 352)
-
+local ANIM_ORB_ABSORB = Animation(SPRITE_SHEET, 128, 128, 3, 640, 384)
 
 local MAGIC_SHEET = love.graphics.newImage("assets/sprites/magic.png")
 local ANIM_MAGIC_START = Animation(MAGIC_SHEET, 256, 256, 5, 0, 0)
@@ -94,7 +94,10 @@ local COMBO_JUGGLE_VALUE = 2
 local COMBO_KILLHIT_VALUE = 3
 local COMBO_JUMPATTACK_VALUE = 1.5
 
+local COMBO_MAX = 20
+
 local COMBO_MAGIC_BONUS = 4
+local COMBO_MISS_PENALTY = 0.6
 
 function Player:getOrbPosition(orb_i)
   local ang = orb_i  * (2*math.pi / self.combo) 
@@ -106,7 +109,7 @@ end
 
 function Player:onAttacked(attack, level)
   if self.combo > 0 then
-    self:onComboEnd()
+    self:onComboFail(level)
   end
 end
 
@@ -115,35 +118,51 @@ function Player:onHit(weapon, attack, level)
       attack.n_hit*COMBO_HIT_VALUE 
     + attack.n_hit_air*COMBO_JUGGLE_VALUE  
     + attack.n_kills*COMBO_KILLHIT_VALUE
-                
+        
+  -- airborne attack bonus
   if self.airborne then
     dcombo = dcombo*COMBO_JUMPATTACK_VALUE
   end
   
   -- reset combo
-  dcombo = math.floor(dcombo)
   self.combo = self.combo + dcombo
   self.combo_timer = COMBO_DURATION
   
-
-  -- create orb appear sfx
+  -- cash in max combos
+  if self.combo > COMBO_MAX then
+    self:addMagic((self.combo - COMBO_MAX) * COMBO_MAGIC_BONUS)
+    self.combo = COMBO_MAX
+    --TODO
+  end
+  
+  -- create 'orb appear' sfx
   for i = 1, dcombo do
     local x, y = self:getOrbPosition(self.combo - i)
     level:addObject(SpecialEffect(x, y, ANIM_ORB_IN, 10))
   end
-  
-
-  
 end
 
-function Player:onMiss(weapon)
+function Player:onMiss(weapon, level)
+  -- reduce combo time on miss
   if self.combo > 0 then
-    self:onComboEnd()
+    self.combo_timer = self.combo_timer * COMBO_MISS_PENALTY
   end
 end
 
-function Player:onComboEnd()
+function Player:onComboSucess(level)
   self:addMagic(self.combo * COMBO_MAGIC_BONUS)
+  self.combo = 0
+  level:addObject(SpecialEffect(
+    self:centreX(), self:centreY(), ANIM_ORB_ABSORB, 10))
+end
+
+function Player:onComboFail(level)
+  -- create 'orb die' sfx
+  for i = 1, self.combo do
+    local x, y = self:getOrbPosition(i)
+    level:addObject(SpecialEffect(x, y, ANIM_ORB_OUT, 10))
+  end
+  -- reset combo with giving points or mana
   self.combo = 0
 end
 
@@ -195,6 +214,7 @@ Player.MAGICATTACK =
   KNOCKBACK = 950,
   KNOCKUP = 1200,
   ANIM_WARMUP = ANIM_MAGIC,
+  SOUND_HIT = "punch",
   SFX_WARMUP = ANIM_MAGIC_START,
   SFX_LAUNCH = ANIM_MAGIC_END,
   DIRECTIONAL = false,
@@ -268,7 +288,7 @@ function Player:update(dt, level, view)
     if (self.combo_timer > 0) then
       self.combo_timer = self.combo_timer - dt
     else
-      self:onComboEnd()
+      self:onComboSucess(level)
     end
   end
   

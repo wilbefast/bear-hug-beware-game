@@ -87,9 +87,6 @@ function Character:setState(new_state, timer, level)
       -- corpse giblet object?
       if self.CORPSE then
         Giblet.corpse(level, self)
-      -- corpse animation?
-      elseif self.anim_dead then
-        self.view:setAnimation(self.anim_dead)
       end
     end
   end
@@ -338,6 +335,19 @@ function Character:update(dt, level, view)
       self.view.frame = 1
     else
       self.view.frame = 2
+    end
+    
+    
+  -- if not self.state == self.STATE.NORMAL then
+  elseif self.state == self.STATE.DEAD then
+    -- corpse animation?
+    if self.anim_dead then
+      if self.airborne then
+        self.view:setAnimation(self.anim_pain)
+        self.view.frame = 1
+      else
+        self.view:setAnimation(self.anim_dead)
+      end
     end
   end
     
