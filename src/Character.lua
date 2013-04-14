@@ -126,13 +126,14 @@ function Character:eventCollision(other, level)
       -- lose life
       self:addLife(-other.weapon.DAMAGE, level)
       -- let other know that it hasn't missed
-      other.n_hit = other.n_hit + 1
-      if self.airborne then
-        other.n_hit_air = other.n_hit_air + 1
-      end
       if self.life <= 0 then
         other.n_kills = other.n_kills + 1
+      elseif self.airborne then
+        other.n_hit_air = other.n_hit_air + 1
+      else
+        other.n_hit = other.n_hit + 1
       end
+
       -- play sound
       audio:play_sound(self.SOUND_STUNNED, 0.1, self.x, self.y)
       -- create blood

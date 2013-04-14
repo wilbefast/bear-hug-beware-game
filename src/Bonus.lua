@@ -45,6 +45,9 @@ end
 
 function Bonus:update(dt)
   self.offset = self.offset + dt*4
+  if self.offset > math.pi*2 then
+    self.offset = self.offset - math.pi*2
+  end
 end
 
 --[[------------------------------------------------------------

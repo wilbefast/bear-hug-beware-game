@@ -55,16 +55,17 @@ function Attack:update(dt, level)
     self.purge = true
     
     -- miss
-    if (self.n_hit == 0) then
+    if (self.n_hit == 0) and (self.n_hit_air == 0)
+    and (self.n_kills == 0) then
       audio:play_sound(self.weapon.SOUND_MISS, 0.2, self.x, self.y)
       if self.weapon.ON_MISS then
-        self.weapon:ON_MISS(self.launcher, self)
+        self.weapon:ON_MISS(self.launcher, self, level)
       end
       
     -- hit
     else
       if self.weapon.ON_HIT then
-        self.weapon:ON_HIT(self.launcher, self)
+        self.weapon:ON_HIT(self.launcher, self, level)
       end
       if self.weapon.SOUND_HIT then
         audio:play_sound(self.weapon.SOUND_HIT, 0.2, self.x, self.y)

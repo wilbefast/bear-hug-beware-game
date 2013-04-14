@@ -25,6 +25,7 @@ local useful      = require("useful")
 local audio      = require("audio")
 local Animation   = require("Animation")
 local AnimationView = require("AnimationView")
+local SpecialEffect = require("SpecialEffect")
 
 --[[------------------------------------------------------------
 PLAYER CLASS
@@ -38,6 +39,11 @@ local ANIM_MAGIC = Animation(SPRITE_SHEET, 128, 128, 2, 640, 256)
 local ANIM_BUTT = Animation(SPRITE_SHEET, 128, 128, 3, 0, 384)
 local ANIM_PAIN = Animation(SPRITE_SHEET, 128, 128, 1, 384, 384)
 local ANIM_DEAD = Animation(SPRITE_SHEET, 128, 128, 1, 512, 384)
+local QORB = love.graphics.newQuad(896, 256, 64, 64,
+  SPRITE_SHEET:getWidth(), SPRITE_SHEET:getHeight())
+local ANIM_ORB_IN = Animation(SPRITE_SHEET, 32, 32, 4, 896, 320)
+local ANIM_ORB_OUT = Animation(SPRITE_SHEET, 32, 32, 4, 896, 352)
+
 
 local MAGIC_SHEET = love.graphics.newImage("assets/sprites/magic.png")
 local ANIM_MAGIC_START = Animation(MAGIC_SHEET, 256, 256, 5, 0, 0)
@@ -61,6 +67,7 @@ local Player = Class
     -- combos
     self.combo = 0
     self.combo_timer = 0
+    self.orb_offset = math.random()*math.pi*2
   end,
 }
 Player:include(Character)
@@ -80,9 +87,22 @@ Player.FRICTION_X = 100
 Combat
 --]]
 
-local COMBO_DURATION = 1.5
+local COMBO_DURATION = 2
+
+local COMBO_HIT_VALUE = 1
+local COMBO_JUGGLE_VALUE = 2
+local COMBO_KILLHIT_VALUE = 3
+local COMBO_JUMPATTACK_VALUE = 1.5
 
 local COMBO_MAGIC_BONUS = 4
+
+function Player:getOrbPosition(orb_i)
+  local ang = orb_i  * (2*math.pi / self.combo) 
+                    + self.orb_offset
+  local rad = 64 + self.combo_timer*32
+  return self:centreX() + math.cos(ang)*rad, 
+          self:centreY() + math.sin(ang)*rad
+end
 
 function Player:onAttacked(attack, level)
   if self.combo > 0 then
@@ -90,10 +110,30 @@ function Player:onAttacked(attack, level)
   end
 end
 
-function Player:onHit(weapon, attack)
-  self.combo = self.combo + attack.n_hit 
-  + attack.n_hit_air + attack.n_kills
+function Player:onHit(weapon, attack, level)
+  local dcombo = 
+      attack.n_hit*COMBO_HIT_VALUE 
+    + attack.n_hit_air*COMBO_JUGGLE_VALUE  
+    + attack.n_kills*COMBO_KILLHIT_VALUE
+                
+  if self.airborne then
+    dcombo = dcombo*COMBO_JUMPATTACK_VALUE
+  end
+  
+  -- reset combo
+  dcombo = math.floor(dcombo)
+  self.combo = self.combo + dcombo
   self.combo_timer = COMBO_DURATION
+  
+
+  -- create orb appear sfx
+  for i = 1, dcombo do
+    local x, y = self:getOrbPosition(self.combo - i)
+    level:addObject(SpecialEffect(x, y, ANIM_ORB_IN, 10))
+  end
+  
+
+  
 end
 
 function Player:onMiss(weapon)
@@ -103,15 +143,14 @@ function Player:onMiss(weapon)
 end
 
 function Player:onComboEnd()
-  print("COMBO WAS:", self.combo)
   self:addMagic(self.combo * COMBO_MAGIC_BONUS)
   self.combo = 0
 end
 
-local ON_HIT = function(weapon, owner, attack) 
-  owner:onHit(weapon, attack) end
-local ON_MISS = function(weapon, owner, attack) 
-  owner:onMiss(weapon, attack) end
+local ON_HIT = function(weapon, owner, attack, level) 
+  owner:onHit(weapon, attack, level) end
+local ON_MISS = function(weapon, owner, attack, level) 
+  owner:onMiss(weapon, attack, level) end
 
 -- combat - light attack
 Player.LIGHTATTACK = 
@@ -119,13 +158,13 @@ Player.LIGHTATTACK =
   REACH = 16,
   OFFSET_Y = 0,
   OFFSET_X = 0,
-  DAMAGE = 35,
+  DAMAGE = 34,
   MANA = 0,
   WARMUP_TIME = 0.2,
   DURATION = 0.1,
   RELOAD_TIME = 0.04,
   STUN_TIME = 1.0,
-  W = 118,
+  W = 180,
   H = 108,
   KNOCKBACK = 1500,
   KNOCKUP = 450,
@@ -145,7 +184,7 @@ Player.MAGICATTACK =
   REACH = 0,
   OFFSET_Y = 0,
   OFFSET_X = -32,
-  DAMAGE = 80,
+  DAMAGE = 45,
   MANA = 30,
   WARMUP_TIME = 0.4,
   DURATION = 0.4,
@@ -232,6 +271,12 @@ function Player:update(dt, level, view)
       self:onComboEnd()
     end
   end
+  
+  -- rotate combo orbs
+  self.orb_offset = self.orb_offset + dt*4
+  if self.orb_offset > math.pi*2 then
+    self.orb_offset = self.orb_offset - math.pi*2
+  end
         
   -- reload weapons
   function reload(weapon, dt)
@@ -249,9 +294,17 @@ function Player:update(dt, level, view)
 end
 
 function Player:draw()
+  
+  -- draw sprite
   Character.draw(self)
   
-  love.graphics.print(self.combo, self.x, self.y - 64)
+  -- draw combo orbs
+  for i = 1, self.combo do
+    local x, y = self:getOrbPosition(i)
+    love.graphics.drawq(SPRITE_SHEET, QORB, x-32, y-32)
+  end
+  
+  
 end
 
 return Player

@@ -35,9 +35,8 @@ local SpecialEffect = Class
   type  =  GameObject.TYPE["SPECIALEFFECT"],
   
   init = function(self, x, y, anim, speed)
-    GameObject.init(self, x - 
-      anim.frame_w/2, y - 
-      anim.frame_h/2, 0, 0)
+    GameObject.init(self, x - anim.frame_w/2, 
+                          y - anim.frame_h/2, 0, 0)
     self.view = AnimationView(anim, speed, 1)
   end,
 }
