@@ -41,7 +41,8 @@ local Giblet = Class
   imScale         = 1,
   rotation        = 0,
   rotation_speed  = 0,
-  face            = 1
+  face            = 1,
+  timer           = 30
 }
 Giblet:include(GameObject)
 
@@ -106,7 +107,8 @@ Giblet.corpse = function(level, dier)
         gib.img = dier.CORPSE
         gib.qair = dier.QCORPSE_HEAD
         gib.qground = dier.QCORPSE_HEAD
-        gib.rotation_speed = dier.dx / 50000
+        gib.rotation_speed = useful.sign(dier.dx)*0.15
+                          + useful.signedRand(0.05)
         gib.offy = -20
       end)
   end
@@ -121,6 +123,20 @@ function Giblet:update(dt, level, view)
   -- base update
   GameObject.update(self, dt, level, view)
   
+  -- countdown timer
+  if (not self.airborne) then
+    if (self.timer > 0) then
+      local fade_speed = level:countObject(self.type)/10
+      if not self:isColliding(view) then
+        self.timer = self.timer - 4*dt*fade_speed
+      else
+        self.timer = self.timer - dt*fade_speed
+      end
+    else
+      self.purge = true
+    end
+  end
+  
   -- rotation
   if self.rotation_speed ~= 0 then
     self.rotation = self.rotation + self.rotation_speed
@@ -134,13 +150,15 @@ function Giblet:update(dt, level, view)
         self.rotation_speed = 0
       end
     end
-    if not self:isColliding(view) then
-      self.purge = true
-    end
   end
 end
 
 function Giblet:draw()
+  
+  if self.timer < 3 then
+    love.graphics.setColor(255, 255, 255, 
+        math.max(0, 255*self.timer/3))
+  end
   
   local quad = useful.tri(self.airborne, self.qair,
       self.qground)
@@ -151,6 +169,9 @@ function Giblet:draw()
       self:centreY() + offy, 
       self.rotation, self.face*self.imScale, self.imScale,
       self.imScale*quadw/2, self.imScale*quadh/2)
+  
+  love.graphics.setColor(255, 255, 255, 255)
+ 
 end
 
 

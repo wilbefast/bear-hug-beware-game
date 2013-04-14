@@ -87,6 +87,10 @@ function Level:getObject(type, i)
   end
 end
 
+function Level:countObject(type)
+  return #(self.object_types[type])
+end
+
 function Level:addObject(object)
   -- are there other objects of this type?
   if (not self.object_types[object.type]) then
