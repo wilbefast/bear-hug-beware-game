@@ -100,9 +100,9 @@ Giblet.corpse = function(level, dier)
   if dier.QCORPSE_HEAD then
     Giblet.spawn(level, dier.x, dier.y, 1, 
       function(gib)
-        gib.w, gib.h = 16, 16
+        gib.w, gib.h = 32, 16
         gib.dx = dier.dx / 2
-        gib.dy = dier.dy - 300 + useful.signedRand(50)
+        gib.dy = dier.dy - 200 + useful.signedRand(50)
         gib.face = dier.facing
         gib.img = dier.CORPSE
         gib.qair = dier.QCORPSE_HEAD
