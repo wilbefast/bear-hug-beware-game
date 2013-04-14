@@ -59,11 +59,6 @@ Giblet.FRICTION_X = 10
 Blood
 --]]--
 
-local BLOOD_DROP = 
-  love.graphics.newImage("assets/sprites/blood_drop.png")
-local BLOOD_SPLAT = 
-  love.graphics.newImage("assets/sprites/blood_splat.png")
-
 Giblet.blood = function(level, bleeder, amount)
   amount = amount or 5
   Giblet.spawn(level, bleeder.x, bleeder.y, 
@@ -74,8 +69,9 @@ Giblet.blood = function(level, bleeder, amount)
                   + useful.signedRand(350)
         gib.dy = bleeder.dy/3 - 300 
                   + useful.signedRand(200)
-        gib.img_air = BLOOD_DROP
-        gib.img_ground = BLOOD_SPLAT
+        gib.img = bleeder.BLOOD
+        gib.qair = useful.randIn(bleeder.QBLOOD_DROP)
+        gib.qground = useful.randIn(bleeder.QBLOOD_PUDDLE)
         gib.imScale = 1 + useful.signedRand(0.7)
       end)
 end
@@ -114,14 +110,18 @@ end
 
 function Giblet:draw()
   
-  local img = 
-    useful.tri(self.airborne, 
-        self.img_air, self.img_ground)
-  love.graphics.draw(img, 
+  local yoffset, quad
+  if self.airborne then
+    quad, yoffset = self.qair, -8
+  else
+    quad, yoffset = self.qground, 8
+  end
+  local _, _, quadw, _ = quad:getViewport()
+  love.graphics.drawq(self.img, quad,
       self:centreX(), 
-      self.y + 8, 
+      self.y + yoffset, 
       self.rotation, self.imScale, self.imScale,
-      self.imScale*img:getWidth()/2, 0)
+      self.imScale*quadw/2, 0)
 end
 
 

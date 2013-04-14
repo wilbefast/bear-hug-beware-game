@@ -123,7 +123,9 @@ function Character:eventCollision(other, level)
       -- play sound
       audio:play_sound(self.SOUND_STUNNED, 0.1, self.x, self.y)
       -- create blood
-      Giblet.blood(level, self, other.weapon.DAMAGE/10)
+      if self.BLOOD then
+        Giblet.blood(level, self, other.weapon.DAMAGE/10)
+      end
     end
   
   -- collision with death

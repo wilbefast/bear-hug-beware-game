@@ -38,6 +38,7 @@ local ANIM_PAIN =
   Animation(SPRITE_SHEET, 128, 128, 2, 768, 0)
 local ANIM_ATTACK = 
   Animation(SPRITE_SHEET, 128, 128, 3, 384, 128)
+  
 --[[------------------------------------------------------------
 Initialise
 --]]
@@ -61,6 +62,20 @@ Enemy.BOOST      = 700
 Enemy.MOVE_X     = 3000.0
 Enemy.MAX_DX     = 3000.0
 Enemy.FRICTION_X = 50
+
+-- giblets
+Enemy.BLOOD = SPRITE_SHEET
+Enemy.QBLOOD_DROP = {}
+for i = 1, 4 do
+  Enemy.QBLOOD_DROP[i] = love.graphics.newQuad(768 + (i-1)*32, 128, 32, 32,
+    SPRITE_SHEET:getWidth(), SPRITE_SHEET:getHeight())
+end
+Enemy.QBLOOD_PUDDLE = {}
+for i = 1, 4 do
+  Enemy.QBLOOD_PUDDLE[i] = love.graphics.newQuad(768 + ((i-1)%2)*64, 
+      160 + math.floor((i-1)/2)*16, 64, 16,
+    SPRITE_SHEET:getWidth(), SPRITE_SHEET:getHeight())
+end
 
 -- combat
 Enemy.ATTACK =
@@ -140,6 +155,7 @@ function Enemy:update(dt, level, view)
     
     -- desire attack?
     if (dist_x < self.ATTACK_DIST) 
+    and (dist_y < self.AI_H_DIST) 
     and (useful.sign(self.facing) == useful.sign(delta_x))
     and (self.state == self.STATE.NORMAL)
     and (self.reloadTime <= 0)

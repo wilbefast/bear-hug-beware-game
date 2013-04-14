@@ -147,4 +147,8 @@ function useful.clamp(val, lower_bound, upper_bound)
   return math.max(lower_bound, math.min(upper_bound, val))
 end
 
+function useful.randIn(table)
+  return table[math.random(#table)]
+end
+
 return useful
