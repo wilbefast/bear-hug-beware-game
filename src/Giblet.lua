@@ -71,6 +71,11 @@ Giblet.blood = function(level, bleeder, amount)
                   + useful.signedRand(350)
         gib.dy = bleeder.dy/3 - 300 
                   + useful.signedRand(200)
+                  
+        if not (bleeder.BLOOD) then
+          bleeder = bleeder.source
+        end
+          
         gib.img = bleeder.BLOOD
         gib.qair = useful.randIn(bleeder.QBLOOD_DROP)
         gib.qground = useful.randIn(bleeder.QBLOOD_PUDDLE)
@@ -94,6 +99,8 @@ Giblet.corpse = function(level, dier)
         gib.img = dier.CORPSE
         gib.qair = dier.QCORPSE_AIR
         gib.qground = dier.QCORPSE_GROUND
+        gib.blood_timer = 0
+        gib.source = dier
       end)
       
   -- head
@@ -110,6 +117,8 @@ Giblet.corpse = function(level, dier)
         gib.rotation_speed = useful.sign(dier.dx)*0.15
                           + useful.signedRand(0.05)
         gib.offy = -20
+        gib.blood_timer = 0
+        gib.source = dier
       end)
   end
 end
@@ -142,8 +151,18 @@ function Giblet:update(dt, level, view)
     self.rotation = self.rotation + self.rotation_speed
   end
   
+  -- create blood
+  if self.blood_timer then
+    if self.blood_timer > 0 then
+      self.blood_timer = self.blood_timer - dt
+    else
+      self.blood_timer = 0.3 + useful.signedRand(0.2)
+      Giblet.blood(level, self, 1)
+    end
+  end
+    
   -- stop and destroy
-  if not self.airborne then
+  if (not self.airborne) then
     if (self.dx ~= 0) or (self.dy ~= 0) then
       self.dx, self.dy = 0, 0
       if self.rotation_speed ~= 0 then
@@ -155,11 +174,13 @@ end
 
 function Giblet:draw()
   
+  -- fade out after a certain amount of time
   if self.timer < 3 then
     love.graphics.setColor(255, 255, 255, 
         math.max(0, 255*self.timer/3))
   end
   
+  -- draw depending if on the ground or not
   local quad = useful.tri(self.airborne, self.qair,
       self.qground)
   local offy = (self.offy or 0) + useful.tri(self.airborne, -8, 8)
