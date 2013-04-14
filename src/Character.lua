@@ -146,11 +146,14 @@ Combat
 --]]
 
 function Character:startAttack(weapon, target, level, view)
-  -- attack will be launched next update
+  -- attack queued to be launched when warmup is over
   self.deferred_weapon = weapon
   self.deferred_target = target
   self:setState(Character.STATE.WARMUP, (weapon.WARMUP_TIME or 0))
 
+  -- mana-cost is deducted when warmup starts
+  self:addMagic(-weapon.MANA)
+  
   -- WARMUP sound effect
   if weapon.SOUND_WARMUP then
     audio:play_sound(weapon.SOUND_WARMUP, 0.2, self.x, self.y)
@@ -164,10 +167,9 @@ function Character:startAttack(weapon, target, level, view)
 end
 
 function Character:attack(weapon, target, level, view)
-  -- reload-time and mana-cost
+  -- reload-time
   local reloader = useful.tri(weapon.reloadTime, weapon, self)
   reloader.reloadTime = weapon.RELOAD_TIME
-  self:addMagic(-weapon.MANA)
   
   local reach = weapon.REACH + self.w/2
   if target then
