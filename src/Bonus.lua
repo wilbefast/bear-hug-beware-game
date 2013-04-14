@@ -30,6 +30,7 @@ local Bonus = Class
   init = function(self, x, y, w, h)
     GameObject.init(self, x, y, w, h)
     self.image     = love.graphics.newImage("assets/sprites/bonus.png")
+    self.offset    = 0
   end,
       
   type  =  GameObject.TYPE["BONUS"],
@@ -37,15 +38,14 @@ local Bonus = Class
 Bonus:include(GameObject)
 
 function Bonus:draw()
-  
-  --TODO
+  love.graphics.draw(self.image, self.x, 
+      self.y + math.cos(self.offset)*16)
+  love.graphics.print(self.x, self.y, self.offset)
 end
 
-
-function Bonus:draw()
-  love.graphics.draw(self.image, self.x, self.y)
+function Bonus:update(dt)
+  self.offset = self.offset + dt*4
 end
-
 
 --[[------------------------------------------------------------
 EXPORT

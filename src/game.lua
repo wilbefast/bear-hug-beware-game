@@ -72,7 +72,7 @@ function state:init()
   PORTRAITS = love.graphics.newImage("assets/hud/portraits.png")
   QPORTRAITS = {}
   for i = 1,3 do
-    QPORTRAITS[i] = love.graphics.newQuad((i-1)*64, 0, 64, 64, 
+    QPORTRAITS[i] = love.graphics.newQuad((i-1)*72, 0, 72, 92, 
         PORTRAITS:getWidth(), PORTRAITS:getHeight())
   end
   
@@ -82,10 +82,13 @@ function state:init()
     QBARS[i] = {}
     for j = 1,BAR_DIVISIONS do
       QBARS[i][j] = love.graphics.newQuad(
-        0, (i-1)*32, (128/BAR_DIVISIONS)*j, 32, 
+        0, (i-1)*48, (160/BAR_DIVISIONS)*j, 48, 
         BARS:getWidth(), BARS:getHeight()) 
     end
-  end 
+  end
+  QBARS[5] = love.graphics.newQuad(
+        0, 192, 160, 48, 
+        BARS:getWidth(), BARS:getHeight()) 
   
   DEFEAT_SPLASH = love.graphics.newImage("assets/hud/dead_fr.png")
 end
@@ -280,8 +283,8 @@ function state:draw()
       
     local life_per_colour = math.floor(Player.MAXLIFE/(#QBARS - 1))
     local colour_i = useful.clamp(
-      #QBARS - 1 - math.floor(self.player.life / life_per_colour),
-      1, #QBARS - 1)  
+      #QBARS - 2 - math.floor(self.player.life / life_per_colour),
+      1, #QBARS - 2)  
 
     local life_i = useful.clamp(math.floor(
         self.player.life/Player.MAXLIFE*BAR_DIVISIONS) + 1, 
@@ -292,16 +295,18 @@ function state:draw()
     local portrait_i = #QPORTRAITS - portrait + 1
 
     -- draw health-bar
-    love.graphics.drawq(BARS, 
-        QBARS[colour_i][life_i], 64, 32)
+    scaled_drawq(BARS, QBARS[5], 128, 32, 0, 2, 2)
+    scaled_drawq(BARS, 
+        QBARS[colour_i][life_i], 128, 32, 0, 2, 2)
     
     -- draw mana-bar 
-    love.graphics.drawq(BARS, 
-        QBARS[#QPORTRAITS + 1][magic_i], 64, 64)
+    scaled_drawq(BARS, QBARS[5], 128, 108, 0, 2, 2)
+    scaled_drawq(BARS, QBARS[#QPORTRAITS + 1][magic_i], 128, 108,
+                  0, 2, 2)
     
     -- draw portrait
-    love.graphics.drawq(PORTRAITS, 
-        QPORTRAITS[portrait_i], 32, 32)
+    scaled_drawq(PORTRAITS, 
+        QPORTRAITS[portrait_i], 64, 32, 0, 2, 2)
     
   else
     scaled_draw(DEFEAT_SPLASH,

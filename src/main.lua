@@ -42,8 +42,8 @@ end
 
 function scaled_drawq(img, quad, x, y, rot, sx, sy)
   x, y, rot, sx, sy = (x or 0), (y or 0), (rot or 0), (sx or 1), (sy or 1)
-  love.graphics.drawq(img, quad, x*SCALE_MIN + DEFAULT_W*(SCALE_X-SCALE_MIN)/2, 
-                                  y*SCALE_MIN + DEFAULT_H*(SCALE_Y-SCALE_MIN)/2, 
+  love.graphics.drawq(img, quad, x*SCALE_MIN, --+ DEFAULT_W*(SCALE_X-SCALE_MIN)/2, 
+                                  y*SCALE_MIN, --+ DEFAULT_H*(SCALE_Y-SCALE_MIN)/2, 
                                   rot, 
                                   sx*SCALE_MIN, 
                                   sy*SCALE_MIN)
