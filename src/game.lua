@@ -273,21 +273,21 @@ function state:draw()
   if self.player.state ~= self.player.STATE.DEAD then
   
     -- calculate frames (quads) of life-bar and portraits
-    local life_per_portrait = math.floor(100/(#QPORTRAITS))
+    local life_per_portrait = math.floor(Player.MAXLIFE/(#QPORTRAITS))
     local portrait = useful.clamp(
       math.floor(self.player.life / life_per_portrait) + 1,
       1, #QPORTRAITS)
       
-    local life_per_colour = math.floor(100/(#QBARS - 1))
+    local life_per_colour = math.floor(Player.MAXLIFE/(#QBARS - 1))
     local colour_i = useful.clamp(
       #QBARS - 1 - math.floor(self.player.life / life_per_colour),
       1, #QBARS - 1)  
 
     local life_i = useful.clamp(math.floor(
-        self.player.life/100*BAR_DIVISIONS) + 1, 
+        self.player.life/Player.MAXLIFE*BAR_DIVISIONS) + 1, 
             1, BAR_DIVISIONS)
     local magic_i = useful.clamp(math.floor(
-        self.player.magic/100*BAR_DIVISIONS),
+        self.player.magic/Player.MAXMANA*BAR_DIVISIONS),
             1, BAR_DIVISIONS)
     local portrait_i = #QPORTRAITS - portrait + 1
 

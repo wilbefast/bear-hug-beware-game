@@ -78,7 +78,7 @@ Player.LIGHTATTACK =
   REACH = 16,
   OFFSET_Y = 0,
   OFFSET_X = 0,
-  DAMAGE = 100,--35,
+  DAMAGE = 35,
   MANA = 0,
   WARMUP_TIME = 0.2,
   DURATION = 0.1,
@@ -121,6 +121,7 @@ Player.MAGICATTACK =
 }
 
 Player.MAXMANA = 100
+Player.MAXLIFE = 100
 Player.SOUND_STUNNED = "disgust"
 
 --[[------------------------------------------------------------
@@ -145,7 +146,7 @@ function Player:eventCollision(other, level)
   
   -- collision with "bonus" 
   if other.type == GameObject.TYPE.BONUS then
-    self.life = 90
+    self.life = self.MAXLIFE
 	self.magic = self.MAXMANA
     other.purge = true --! FIXME
   end
