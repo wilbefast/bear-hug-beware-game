@@ -58,7 +58,7 @@ local function setBestResolution(desired_w, desired_h, fullscreen)
     
   -- try each mode from best to worst
   for i, m in ipairs(modes) do
-    --if not (i < 4) then --FIXME
+    if not (i < 4) then --FIXME
     -- try to set the resolution
     local success = love.graphics.setMode(m.width, m.height, fullscreen)
     if success then
@@ -66,7 +66,7 @@ local function setBestResolution(desired_w, desired_h, fullscreen)
       SCALE_MIN, SCALE_MAX = math.min(SCALE_X, SCALE_Y), math.max(SCALE_X, SCALE_Y)
       return true -- success!
     end
-    --end --FIXME
+    end --FIXME
   end
   return false -- failure!
 end

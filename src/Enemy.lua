@@ -144,7 +144,7 @@ function Enemy:update(dt, level, view)
     and (self.state == self.STATE.NORMAL)
     and (self.reloadTime <= 0)
     then
-      self:startAttack(self.ATTACK, player)
+      self:startAttack(self.ATTACK, player, level, view)
     end
     
     -- desire jump?

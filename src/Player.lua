@@ -39,6 +39,10 @@ local ANIM_BUTT = Animation(SPRITE_SHEET, 128, 128, 3, 0, 384)
 local ANIM_PAIN = Animation(SPRITE_SHEET, 128, 128, 1, 384, 384)
 local ANIM_DEAD = Animation(SPRITE_SHEET, 128, 128, 1, 512, 384)
 
+local MAGIC_SHEET = love.graphics.newImage("assets/sprites/magic.png")
+local ANIM_MAGIC_START = Animation(MAGIC_SHEET, 256, 256, 5, 0, 0)
+local ANIM_MAGIC_END = Animation(MAGIC_SHEET, 256, 256, 5, 1024, 0)
+
 --[[------------------------------------------------------------
 Initialise
 --]]
@@ -100,7 +104,7 @@ Player.MAGICATTACK =
   DAMAGE = 80,
   MANA = 30,
   WARMUP_TIME = 0.4,
-  DURATION = 0.2,
+  DURATION = 0.4,
   RELOAD_TIME = 0.3,
   STUN_TIME = 3.0,
   W = 350,
@@ -108,6 +112,8 @@ Player.MAGICATTACK =
   KNOCKBACK = 950,
   KNOCKUP = 1200,
   ANIM_WARMUP = ANIM_MAGIC,
+  SFX_WARMUP = ANIM_MAGIC_START,
+  SFX_LAUNCH = ANIM_MAGIC_END,
   DIRECTIONAL = false,
   SOUND_WARMUP = "magic",
   
@@ -149,7 +155,7 @@ end
 Game loop
 --]]
 
-function Player:update(dt, level)
+function Player:update(dt, level, view)
 
   -- try attack
   if self.state == Character.STATE.NORMAL then
@@ -166,7 +172,7 @@ function Player:update(dt, level)
     end
     -- launch attack
     if weapon and (weapon.reloadTime <= 0) then
-      self:startAttack(weapon)
+      self:startAttack(weapon, nil, level, view)
     end
   end
         

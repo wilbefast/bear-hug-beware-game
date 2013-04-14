@@ -1,6 +1,6 @@
 --[[
 (C) Copyright 2013
-William Dyce, Maxime Ailloud, Alex Verbrugghe, Julien Deville
+William Dyce
 
 All rights reserved. This program and the accompanying materials
 are made available under the terms of the GNU Lesser General Public License
@@ -28,6 +28,8 @@ GIBLET CLASS
 
 local Giblet = Class
 {
+  type  =  GameObject.TYPE["GIBLET"],
+  
   init = function(self, x, y, special_init)
     GameObject.init(self, x, y, 0, 0)
     self.airborne = true
@@ -36,7 +38,6 @@ local Giblet = Class
     end
   end,
       
-  type            =  GameObject.TYPE["GIBLET"],
   imScale         = 1,
   rotation        = 0,
   rotation_speed  = 0

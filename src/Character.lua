@@ -24,6 +24,7 @@ local Attack      = require("Attack")
 local Giblet      = require("Giblet")
 local Animation   = require("Animation")
 local AnimationView = require("AnimationView")
+local SpecialEffect = require("SpecialEffect")
 
 --[[------------------------------------------------------------
 CHARACTER CLASS
@@ -144,19 +145,25 @@ end
 Combat
 --]]
 
-function Character:startAttack(weapon, target)
+function Character:startAttack(weapon, target, level, view)
   -- attack will be launched next update
   self.deferred_weapon = weapon
   self.deferred_target = target
   self:setState(Character.STATE.WARMUP, (weapon.WARMUP_TIME or 0))
 
-  -- sound effect
+  -- WARMUP sound effect
   if weapon.SOUND_WARMUP then
     audio:play_sound(weapon.SOUND_WARMUP, 0.2, self.x, self.y)
   end
+  
+  -- WARMUP visual special-effect
+  if weapon.SFX_WARMUP then
+    level:addObject(SpecialEffect(self:centreX(), self:centreY(),
+        weapon.SFX_WARMUP, weapon.SFX_WARMUP.n_frames/weapon.WARMUP_TIME))
+  end
 end
 
-function Character:attack(weapon, target)
+function Character:attack(weapon, target, level, view)
   -- reload-time and mana-cost
   local reloader = useful.tri(weapon.reloadTime, weapon, self)
   reloader.reloadTime = weapon.RELOAD_TIME
@@ -167,9 +174,15 @@ function Character:attack(weapon, target)
     -- attack a specific target
     reach = math.min(reach, math.abs(target.x - self.x))
   end
+  
+  -- ATTACK visual special-effect
+  if weapon.SFX_LAUNCH then
+    level:addObject(SpecialEffect(self:centreX(), self:centreY(),
+        weapon.SFX_LAUNCH, weapon.SFX_LAUNCH.n_frames/weapon.DURATION))
+  end
     
   -- create the attack object
-  return (Attack(self:centreX() + reach*self.facing,
+  level:addObject(Attack(self:centreX() + reach*self.facing,
       self:centreY() + weapon.OFFSET_Y, weapon, self))
 end
 
@@ -198,7 +211,7 @@ end
 Game loop
 --]]
 
-function Character:update(dt, level)
+function Character:update(dt, level, view)
   
   --[[------
   Timing
@@ -211,7 +224,7 @@ function Character:update(dt, level)
     if (self.timer < 0) then
       -- launch the attack when ready
       if self.state == Character.STATE.WARMUP then
-        level:addObject(self:attack(self.deferred_weapon, self.deferred_target))      
+        self:attack(self.deferred_weapon, self.deferred_target, level, view)    
         self:setState(Character.STATE.ATTACKING, self.deferred_weapon.DURATION)
         
       -- finish attack

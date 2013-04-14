@@ -47,6 +47,9 @@ local Animation = Class
       self.quads[i] = love.graphics.newQuad(offx + (i-1)*w, offy, 
           w, h, img:getWidth(), img:getHeight())
     end
+    
+    -- frame size can be useful for lookup even if anim no longer needs it
+    self.frame_w, self.frame_h = w, h
   end,
 }
   
