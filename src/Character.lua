@@ -77,13 +77,20 @@ function Character:onStateChange(new_state)
   -- override me!
 end
 
-function Character:setState(new_state, timer)
+function Character:setState(new_state, timer, level)
   if state ~= new_state then
     self:onStateChange(new_state)
     self.state = new_state
     -- set dead animation on death
-    if new_state == self.STATE.DEAD and self.anim_dead then
-      self.view:setAnimation(self.anim_dead)
+    if new_state == self.STATE.DEAD then
+      
+      -- corpse giblet object?
+      if self.CORPSE then
+        Giblet.corpse(level, self)
+      -- corpse animation?
+      elseif self.anim_dead then
+        self.view:setAnimation(self.anim_dead)
+      end
     end
   end
   if timer then
@@ -130,7 +137,7 @@ function Character:eventCollision(other, level)
   
   -- collision with death
   elseif other.type == GameObject.TYPE.DEATH then
-    self:addLife(-math.huge)
+    self:addLife(-math.huge, level)
   
   -- collision with other characters
   elseif other.type == self.type then
@@ -200,9 +207,10 @@ function Character:die()
   self.purge = true
 end
 
-function Character:addLife(amount)
+function Character:addLife(amount, level)
   self.life = math.min(100, math.max(0, self.life + amount))
   if self.life == 0 then
+    self:setState(self.STATE.DEAD, nil, level)
     self:die()
   end
 end

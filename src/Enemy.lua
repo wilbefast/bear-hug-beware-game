@@ -77,6 +77,12 @@ for i = 1, 4 do
     SPRITE_SHEET:getWidth(), SPRITE_SHEET:getHeight())
 end
 
+Enemy.CORPSE = SPRITE_SHEET
+Enemy.QCORPSE_AIR = love.graphics.newQuad(768, 192, 64, 64,
+    SPRITE_SHEET:getWidth(), SPRITE_SHEET:getHeight())
+Enemy.QCORPSE_GROUND = love.graphics.newQuad(896, 224, 128, 32,
+    SPRITE_SHEET:getWidth(), SPRITE_SHEET:getHeight())
+
 -- combat
 Enemy.ATTACK =
 {

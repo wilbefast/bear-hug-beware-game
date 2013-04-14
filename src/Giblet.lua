@@ -40,7 +40,8 @@ local Giblet = Class
       
   imScale         = 1,
   rotation        = 0,
-  rotation_speed  = 0
+  rotation_speed  = 0,
+  face            = 1
 }
 Giblet:include(GameObject)
 
@@ -77,8 +78,21 @@ Giblet.blood = function(level, bleeder, amount)
 end
 
 --[[------------------------------------------------------------
-Teddy parts
+Corpse
 --]]--
+
+Giblet.corpse = function(level, dier)
+  Giblet.spawn(level, dier.x, dier.y, 1, 
+      function(gib)
+        gib.w, gib.h = 1, 16
+        gib.dx = dier.dx / 2
+        gib.dy = dier.dy - 200
+        gib.face = dier.facing
+        gib.img = dier.CORPSE
+        gib.qair = dier.QCORPSE_AIR
+        gib.qground = dier.QCORPSE_GROUND
+      end)
+end
 
 
 --[[------------------------------------------------------------
@@ -120,7 +134,7 @@ function Giblet:draw()
   love.graphics.drawq(self.img, quad,
       self:centreX(), 
       self.y + yoffset, 
-      self.rotation, self.imScale, self.imScale,
+      self.rotation, self.face*self.imScale, self.imScale,
       self.imScale*quadw/2, 0)
 end
 
