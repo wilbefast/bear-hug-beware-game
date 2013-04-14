@@ -127,11 +127,21 @@ function Character:eventCollision(other, level)
       self:addLife(-other.weapon.DAMAGE, level)
       -- let other know that it hasn't missed
       other.n_hit = other.n_hit + 1
+      if self.airborne then
+        other.n_hit_air = other.n_hit_air + 1
+      end
+      if self.life <= 0 then
+        other.n_kills = other.n_kills + 1
+      end
       -- play sound
       audio:play_sound(self.SOUND_STUNNED, 0.1, self.x, self.y)
       -- create blood
       if self.BLOOD then
         Giblet.blood(level, self, other.weapon.DAMAGE/10)
+      end
+      -- other special logic
+      if self.onAttacked then
+        self:onAttacked(other, level)
       end
     end
   

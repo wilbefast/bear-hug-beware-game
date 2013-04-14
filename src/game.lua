@@ -136,6 +136,12 @@ function state:keypressed(key, uni)
   -- pause
   elseif key == "p" then
     paused = (not paused)
+  
+  -- restart after death
+  elseif key=="return" or key=="kpenter" then
+    if self.player.state == self.player.STATE.DEAD then
+      GameState.switch(self)
+    end
   end
 
   -- player 1 jump

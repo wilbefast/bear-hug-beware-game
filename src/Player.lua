@@ -57,6 +57,10 @@ local Player = Class
     ---- Character
     Character.init(self, x, y, 64, 128,
         ANIM_STAND, ANIM_WALK, ANIM_JUMP, ANIM_PAIN, ANIM_DEAD)
+    
+    -- combos
+    self.combo = 0
+    self.combo_timer = 0
   end,
 }
 Player:include(Character)
@@ -71,6 +75,43 @@ Player.MAX_DX = 1000.0
 Player.BOOST = 1000.0
 Player.GRAVITY = 1500.0
 Player.FRICTION_X = 100
+
+--[[------------------------------------------------------------
+Combat
+--]]
+
+local COMBO_DURATION = 1.5
+
+local COMBO_MAGIC_BONUS = 4
+
+function Player:onAttacked(attack, level)
+  if self.combo > 0 then
+    self:onComboEnd()
+  end
+end
+
+function Player:onHit(weapon, attack)
+  self.combo = self.combo + attack.n_hit 
+  + attack.n_hit_air + attack.n_kills
+  self.combo_timer = COMBO_DURATION
+end
+
+function Player:onMiss(weapon)
+  if self.combo > 0 then
+    self:onComboEnd()
+  end
+end
+
+function Player:onComboEnd()
+  print("COMBO WAS:", self.combo)
+  self:addMagic(self.combo * COMBO_MAGIC_BONUS)
+  self.combo = 0
+end
+
+local ON_HIT = function(weapon, owner, attack) 
+  owner:onHit(weapon, attack) end
+local ON_MISS = function(weapon, owner, attack) 
+  owner:onMiss(weapon, attack) end
 
 -- combat - light attack
 Player.LIGHTATTACK = 
@@ -92,7 +133,10 @@ Player.LIGHTATTACK =
   SOUND_HIT = "punch",
   SOUND_MISS = "miss",
   DIRECTIONAL = true,
-
+  
+  ON_HIT = ON_HIT,
+  ON_MISS = ON_MISS,
+        
   reloadTime = 0
 }
 -- combat - magic attack
@@ -116,6 +160,9 @@ Player.MAGICATTACK =
   SFX_LAUNCH = ANIM_MAGIC_END,
   DIRECTIONAL = false,
   SOUND_WARMUP = "magic",
+  
+  ON_HIT = ON_HIT,
+  ON_MISS = ON_MISS,
   
   reloadTime = 0
 }
@@ -147,7 +194,7 @@ function Player:eventCollision(other, level)
   -- collision with "bonus" 
   if other.type == GameObject.TYPE.BONUS then
     self.life = self.MAXLIFE
-	self.magic = self.MAXMANA
+    --self.magic = self.MAXMANA
     other.purge = true --! FIXME
   end
 end
@@ -176,6 +223,15 @@ function Player:update(dt, level, view)
       self:startAttack(weapon, nil, level, view)
     end
   end
+
+  -- countdown combo
+  if (self.combo > 0) then
+    if (self.combo_timer > 0) then
+      self.combo_timer = self.combo_timer - dt
+    else
+      self:onComboEnd()
+    end
+  end
         
   -- reload weapons
   function reload(weapon, dt)
@@ -194,6 +250,8 @@ end
 
 function Player:draw()
   Character.draw(self)
+  
+  love.graphics.print(self.combo, self.x, self.y - 64)
 end
 
 return Player

@@ -33,8 +33,12 @@ local Attack = Class
     self.launcher = (launcher or self)
     self.weapon = (weapon or self.launcher or self)
     self.timer = 0 --FIXME (weapon.DURATION or 0)
-    self.n_hit = 0
+    
   end,
+      
+  n_hit = 0,
+  n_hit_air = 0,
+  n_kills = 0,
       
   type  =  GameObject.TYPE["ATTACK"],
 }
@@ -49,16 +53,24 @@ function Attack:update(dt, level)
   -- destroy self on *second* update
   if self.timer < 0 then
     self.purge = true
+    
+    -- miss
     if (self.n_hit == 0) then
       audio:play_sound(self.weapon.SOUND_MISS, 0.2, self.x, self.y)
       if self.weapon.ON_MISS then
-        self.weapon:ON_MISS(self.launcher)
-      elseif self.weapon.ON_HIT then
-        self.weapon:ON_HIT(self.launcher)
+        self.weapon:ON_MISS(self.launcher, self)
       end
-    elseif self.weapon.SOUND_HIT then
-      audio:play_sound(self.weapon.SOUND_HIT, 0.2, self.x, self.y)
+      
+    -- hit
+    else
+      if self.weapon.ON_HIT then
+        self.weapon:ON_HIT(self.launcher, self)
+      end
+      if self.weapon.SOUND_HIT then
+        audio:play_sound(self.weapon.SOUND_HIT, 0.2, self.x, self.y)
+      end
     end
+    
   else
     self.timer = self.timer - dt
   end
