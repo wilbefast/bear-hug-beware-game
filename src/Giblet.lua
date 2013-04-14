@@ -65,7 +65,7 @@ Giblet.blood = function(level, bleeder, amount)
   Giblet.spawn(level, bleeder.x, bleeder.y, 
       amount + useful.iSignedRand(2), 
       function(gib)
-        gib.w, gib.h = 0, 16
+        gib.w, gib.h = 4, 0
         gib.dx = bleeder.dx/3 
                   + useful.signedRand(350)
         gib.dy = bleeder.dy/3 - 300 
@@ -82,16 +82,34 @@ Corpse
 --]]--
 
 Giblet.corpse = function(level, dier)
+  
+  -- body
   Giblet.spawn(level, dier.x, dier.y, 1, 
       function(gib)
-        gib.w, gib.h = 1, 16
-        gib.dx = dier.dx / 2
-        gib.dy = dier.dy - 200
+        gib.w, gib.h = 4, 16
+        gib.dx = dier.dx / 3
+        gib.dy = dier.dy - 200 + useful.signedRand(50)
         gib.face = dier.facing
         gib.img = dier.CORPSE
         gib.qair = dier.QCORPSE_AIR
         gib.qground = dier.QCORPSE_GROUND
       end)
+      
+  -- head
+  if dier.QCORPSE_HEAD then
+    Giblet.spawn(level, dier.x, dier.y, 1, 
+      function(gib)
+        gib.w, gib.h = 16, 16
+        gib.dx = dier.dx / 2
+        gib.dy = dier.dy - 300 + useful.signedRand(50)
+        gib.face = dier.facing
+        gib.img = dier.CORPSE
+        gib.qair = dier.QCORPSE_HEAD
+        gib.qground = dier.QCORPSE_HEAD
+        gib.rotation_speed = dier.dx / 50000
+        gib.offy = -20
+      end)
+  end
 end
 
 
@@ -124,18 +142,15 @@ end
 
 function Giblet:draw()
   
-  local yoffset, quad
-  if self.airborne then
-    quad, yoffset = self.qair, -8
-  else
-    quad, yoffset = self.qground, 8
-  end
-  local _, _, quadw, _ = quad:getViewport()
+  local quad = useful.tri(self.airborne, self.qair,
+      self.qground)
+  local offy = (self.offy or 0) + useful.tri(self.airborne, -8, 8)
+  local _, _, quadw, quadh = quad:getViewport()
   love.graphics.drawq(self.img, quad,
       self:centreX(), 
-      self.y + yoffset, 
+      self:centreY() + offy, 
       self.rotation, self.face*self.imScale, self.imScale,
-      self.imScale*quadw/2, 0)
+      self.imScale*quadw/2, self.imScale*quadh/2)
 end
 
 

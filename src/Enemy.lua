@@ -82,6 +82,8 @@ Enemy.QCORPSE_AIR = love.graphics.newQuad(768, 192, 64, 64,
     SPRITE_SHEET:getWidth(), SPRITE_SHEET:getHeight())
 Enemy.QCORPSE_GROUND = love.graphics.newQuad(896, 224, 128, 32,
     SPRITE_SHEET:getWidth(), SPRITE_SHEET:getHeight())
+Enemy.QCORPSE_HEAD = love.graphics.newQuad(896, 128, 128, 96,
+    SPRITE_SHEET:getWidth(), SPRITE_SHEET:getHeight())
 
 -- combat
 Enemy.ATTACK =
