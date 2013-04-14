@@ -313,12 +313,16 @@ function state:draw()
     -- draw portrait
     scaled_drawq(PORTRAITS, 
         QPORTRAITS[portrait_i], 64, 32, 0, 2, 2)
+   
     
   else
     scaled_draw(DEFEAT_SPLASH,
         DEFAULT_W/2 - DEFEAT_SPLASH:getWidth()/2,
         DEFAULT_H/2 - DEFEAT_SPLASH:getHeight()/2)
   end
+  
+  -- draw score 
+  love.graphics.print(self.player.score, 600, 32)
  
 end
 

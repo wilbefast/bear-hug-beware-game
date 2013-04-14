@@ -58,14 +58,14 @@ local function setBestResolution(desired_w, desired_h, fullscreen)
     
   -- try each mode from best to worst
   for i, m in ipairs(modes) do
-    if not (i < 4) then --FIXME
+    --if not (i < 4) then --FIXME
     -- try to set the resolution
     local success = love.graphics.setMode(m.width, m.height, fullscreen)
     if success then
       SCALE_X, SCALE_Y = m.width/desired_w, m.height/desired_h
       SCALE_MIN, SCALE_MAX = math.min(SCALE_X, SCALE_Y), math.max(SCALE_X, SCALE_Y)
       return true -- success!
-    end
+    --end
     end --FIXME
   end
   return false -- failure!
@@ -78,8 +78,8 @@ LOVE CALLBACKS
 function love.load(arg)
     
   -- set up the screen resolution
-  if (not setBestResolution(1280, 720, false)) then
-  --if (not setBestResolution(1280, 720, true)) then --FIXME
+  --if (not setBestResolution(1280, 720, false)) then
+  if (not setBestResolution(1280, 720, true)) then --FIXME
     print("Failed to set mode")
     love.event.push("quit")
   end
@@ -103,8 +103,8 @@ function love.load(arg)
   love.mouse.setVisible(false)
 
   -- go to the initial gamestate
-  --GameState.switch(title) 
-  GameState.switch(game) --FIXME
+  GameState.switch(title) 
+  --GameState.switch(game) --FIXME
 end
 
 function love.focus(f)

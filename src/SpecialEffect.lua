@@ -34,10 +34,12 @@ local SpecialEffect = Class
 {
   type  =  GameObject.TYPE["SPECIALEFFECT"],
   
-  init = function(self, x, y, anim, speed)
-    GameObject.init(self, x - anim.frame_w/2, 
-                          y - anim.frame_h/2, 0, 0)
+  init = function(self, x, y, anim, speed, follow)
+    self.offx, self.offy = -anim.frame_w/2, -anim.frame_h/2
+      GameObject.init(self, 
+          x + self.offx, y + self.offy, 0, 0)
     self.view = AnimationView(anim, speed, 1)
+    self.follow = follow
   end,
 }
 SpecialEffect:include(GameObject)
@@ -47,6 +49,12 @@ Game loop
 --]]
 
 function SpecialEffect:update(dt, level, view)
+  if self.follow then
+    self.x, self.y = 
+    self.follow:centreX() + self.offx, 
+    self.follow:centreY() + self.offy
+    
+  end
   if self.view:update(dt, level, view) then
     -- destroy at the end of the animation
     self.purge = true

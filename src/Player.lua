@@ -65,6 +65,7 @@ local Player = Class
         ANIM_STAND, ANIM_WALK, ANIM_JUMP, ANIM_PAIN, ANIM_DEAD)
     
     -- combos
+    self.score = 0
     self.combo = 0
     self.combo_timer = 0
     self.orb_offset = math.random()*math.pi*2
@@ -97,6 +98,9 @@ local COMBO_JUMPATTACK_VALUE = 1.5
 local COMBO_MAX = 20
 
 local COMBO_MAGIC_BONUS = 4
+local COMBO_LIFE_BONUS = 1
+local COMBO_SCORE_BONUS = 10
+
 local COMBO_MISS_PENALTY = 0.6
 
 function Player:getOrbPosition(orb_i)
@@ -124,16 +128,16 @@ function Player:onHit(weapon, attack, level)
     dcombo = dcombo*COMBO_JUMPATTACK_VALUE
   end
   
+  -- cash in max combos
+  local overflow = self.combo + dcombo - COMBO_MAX
+  if overflow > 0 then
+    self:comboBonus(overflow, level)
+    dcombo = dcombo - overflow
+  end
+  
   -- reset combo
   self.combo = self.combo + dcombo
   self.combo_timer = COMBO_DURATION
-  
-  -- cash in max combos
-  if self.combo > COMBO_MAX then
-    self:addMagic((self.combo - COMBO_MAX) * COMBO_MAGIC_BONUS)
-    self.combo = COMBO_MAX
-    --TODO
-  end
   
   -- create 'orb appear' sfx
   for i = 1, dcombo do
@@ -149,11 +153,16 @@ function Player:onMiss(weapon, level)
   end
 end
 
-function Player:onComboSucess(level)
+function Player:comboBonus(amount, level)
   self:addMagic(self.combo * COMBO_MAGIC_BONUS)
-  self.combo = 0
+  self:addLife(self.combo * COMBO_LIFE_BONUS)
+  self.score = self.score + self.combo * COMBO_SCORE_BONUS
   level:addObject(SpecialEffect(
-    self:centreX(), self:centreY(), ANIM_ORB_ABSORB, 10))
+    self:centreX(), self:centreY(), ANIM_ORB_ABSORB, 10, self))
+end
+function Player:onComboSucess(level)
+  self:comboBonus(self.combo, level)
+  self.combo = 0
 end
 
 function Player:onComboFail(level)
