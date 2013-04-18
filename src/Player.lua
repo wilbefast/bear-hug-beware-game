@@ -95,7 +95,7 @@ local COMBO_JUGGLE_VALUE = 2
 local COMBO_KILLHIT_VALUE = 3
 local COMBO_JUMPATTACK_VALUE = 1.5
 
-local COMBO_MAX = 20
+local COMBO_MAX = 10
 
 local COMBO_MAGIC_BONUS = 4
 local COMBO_LIFE_BONUS = 1
@@ -113,31 +113,29 @@ end
 
 function Player:onAttacked(attack, level)
   if self.combo > 0 then
-    self:onComboFail(level)
+    self:onComboEnd(level)
   end
 end
 
 function Player:onHit(weapon, attack, level)
-  local dcombo = 
-      attack.n_hit*COMBO_HIT_VALUE 
-    + attack.n_hit_air*COMBO_JUGGLE_VALUE  
-    + attack.n_kills*COMBO_KILLHIT_VALUE
-        
-  -- airborne attack bonus
-  if self.airborne then
-    dcombo = dcombo*COMBO_JUMPATTACK_VALUE
-  end
   
-  -- cash in max combos
-  local overflow = self.combo + dcombo - COMBO_MAX
-  if overflow > 0 then
-    self:comboBonus(overflow, level)
-    dcombo = dcombo - overflow
-  end
+  local dcombo = 1
   
+  self:comboBonus((attack.n_hit*COMBO_HIT_VALUE 
+            + attack.n_hit_air*COMBO_JUGGLE_VALUE  
+            + attack.n_kills*COMBO_KILLHIT_VALUE) 
+    * useful.tri(self.airborne, COMBO_JUMPATTACK_VALUE, 1), level)
+
   -- reset combo
   self.combo = self.combo + dcombo
   self.combo_timer = COMBO_DURATION
+  
+  -- cap combo
+  if self.combo > COMBO_MAX then
+    self.combo = COMBO_MAX
+  end
+  audio:play_sound("punch", nil, nil, nil, 1+(self.combo/COMBO_MAX))
+  
   
   -- create 'orb appear' sfx
   for i = 1, dcombo do
@@ -157,15 +155,9 @@ function Player:comboBonus(amount, level)
   self:addMagic(self.combo * COMBO_MAGIC_BONUS)
   self:addLife(self.combo * COMBO_LIFE_BONUS)
   self.score = self.score + self.combo * COMBO_SCORE_BONUS
-  level:addObject(SpecialEffect(
-    self:centreX(), self:centreY(), ANIM_ORB_ABSORB, 10, self))
-end
-function Player:onComboSucess(level)
-  self:comboBonus(self.combo, level)
-  self.combo = 0
 end
 
-function Player:onComboFail(level)
+function Player:onComboEnd(level)
   -- create 'orb die' sfx
   for i = 1, self.combo do
     local x, y = self:getOrbPosition(i)
@@ -197,7 +189,6 @@ Player.LIGHTATTACK =
   KNOCKBACK = 1500,
   KNOCKUP = 450,
   ANIM_WARMUP = ANIM_BUTT,
-  SOUND_HIT = "punch",
   SOUND_MISS = "miss",
   DIRECTIONAL = true,
   
@@ -223,7 +214,7 @@ Player.MAGICATTACK =
   KNOCKBACK = 950,
   KNOCKUP = 1200,
   ANIM_WARMUP = ANIM_MAGIC,
-  SOUND_HIT = "punch",
+  --SOUND_HIT = "punch",
   SFX_WARMUP = ANIM_MAGIC_START,
   SFX_LAUNCH = ANIM_MAGIC_END,
   DIRECTIONAL = false,
@@ -297,7 +288,7 @@ function Player:update(dt, level, view)
     if (self.combo_timer > 0) then
       self.combo_timer = self.combo_timer - dt
     else
-      self:onComboSucess(level)
+      self:onComboEnd(level)
     end
   end
   

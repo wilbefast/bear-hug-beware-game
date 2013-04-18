@@ -43,12 +43,14 @@ function audio:play_music(name)
       self.music:stop()
     end
     new_music:setLooping(true)
-    new_music:play()
+    if not self.mute then
+      new_music:play()
+    end
     self.music = new_music
   end
 end
 
-function audio:play_sound(name, pitch_shift, x, y)
+function audio:play_sound(name, pitch_shift, x, y, fixed_pitch)
   if not name then return end
   for _, src in ipairs(self[name]) do
     if src:isStopped() then
@@ -56,6 +58,8 @@ function audio:play_sound(name, pitch_shift, x, y)
       -- shift the pitch
       if pitch_shift and (pitch_shift ~= 0) then
         src:setPitch(1 + useful.signedRand(pitch_shift))
+      elseif fixed_pitch then
+        src:setPitch(fixed_pitch)
       end
       
       -- use 3D sound
@@ -63,7 +67,9 @@ function audio:play_sound(name, pitch_shift, x, y)
         src:setPosition(x, y, 0)
       end
       
-      src:play()
+      if not self.mute then
+        src:play()
+      end
       return
     end
   end
