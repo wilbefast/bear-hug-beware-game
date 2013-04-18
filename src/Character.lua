@@ -372,12 +372,12 @@ function Character:draw()
   if self.view then
     self.view.flip_x = (self.facing < 0)
     self.view:draw(self)
-  else
-    -- FIXME debug view
-    love.graphics.print(Character.STATE[self.state], self.x, self.y)
-    love.graphics.print(self.timer, self.x + 64, self.y)
-    GameObject.draw(self)
   end
+  
+  if DEBUG then
+    love.graphics.print(Character.STATE[self.state], self.x, self.y)
+    GameObject.draw(self)
+  end 
 end
 
 

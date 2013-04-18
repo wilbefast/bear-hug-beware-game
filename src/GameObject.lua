@@ -222,8 +222,8 @@ function GameObject:update(dt, level)
 end
 
 function GameObject:draw()
-  if self.view then
-    self.view:draw(self)
+  if DEBUG then
+    self.DEBUG_VIEW:draw(self)
   end
 end
 

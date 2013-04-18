@@ -72,6 +72,10 @@ local TileGrid = Class
             local x, y = self:pixelToGrid(object.x, object.y)
             local w, h = self:pixelToGrid(object.width, 
                                           object.height)
+            
+            if type == Tile.TYPE.ONESIDED then
+              h = 2
+            end
 
             self:mapRectangle(x, y, w-1, h-1, setType)
           end

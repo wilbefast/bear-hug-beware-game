@@ -136,7 +136,10 @@ function Level:draw(view)
   -- draw the tiles
   self.imagegrid:draw(view)
   
-  self.tilegrid:draw(view)
+  -- draw the collideable grid if in debug mode
+  if DEBUG then
+    self.tilegrid:draw(view)
+  end
   
   -- for each type of object
   for t, object_type in pairs(self.object_types) do
