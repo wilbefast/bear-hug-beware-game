@@ -18,7 +18,7 @@ IMPORTS
 --]]------------------------------------------------------------
 
 local Class = require("hump/class")
-local TileGrid = require("TileGrid")
+local CollisionGrid = require("CollisionGrid")
 local ImageGrid = require("ImageGrid")
 local GameObject = require("GameObject")
 local Enemy = require("Enemy")
@@ -43,9 +43,9 @@ function Level:load(filename)
   local mapfile = require(filename)
   
   -- parse collision grid
-  self.tilegrid = TileGrid(mapfile)
-  self.w = self.tilegrid.w*self.tilegrid.tilew
-  self.h = self.tilegrid.h*self.tilegrid.tileh
+  self.collisiongrid = CollisionGrid(mapfile)
+  self.w = self.collisiongrid.w*self.collisiongrid.tilew
+  self.h = self.collisiongrid.h*self.collisiongrid.tileh
   
   -- parse graphics tile grid
   self.imagegrid = ImageGrid(mapfile)
@@ -138,7 +138,7 @@ function Level:draw(view)
   
   -- draw the collideable grid if in debug mode
   if DEBUG then
-    self.tilegrid:draw(view)
+    self.collisiongrid:draw(view)
   end
   
   -- for each type of object

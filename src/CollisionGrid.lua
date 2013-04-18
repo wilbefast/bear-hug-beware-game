@@ -22,14 +22,14 @@ local Tile = require("Tile")
 local useful = require("useful")
 
 --[[------------------------------------------------------------
-TILEGRID CLASS
+COLLISIONGRID CLASS
 --]]------------------------------------------------------------
 
 --[[------------------------------------------------------------
 Initialisation
 --]]
 
-local TileGrid = Class
+local CollisionGrid = Class
 {
   init = function(self, mapfile)
   
@@ -90,7 +90,7 @@ local TileGrid = Class
 Map functions to all or part of the grid
 --]]--
 
-function TileGrid:mapRectangle(startx, starty, w, h, f)
+function CollisionGrid:mapRectangle(startx, starty, w, h, f)
   for x = startx, startx + w - 1 do
     for y = starty, starty + h - 1 do
       if self:validGridPos(x, y) then
@@ -104,7 +104,7 @@ end
 Game loop
 --]]
 
-function TileGrid:draw(view) 
+function CollisionGrid:draw(view) 
   local start_x = math.max(1, math.floor(view.x / self.tilew))
   local end_x = math.min(self.w, 
               start_x + math.ceil(view.w / self.tilew))
@@ -140,7 +140,7 @@ end
 Accessors
 --]]--
 
-function TileGrid:gridToTile(x, y)
+function CollisionGrid:gridToTile(x, y)
   if self:validGridPos(x, y) then
     return self.tiles[x][y]
   else
@@ -148,7 +148,7 @@ function TileGrid:gridToTile(x, y)
   end
 end
 
-function TileGrid:pixelToTile(x, y)
+function CollisionGrid:pixelToTile(x, y)
   return self:gridToTile(math.floor(x / self.tilew) + 1,
                          math.floor(y / self.tileh) + 1)
 end
@@ -158,11 +158,11 @@ end
 Conversion
 --]]--
 
-function TileGrid:pixelToGrid(x, y)
+function CollisionGrid:pixelToGrid(x, y)
   return math.floor(x / self.tilew) + 1, math.floor(y / self.tileh) +1
 end
 
-function TileGrid:gridToPixel(x, y)
+function CollisionGrid:gridToPixel(x, y)
   return (x-1) * self.tilew, (y-1) * self.tileh
 end
 
@@ -171,14 +171,14 @@ end
 Avoid array out-of-bounds exceptions
 --]]--
 
-function TileGrid:validGridPos(x, y)
+function CollisionGrid:validGridPos(x, y)
   return (x >= 1 
       and y >= 1
       and x <= self.w 
       and y <= self.h) 
 end
 
-function TileGrid:validPixelPos(x, y)
+function CollisionGrid:validPixelPos(x, y)
   return (x >= 0
       and y >= 0
       and x <= self.size.x*self.tilew
@@ -190,12 +190,12 @@ end
 Basic collision tests
 --]]--
 
-function TileGrid:gridCollision(x, y, type)
+function CollisionGrid:gridCollision(x, y, type)
   type = (type or Tile.TYPE.WALL)
   return (self:gridToTile(x, y).type == type)
 end
 
-function TileGrid:pixelCollision(x, y, type)
+function CollisionGrid:pixelCollision(x, y, type)
   type = (type or Tile.TYPE.WALL)
   local tile = self:pixelToTile(x, y)
   return ((not tile) or ((tile.type > 1) 
@@ -206,7 +206,7 @@ end
 GameObject collision tests
 --]]--
 
-function TileGrid:collision(go, x, y, type)
+function CollisionGrid:collision(go, x, y, type)
   -- x & y are optional: leave them out to test the object where it actually is
   x = (x or go.x)
   y = (y or go.y)
@@ -218,7 +218,7 @@ function TileGrid:collision(go, x, y, type)
       or  self:pixelCollision(x + go.w,  y + go.h, type))
 end
 
-function TileGrid:collision_next(go, dt)
+function CollisionGrid:collision_next(go, dt)
   return self:collision(go, go.x + go.dx*dt, go.y + go.dy*dt)
 end
 
@@ -227,4 +227,4 @@ end
 EXPORT
 --]]------------------------------------------------------------
 
-return TileGrid
+return CollisionGrid

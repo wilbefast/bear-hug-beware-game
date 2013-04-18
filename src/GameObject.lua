@@ -79,9 +79,9 @@ function GameObject:centreY()
   return self.y + self.h/2
 end
 
-function GameObject:snap_from_collision(dx, dy, tilegrid, max, type)
+function GameObject:snap_from_collision(dx, dy, collisiongrid, max, type)
   local i = 0
-  while tilegrid:collision(self, self.x, self.y, type) 
+  while collisiongrid:collision(self, self.x, self.y, type) 
   and (not max or i < max)  do
     self.x = self.x + dx
     self.y = self.y + dy
@@ -89,9 +89,9 @@ function GameObject:snap_from_collision(dx, dy, tilegrid, max, type)
   end
 end
 
-function GameObject:snap_to_collision(dx, dy, tilegrid, max, type)
+function GameObject:snap_to_collision(dx, dy, collisiongrid, max, type)
   local i = 0
-  while not tilegrid:collision(self, self.x + dx, self.y + dy, type) 
+  while not collisiongrid:collision(self, self.x + dx, self.y + dy, type) 
         and (not max or i < max)  do
     self.x = self.x + dx
     self.y = self.y + dy
@@ -137,7 +137,7 @@ Game loop
 
 function GameObject:update(dt, level)
   -- shortcut
-  local tilegrid = level.tilegrid
+  local collisiongrid = level.collisiongrid
   
   -- object may have several fisix settings
   local fisix = (self.fisix or self)
@@ -170,7 +170,7 @@ function GameObject:update(dt, level)
   
   -- collide with one-way platforms?
   local collide_type
-  if (not tilegrid:collision(self, self.x, self.prevy, Tile.TYPE.ONESIDED)) then
+  if (not collisiongrid:collision(self, self.x, self.prevy, Tile.TYPE.ONESIDED)) then
     collide_type = Tile.TYPE.ONESIDED
   else
     collide_type = Tile.TYPE.WALL
@@ -178,11 +178,11 @@ function GameObject:update(dt, level)
   
   -- check if we're on the ground
   self.airborne = 
-    ((not tilegrid:pixelCollision(self.x, self.y + self.h + 1, collide_type)
-    and (not tilegrid:pixelCollision(self.x + self.w, self.y + self.h + 1, collide_type))))
+    ((not collisiongrid:pixelCollision(self.x, self.y + self.h + 1, collide_type)
+    and (not collisiongrid:pixelCollision(self.x + self.w, self.y + self.h + 1, collide_type))))
   if not self.airborne and self.dy > 0 then
-    if tilegrid:collision(self, collide_type) then
-      self:snap_from_collision(0, -1, tilegrid, math.abs(self.dy), collide_type)
+    if collisiongrid:collision(self, collide_type) then
+      self:snap_from_collision(0, -1, collisiongrid, math.abs(self.dy), collide_type)
     end
     self.dy = 0
   end 
@@ -193,10 +193,10 @@ function GameObject:update(dt, level)
     local new_x = self.x + move_x
     self.prevx = self.x
     -- is new x in collision ?
-    if tilegrid:collision(self, new_x, self.y) then
+    if collisiongrid:collision(self, new_x, self.y) then
       -- move as far as possible towards new position
       self:snap_to_collision(useful.sign(self.dx), 0, 
-                        tilegrid, math.abs(self.dx))
+                        collisiongrid, math.abs(self.dx))
       self.dx = 0
     else
       -- if not move to new position
@@ -210,9 +210,9 @@ function GameObject:update(dt, level)
     local new_y = self.y + move_y
     self.prevy = self.y
     -- is new y position free ?
-    if tilegrid:collision(self, self.x, new_y) then
+    if collisiongrid:collision(self, self.x, new_y) then
       -- if not move as far as possible
-      self:snap_to_collision(0, useful.sign(self.dy), tilegrid, math.abs(self.dy))
+      self:snap_to_collision(0, useful.sign(self.dy), collisiongrid, math.abs(self.dy))
       self.dy = 0
     else
       -- if so move to new position

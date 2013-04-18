@@ -98,8 +98,8 @@ function state:recalculate_view()
   self.view.x, self.view.y = self.camera:worldCoords(0, 0)
   
   self.view.endx, self.view.endy = self.camera:worldCoords(
-    love.graphics.getWidth() + self.level.tilegrid.tilew, 
-    love.graphics.getHeight() + self.level.tilegrid.tileh)
+    love.graphics.getWidth() + self.level.collisiongrid.tilew, 
+    love.graphics.getHeight() + self.level.collisiongrid.tileh)
     
   self.view.w, self.view.h = self.view.endx - self.view.x,
                              self.view.endy - self.view.y
