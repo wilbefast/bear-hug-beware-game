@@ -88,7 +88,8 @@ Enemy.QCORPSE_HEAD = love.graphics.newQuad(896, 128, 128, 96,
 -- combat
 Enemy.ATTACK =
 {
-  REACH = 16,
+  DIRECTIONAL = true,
+  REACH = 32,
   OFFSET_Y = 0,
   OFFSET_X = 0,
   DAMAGE = 10,
@@ -97,7 +98,7 @@ Enemy.ATTACK =
   RELOAD_TIME = 0.4,
   STUN_TIME = 0.3,
   DURATION = 0.1,
-  W = 64,
+  W = 52,
   H = 52,
   KNOCKBACK = 1000,
   KNOCKUP = 400,
@@ -113,10 +114,9 @@ Enemy.ATTACK =
 -- ai
 Enemy.PERCENT_JUMPING = 0.1
 Enemy.SIGHT_DIST = 800
-Enemy.TURN_DIST = 70
+Enemy.TURN_DIST = 125
 Enemy.AI_H_DIST = 200
 Enemy.ATTACK_DIST = Enemy.ATTACK.REACH + Enemy.ATTACK.W/2
-
 
 --[[------------------------------------------------------------
 Collisions
@@ -157,7 +157,17 @@ function Enemy:update(dt, level, view)
     if (dist_y < self.AI_H_DIST) 
     and (dist_x > self.TURN_DIST) then
       self.requestMoveX = useful.sign(delta_x)
-    else
+    -- descend from ledge?
+    elseif dist_y > self.AI_H_DIST then
+      self.requestMoveX = self.facing
+    -- slow to a halt?
+    elseif (dist_x < self.ATTACK_DIST)
+    and (not self.airborne)
+    and (useful.sign(delta_x) == useful.sign(self.dx)) then
+      self.dx = self.dx * 0.7
+      self.requestMoveX = 0
+    -- keep going in the same direction
+    else  
       self.requestMoveX = self.facing
     end
     

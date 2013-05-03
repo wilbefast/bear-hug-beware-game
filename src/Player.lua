@@ -190,7 +190,7 @@ Player.LIGHTATTACK =
   KNOCKUP = 450,
   ANIM_WARMUP = ANIM_BUTT,
   SOUND_MISS = "miss",
-  DIRECTIONAL = true,
+  --DIRECTIONAL = true,
   
   ON_HIT = ON_HIT,
   ON_MISS = ON_MISS,

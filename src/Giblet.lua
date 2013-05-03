@@ -173,7 +173,6 @@ function Giblet:update(dt, level, view)
 end
 
 function Giblet:draw()
-  
   -- fade out after a certain amount of time
   if self.timer < 3 then
     love.graphics.setColor(255, 255, 255, 
@@ -191,8 +190,9 @@ function Giblet:draw()
       self.rotation, self.face*self.imScale, self.imScale,
       self.imScale*quadw/2, self.imScale*quadh/2)
   
+  -- debug
   love.graphics.setColor(255, 255, 255, 255)
- 
+  GameObject.draw(self)
 end
 
 

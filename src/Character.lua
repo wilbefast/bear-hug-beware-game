@@ -146,13 +146,17 @@ function Character:eventCollision(other, level)
   -- collision with death
   elseif other.type == GameObject.TYPE.DEATH then
     self:addLife(-math.huge, level)
+
   
   -- collision with other characters
-  elseif other.type == self.type then
+  elseif (other.type == GameObject.TYPE.PLAYER)
+  or (other.type == GameObject.TYPE.ENEMY) then
     if (self.state ~= self.STATE.STUNNED)
+    and (self.state ~= self.STATE.WARMUP)
+    and (other.state ~= other.STATE.WARMUP)
     and (other.state ~= other.STATE.STUNNED) then
       push = (self:centreX() - other:centreX())
-      self.dx = self.dx + push * 3
+      self.dx = self.dx + push*3
     end
   end
 end

@@ -148,10 +148,10 @@ function GameObject:update(dt, level)
   end
   
   -- friction
-  if fisix.FRICTION_X and (fisix.FRICTION_X ~= 0) then
+  if (self.dx ~= 0) and fisix.FRICTION_X and (fisix.FRICTION_X ~= 0) then
     self.dx = self.dx / (math.pow(fisix.FRICTION_X, dt))
   end
-  if fisix.FRICTION_Y and (fisix.FRICTION_Y ~= 0) then
+  if (self.dx ~= 0) and fisix.FRICTION_Y and (fisix.FRICTION_Y ~= 0) then
     self.dy = self.dy / (math.pow(fisix.FRICTION_Y, dt))
   end
   
