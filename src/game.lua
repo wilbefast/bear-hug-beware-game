@@ -20,6 +20,7 @@ IMPORTS
 
 local Level = require("Level")
 local Camera = require("hump/camera")
+local GameObject = require("GameObject")
 local Player = require("Player")
 local useful = require("useful")
 
@@ -111,9 +112,8 @@ function state:enter()
   audio:play_music("music_game")
   
   -- reset objects
-  self.player = Player(300, 500) --TODO reset player position based on level
-  self.level:load("../assets/maps/map01")
-  self.level:addObject(self.player)
+  self.level:load("../assets/maps/map00")
+  self.player = self.level:getObject(GameObject.TYPE.PLAYER)
   
   -- reset camera
   self.cam_x, self.cam_y = self.player.x, self.player.y

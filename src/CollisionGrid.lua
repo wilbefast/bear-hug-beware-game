@@ -56,9 +56,9 @@ local CollisionGrid = Class
       --! GENERATE *COLLISION* GRID
       if layer.type == "objectgroup" then
         local type
-        if layer.name == "murs" then
+        if layer.name == "walls" then
           type = Tile.TYPE.WALL
-        elseif layer.name == "plateformes" then
+        elseif layer.name == "platforms" then
           type = Tile.TYPE.ONESIDED
         end
       

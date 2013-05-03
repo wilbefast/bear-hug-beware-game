@@ -24,6 +24,7 @@ local GameObject = require("GameObject")
 local Enemy = require("Enemy")
 local Death = require("Death")
 local Bonus = require("Bonus")
+local Player = require("Player")
 local useful = require("useful")
 
 --[[------------------------------------------------------------
@@ -69,6 +70,8 @@ function Level:load(filename)
       parse_objects(layer, Death)
     elseif layer.name == "bonus" then
       parse_objects(layer, Bonus)
+    elseif layer.name == "players" then
+      parse_objects(layer, Player)
     end
   end
 end

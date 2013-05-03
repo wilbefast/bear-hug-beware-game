@@ -29,7 +29,7 @@ local TileSet = Class
   init = function(self, tileset)
   
     -- read the Tile.d exported Lua tileset object
-    self.image = love.graphics.newImage(tileset.image)
+    self.image = love.graphics.newImage("assets" .. tileset.image:sub(3))
     self.quadw = tileset.tilewidth
     self.quadh = tileset.tileheight
     -- ... number of tiles
