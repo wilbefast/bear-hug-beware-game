@@ -31,8 +31,8 @@ local useful = require("useful")
 GLOBAL SETTINGS
 --]]------------------------------------------------------------
 
-DEBUG = true
-audio.mute = true
+DEBUG = false
+audio.mute = DEBUG
 
 --[[------------------------------------------------------------
 DEAL WITH DIFFERENT RESOLUTIONS (scale images)
