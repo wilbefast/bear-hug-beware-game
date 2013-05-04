@@ -202,6 +202,16 @@ function CollisionGrid:pixelCollision(x, y, type)
                         and (tile.type <= type)))
 end
 
+function CollisionGrid:pixelType(x, y)
+  local tile = self:pixelToTile(x, y)
+  if tile then 
+    return tile.type 
+  else 
+    return Tile.TYPE.WALL 
+  end
+end
+  
+
 --[[----------------------------------------------------------------------------
 GameObject collision tests
 --]]--

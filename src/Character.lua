@@ -22,6 +22,7 @@ local GameObject = require("GameObject")
 local useful      = require("useful")
 local Attack      = require("Attack")
 local Giblet      = require("Giblet")
+local Tile        = require("Tile")
 local Animation   = require("Animation")
 local AnimationView = require("AnimationView")
 local SpecialEffect = require("SpecialEffect")
@@ -291,6 +292,15 @@ function Character:update(dt, level, view)
         audio:play_sound("jump", 0.2, self.x, self.y)
         self.dy = -self.BOOST
       end
+    end
+    
+    -- drop through 1-sided platforms
+    if (not self.airborne )
+    and (self.requestMoveY > 0) 
+    and (self.standingOn == Tile.TYPE.ONESIDED) then
+      self.y = self.y + 1
+      self.prevy = self.y
+      self.airborne = true
     end
   end
   

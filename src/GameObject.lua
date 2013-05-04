@@ -177,9 +177,17 @@ function GameObject:update(dt, level)
   end
   
   -- check if we're on the ground
-  self.airborne = 
+  if
     ((not collisiongrid:pixelCollision(self.x, self.y + self.h + 1, collide_type)
     and (not collisiongrid:pixelCollision(self.x + self.w, self.y + self.h + 1, collide_type))))
+  then
+    self.airborne = true
+    self.standingOn = nil
+  else
+    self.airborne = false
+    self.standingOn = collisiongrid:pixelType(self.x, self.y + self.h + 1)
+  end
+    
   if not self.airborne and self.dy > 0 then
     if collisiongrid:collision(self, collide_type) then
       self:snap_from_collision(0, -1, collisiongrid, math.abs(self.dy), collide_type)
