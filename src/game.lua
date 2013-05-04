@@ -244,28 +244,30 @@ function state:draw()
       (math.floor(self.view.x / DEFAULT_W))*DEFAULT_W
   
     -- draw the horizon mountains
+    local mountains_yoffset = 
+      700 + (self.view.y/20)%DEFAULT_H
     local horizon_offset = 
       base_offset - (self.view.x/20)%DEFAULT_W
     love.graphics.drawq(HORIZON, QHORIZON, horizon_offset, 400)
     love.graphics.setColor(160, 61, 96)
       love.graphics.rectangle("fill", self.view.x, 
-          400+HORIZON_H, self.view.w, 400)
+          400+HORIZON_H, self.view.w, 
+          mountains_yoffset+MOUNTAINS_H-400-HORIZON_H)
     love.graphics.setColor(255, 255, 255)
       
     -- draw the background mountains
-    
     local w, h = DEFAULT_W*SCALE_X/SCALE_MIN,
                   DEFAULT_H*SCALE_Y/SCALE_MIN
-    
     local mountains_offset = 
       base_offset - (self.view.x/10)%DEFAULT_W
-    love.graphics.drawq(MOUNTAINS, QMOUNTAINS, 
-                        mountains_offset, 500)
+    if self.view.y < mountains_yoffset + MOUNTAINS_H then
+      love.graphics.drawq(MOUNTAINS, QMOUNTAINS, 
+                          mountains_offset, mountains_yoffset)
+    end
     love.graphics.setColor(104, 161, 127)
-    
       love.graphics.rectangle("fill", 
-          self.view.x, 500 + MOUNTAINS_H, 
-          self.view.w, 280)
+          self.view.x, mountains_yoffset + MOUNTAINS_H, 
+          self.view.w, 1550 - mountains_yoffset)
     love.graphics.setColor(255, 255, 255)
     
     -- draw the game objects

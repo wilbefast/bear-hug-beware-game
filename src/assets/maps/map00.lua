@@ -95,6 +95,17 @@ return {
           height = 256,
           visible = true,
           properties = {}
+        },
+        {
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 1280,
+          y = 1472,
+          width = 192,
+          height = 128,
+          visible = true,
+          properties = {}
         }
       }
     },
@@ -304,6 +315,28 @@ return {
           y = 640,
           width = 192,
           height = 192,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 960,
+          y = 1024,
+          width = 128,
+          height = 128,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 1280,
+          y = 1344,
+          width = 192,
+          height = 256,
           visible = true,
           properties = {}
         }
