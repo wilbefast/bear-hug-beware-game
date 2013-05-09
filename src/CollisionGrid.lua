@@ -90,11 +90,21 @@ local CollisionGrid = Class
 Map functions to all or part of the grid
 --]]--
 
+function CollisionGrid:map(f)
+  for x = 1, self.w do
+    for y = 1, self.h do
+      if self:validGridPos(x, y) then
+        f(self.tiles[x][y], x, y)
+      end
+    end
+  end
+end
+
 function CollisionGrid:mapRectangle(startx, starty, w, h, f)
   for x = startx, startx + w - 1 do
     for y = starty, starty + h - 1 do
       if self:validGridPos(x, y) then
-        f(self.tiles[x][y])
+        f(self.tiles[x][y], x, y)
       end
     end
   end
@@ -117,23 +127,17 @@ function CollisionGrid:draw(view)
     for y = start_y, end_y do
       local type = self.tiles[x][y].type
       if type > 1 then
-        
-        local bink = "line"
         if type == 2 then
           love.graphics.setColor(0,0,255)
         elseif type == 10 then
           love.graphics.setColor(255,0,0)
-          bink = "fill"  
         end
-        
-        love.graphics.rectangle(bink, (x-1)*self.tilew,
+        love.graphics.rectangle("line", (x-1)*self.tilew,
             (y-1)*self.tileh, self.tilew, self.tileh)
         love.graphics.setColor(255,255,255)
       end
     end
   end
-
-    --TODO use sprite batches
 end
 
 --[[----------------------------------------------------------------------------

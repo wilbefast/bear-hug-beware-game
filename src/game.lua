@@ -245,9 +245,9 @@ function state:draw()
   
     -- draw the horizon mountains
     local mountains_yoffset = 
-      700 + (self.view.y/20)%DEFAULT_H
+      1000 - (self.view.y/8)%DEFAULT_H
     local horizon_offset = 
-      base_offset - (self.view.x/20)%DEFAULT_W
+      base_offset - (self.view.x/30)%DEFAULT_W
     love.graphics.drawq(HORIZON, QHORIZON, horizon_offset, 400)
     love.graphics.setColor(160, 61, 96)
       love.graphics.rectangle("fill", self.view.x, 
@@ -259,7 +259,7 @@ function state:draw()
     local w, h = DEFAULT_W*SCALE_X/SCALE_MIN,
                   DEFAULT_H*SCALE_Y/SCALE_MIN
     local mountains_offset = 
-      base_offset - (self.view.x/10)%DEFAULT_W
+      base_offset - (self.view.x/12)%DEFAULT_W
     if self.view.y < mountains_yoffset + MOUNTAINS_H then
       love.graphics.drawq(MOUNTAINS, QMOUNTAINS, 
                           mountains_offset, mountains_yoffset)

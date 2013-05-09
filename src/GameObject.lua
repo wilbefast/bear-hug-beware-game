@@ -57,7 +57,9 @@ useful.bind(GameObject.TYPE, "ENEMY", 3)
 useful.bind(GameObject.TYPE, "DEATH", 4)
 useful.bind(GameObject.TYPE, "BONUS", 5)
 useful.bind(GameObject.TYPE, "PLAYER", 6)
-useful.bind(GameObject.TYPE, "SPECIALEFFECT", 7)
+useful.bind(GameObject.TYPE, "DOODAD", 7)
+useful.bind(GameObject.TYPE, "SPECIALEFFECT", 8)
+
 
 function GameObject:typename()
   return GameObject.TYPE[self.type]

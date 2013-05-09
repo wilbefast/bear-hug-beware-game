@@ -151,4 +151,8 @@ function useful.randIn(table)
   return table[math.random(#table)]
 end
 
+function useful.randBool(chanceOfTrue)
+  return (math.random() < chanceOfTrue)
+end
+
 return useful
