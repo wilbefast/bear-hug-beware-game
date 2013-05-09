@@ -15,7 +15,7 @@ return {
       tileheight = 64,
       spacing = 0,
       margin = 0,
-      image = "../sprites/ground.png",
+      image = "../background/tiles.png",
       imagewidth = 512,
       imageheight = 256,
       properties = {},

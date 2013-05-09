@@ -111,7 +111,7 @@ function Character:eventCollision(other, level)
   -- collision with attack
   if (other.type == GameObject.TYPE.ATTACK)
   and (other.launcher.type ~= self.type) then
-    push = useful.sign(self:centreX() - other.launcher:centreX())
+    local push = useful.sign(self:centreX() - other.launcher:centreX())
     if (not other.weapon.DIRECTIONAL) 
     or (push == other.launcher.facing) then
       self.facing = -push

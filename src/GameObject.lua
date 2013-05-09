@@ -207,7 +207,12 @@ function GameObject:update(dt, level)
       -- move as far as possible towards new position
       self:snap_to_collision(useful.sign(self.dx), 0, 
                         collisiongrid, math.abs(self.dx))
-      self.dx = 0
+      
+      if fisix.BOUNCY then
+        self.dx = -self.dx * fisix.BOUNCY 
+      else
+        self.dx = 0
+      end
     else
       -- if not move to new position
       self.x = new_x

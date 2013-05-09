@@ -77,6 +77,11 @@ function Level:load(filename)
     end
   end
   
+  
+  self:addObject(Enemy(100, 100, 64, 128))
+  
+  
+  
   -- create decorations
   self.collisiongrid:map(
     function(tile, tx, ty)

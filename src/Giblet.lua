@@ -84,11 +84,55 @@ Giblet.blood = function(level, bleeder, amount)
 end
 
 --[[------------------------------------------------------------
+Decapitated Head
+--]]--
+
+local GibletHead = Class
+{
+  init = function(self, x, y, special_init)
+    Giblet.init(self, x, y, special_init)
+  end
+}
+GibletHead:include(Giblet)
+GibletHead.spawn = function (level, x, y, number, special_init)
+  for i = 1, number do
+    level:addObject(GibletHead(x, y, special_init))
+  end
+end
+function GibletHead:draw()
+  Giblet.draw(self)
+end
+function GibletHead:update(dt, level, view)
+  Giblet.update(self, dt, level, view)
+end
+
+function GibletHead:collidesType(type)
+  return (type == GameObject.TYPE.ATTACK)
+end
+function GibletHead:eventCollision(other, level)
+  if (other.type == GameObject.TYPE.ATTACK) then
+    local push = useful.sign(self:centreX() - other.launcher:centreX())
+    -- knock-back and -up
+    self.dx = push * other.weapon.KNOCKBACK
+    self.dy = -other.weapon.KNOCKUP
+    self.airborne = true
+    self.y = self.y - 1
+    -- reset spin
+    self.rotation_speed = push/10
+    -- reset timer to 3 seconds
+    self.timer = 90
+    -- moar blood!
+    Giblet.blood(level, self, other.weapon.DAMAGE/15)
+  end
+end
+
+GibletHead.BOUNCY = 0.5
+
+--[[------------------------------------------------------------
 Corpse
 --]]--
 
-Giblet.corpse = function(level, dier)
-  
+Giblet.corpse = function(level, dier) 
   -- body
   Giblet.spawn(level, dier.x, dier.y, 1, 
       function(gib)
@@ -101,11 +145,11 @@ Giblet.corpse = function(level, dier)
         gib.qground = dier.QCORPSE_GROUND
         gib.blood_timer = 0
         gib.source = dier
-      end)
+      end)--]]
       
   -- head
   if dier.QCORPSE_HEAD then
-    Giblet.spawn(level, dier.x, dier.y, 1, 
+    GibletHead.spawn(level, dier.x, dier.y, 1, 
       function(gib)
         gib.w, gib.h = 32, 16
         gib.dx = dier.dx / 2
@@ -148,6 +192,11 @@ function Giblet:update(dt, level, view)
   
   -- rotation
   if self.rotation_speed ~= 0 then
+    if math.abs(self.dx) < 0.1 then
+      self.rotation_speed = 0
+    elseif useful.sign(self.rotation_speed) ~= useful.sign(self.dx) then
+      self.rotation_speed = self.rotation_speed * -1
+    end
     self.rotation = self.rotation + self.rotation_speed
   end
   
@@ -163,12 +212,8 @@ function Giblet:update(dt, level, view)
     
   -- stop and destroy
   if (not self.airborne) then
-    if (self.dx ~= 0) or (self.dy ~= 0) then
-      self.dx, self.dy = 0, 0
-      if self.rotation_speed ~= 0 then
-        self.rotation_speed = 0
-      end
-    end
+    self.dx, self.dy = 0, 0
+    self.rotation_speed = 0
   end
 end
 
