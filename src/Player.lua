@@ -180,7 +180,7 @@ Player.LIGHTATTACK =
   OFFSET_X = 0,
   DAMAGE = 34,
   MANA = 0,
-  WARMUP_TIME = 0.2,
+  WARMUP_TIME = 0.1,
   DURATION = 0.1,
   RELOAD_TIME = 0.04,
   STUN_TIME = 1.0,
@@ -191,11 +191,11 @@ Player.LIGHTATTACK =
   ANIM_WARMUP = ANIM_BUTT,
   SOUND_MISS = "miss",
   --DIRECTIONAL = true,
-  
   ON_HIT = ON_HIT,
   ON_MISS = ON_MISS,
         
-  reloadTime = 0
+  reloadTime = 0,
+  charge = 0
 }
 -- combat - magic attack
 Player.MAGICATTACK = 
@@ -205,7 +205,7 @@ Player.MAGICATTACK =
   OFFSET_X = -32,
   DAMAGE = 45,
   MANA = 30,
-  WARMUP_TIME = 0.4,
+  WARMUP_TIME = 0.2,
   DURATION = 0.4,
   RELOAD_TIME = 0.3,
   STUN_TIME = 3.0,
@@ -223,7 +223,8 @@ Player.MAGICATTACK =
   ON_HIT = ON_HIT,
   ON_MISS = ON_MISS,
   
-  reloadTime = 0
+  reloadTime = 0,
+  charge = 0
 }
 
 Player.MAXMANA = 100
@@ -264,8 +265,26 @@ Game loop
 
 function Player:update(dt, level, view)
 
-  -- try attack
+  -- prepare attack
   if self.state == Character.STATE.NORMAL then
+    local weapon = nil
+    -- ... light
+    if self.requestStartLightAttack then
+      weapon = self.LIGHTATTACK
+    end
+    -- ... magic
+    if self.requestStartMagicAttack then
+      if (self.magic >= self.MAGICATTACK.MANA) then
+        weapon = self.MAGICATTACK
+      end
+    end
+    -- launch attack
+    if weapon and (weapon.reloadTime <= 0) then
+      self:backswingAttack(weapon, nil, level, view)
+    end
+    
+  -- launch attack 
+  elseif self.state == Character.STATE.BACKSWING then
     local weapon = nil
     -- ... light
     if self.requestLightAttack then
@@ -273,13 +292,12 @@ function Player:update(dt, level, view)
     end
     -- ... magic
     if self.requestMagicAttack then
-      if (self.magic >= self.MAGICATTACK.MANA) then
-        weapon = self.MAGICATTACK
-      end
+      weapon = self.MAGICATTACK
     end
     -- launch attack
     if weapon and (weapon.reloadTime <= 0) then
-      self:startAttack(weapon, nil, level, view)
+      self:setState(Character.STATE.WARMUP, 
+                    (weapon.WARMUP_TIME or 0))
     end
   end
 
@@ -306,6 +324,8 @@ function Player:update(dt, level, view)
   reload(self.MAGICATTACK, dt)
   
   -- reset input
+  self.requestStartLightAttack = false
+  self.requestStartMagicAttack = false
   self.requestLightAttack = false
   self.requestMagicAttack = false
   

@@ -69,10 +69,11 @@ State machine
 Character.STATE = {}
 useful.bind(Character.STATE, "NORMAL", 1)
 useful.bind(Character.STATE, "STUNNED", 2)
-useful.bind(Character.STATE, "WARMUP", 3)
-useful.bind(Character.STATE, "ATTACKING", 4)
-useful.bind(Character.STATE, "DYING", 5)
-useful.bind(Character.STATE, "DEAD", 6)
+useful.bind(Character.STATE, "BACKSWING", 3)
+useful.bind(Character.STATE, "WARMUP", 4)
+useful.bind(Character.STATE, "ATTACKING", 5)
+useful.bind(Character.STATE, "DYING", 6)
+useful.bind(Character.STATE, "DEAD", 7)
 
 function Character:onStateChange(new_state)
   -- override me!
@@ -167,15 +168,11 @@ end
 Combat
 --]]
 
-function Character:startAttack(weapon, target, level, view)
+function __auxStartAttack(self, weapon, target, level, view)
   -- attack queued to be launched when warmup is over
   self.deferred_weapon = weapon
   self.deferred_target = target
-  self:setState(Character.STATE.WARMUP, (weapon.WARMUP_TIME or 0))
 
-  -- mana-cost is deducted when warmup starts
-  self:addMagic(-weapon.MANA)
-  
   -- WARMUP sound effect
   if weapon.SOUND_WARMUP then
     audio:play_sound(weapon.SOUND_WARMUP, 0.2, self.x, self.y)
@@ -186,6 +183,20 @@ function Character:startAttack(weapon, target, level, view)
     level:addObject(SpecialEffect(self:centreX(), self:centreY(),
         weapon.SFX_WARMUP, weapon.SFX_WARMUP.n_frames/weapon.WARMUP_TIME))
   end
+end
+
+function Character:backswingAttack(weapon, target, level, view)
+  self:setState(Character.STATE.BACKSWING, 0)
+  -- mana-cost is deducted when backswing starts
+  self:addMagic(-weapon.MANA)
+  __auxStartAttack(self, weapon, target, level, view)
+end
+
+function Character:startAttack(weapon, target, level, view)
+  self:setState(Character.STATE.WARMUP, (weapon.WARMUP_TIME or 0))
+  -- mana-cost is deducted when warmup starts
+  self:addMagic(-weapon.MANA)
+  __auxStartAttack(self, weapon, target, level, view)
 end
 
 function Character:attack(weapon, target, level, view)
@@ -334,9 +345,16 @@ function Character:update(dt, level, view)
     end
     
   -- if self.state == self.STATE.NORMAL then
-  elseif self.state == self.STATE.WARMUP then
     
-    -- back-swing/warmup animation
+  elseif self.state == self.STATE.BACKSWING then
+    -- backswing frame
+    if self.deferred_weapon.ANIM_WARMUP then
+      self.view:setAnimation(self.deferred_weapon.ANIM_WARMUP)
+      self.view:seekStart()
+    end
+    
+  elseif self.state == self.STATE.WARMUP then
+    -- warmup animation
     if self.deferred_weapon.ANIM_WARMUP then
       self.view:setAnimation(self.deferred_weapon.ANIM_WARMUP)
       self.view:seekPercent(1 - self.timer / self.deferred_weapon.WARMUP_TIME)

@@ -131,8 +131,8 @@ function love.keypressed(key, uni)
   GameState.keypressed(key, uni)
 end
 
-function keyreleased(key, uni)
-  GameState.keyreleased(key)
+function love.keyreleased(key, uni)
+  GameState.keyreleased(key, uni)
 end
 
 MIN_DT = 1/60

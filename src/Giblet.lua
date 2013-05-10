@@ -224,7 +224,7 @@ function Giblet:draw()
         math.max(0, 255*self.timer/3))
   end
   
-  -- draw depending if on the ground or not
+  -- draw depending on if on the ground or not
   local quad = useful.tri(self.airborne, self.qair,
       self.qground)
   local offy = (self.offy or 0) + useful.tri(self.airborne, -8, 8)

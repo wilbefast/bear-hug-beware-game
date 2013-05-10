@@ -89,7 +89,7 @@ Enemy.QCORPSE_HEAD = love.graphics.newQuad(896, 128, 128, 96,
 Enemy.ATTACK =
 {
   DIRECTIONAL = true,
-  REACH = 32,
+  REACH = 48,
   OFFSET_Y = 0,
   OFFSET_X = 0,
   DAMAGE = 10,

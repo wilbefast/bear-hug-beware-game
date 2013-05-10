@@ -143,7 +143,23 @@ function state:keypressed(key, uni)
       GameState.switch(self)
     end
   end
+ 
+  -- player 1 jump
+  self.player.requestStartJump
+    = (key == " " or key == "up" 
+      or key == "z" or key == "w")
+  
+  -- player 1 attacks
+  self.player.requestStartLightAttack 
+    = (key == "kp0" or key == "y" 
+      or key =="rctrl" or key == "lctrl")
+  self.player.requestStartMagicAttack
+    = (key == "kp1" or key == "u" 
+      or key == "rshift" or key == "lshift")
+  
+end
 
+function state:keyreleased(key, uni)
   -- player 1 jump
   self.player.requestJump
     = (key == " " or key == "up" 
@@ -156,7 +172,6 @@ function state:keypressed(key, uni)
   self.player.requestMagicAttack
     = (key == "kp1" or key == "u" 
       or key == "rshift" or key == "lshift")
-  
 end
 
 function state:update(dt)
