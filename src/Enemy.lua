@@ -160,6 +160,7 @@ function Enemy:update(dt, level, view)
     -- descend from ledge?
     elseif dist_y > self.AI_H_DIST then
       self.requestMoveX = self.facing
+      self.requestMoveY = useful.sign(delta_y)
     -- slow to a halt?
     elseif (dist_x < self.ATTACK_DIST)
     and (not self.airborne)
