@@ -123,7 +123,10 @@ function Enemy:update(dt, level, view)
   local dist = math.abs(delta_x)
   
   -- can see player?
-  if inView then
+  if inView or self.aggro then
+    
+    -- once active, follow the player TO THE ENDS OF THE EARTH!
+    self.aggro = true
     
     -- desire move?
     if (dist > self.TURN_DIST) then

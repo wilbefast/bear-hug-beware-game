@@ -25,35 +25,61 @@ local useful     = require("useful")
 GIBLET CLASS
 --]]------------------------------------------------------------
 
+
+local Giblet = Class
+{
+  init = function(self, x, y, special_init)
+    GameObject.init(self, x, y, 0, 0)
+    if special_init then
+      special_init(self)
+    end
+  end,
+      
+  type            =  GameObject.TYPE["GIBLET"],
+  imScale         = 1,
+  rotation        = 0,
+  rotation_speed  = 0
+}
+Giblet:include(GameObject)
+
+Giblet.spawn = function (level, x, y, number, special_init)
+  for i = 1, number do
+    level:addObject(Giblet(x, y, special_init))
+  end
+end
+
+
+-- fisix
+Giblet.GRAVITY    = 1000
+Giblet.FRICTION_X = 10
+
+--[[------------------------------------------------------------
+Blood
+--]]--
+
 local BLOOD_DROP = 
   love.graphics.newImage("assets/sprites/blood_drop.png")
 local BLOOD_SPLAT = 
   love.graphics.newImage("assets/sprites/blood_splat.png")
 
-  
-local Giblet = Class
-{
-  init = function(self, x, y, dx, dy)
-    x, y = x + math.random()*32, y + math.random()*32
-    GameObject.init(self, x, y, 0, 16)
-    self.dx = dx + math.random()*700 - 350
-    self.dy = dy - math.random()*300 - 300
-    self.view = GameObject.DEBUG_VIEW
-  end,
-      
-  type  =  GameObject.TYPE["GIBLET"],
-}
-Giblet:include(GameObject)
-
-Giblet.spawn = function (level, x, y, number, dx, dy)
-  for i = 1, number do
-    level:addObject(Giblet(x, y, dx, dy))
-  end
+Giblet.blood = function(level, bleeder)
+  Giblet.spawn(level, bleeder.x, bleeder.y, 
+      5 + useful.iSignedRand(2), 
+      function(gib)
+        gib.w, gib.h = 0, 16
+        gib.dx = bleeder.dx/3 
+                  + useful.signedRand(350)
+        gib.dy = bleeder.dy/3 - 300 
+                  + useful.signedRand(200)
+        gib.img_air = BLOOD_DROP
+        gib.img_ground = BLOOD_SPLAT
+        gib.imScale = 1 + useful.signedRand(0.7)
+      end)
 end
 
--- fisix
-Giblet.GRAVITY    = 1000
-Giblet.FRICTION_X = 10
+--[[------------------------------------------------------------
+Teddy parts
+--]]--
 
 
 --[[------------------------------------------------------------
@@ -64,10 +90,18 @@ function Giblet:update(dt, level, view)
   -- base update
   GameObject.update(self, dt, level, view)
   
+  -- rotation
+  if self.rotation_speed ~= 0 then
+    self.rotation = self.rotation + self.rotation_speed
+  end
+  
   -- stop and destroy
   if not self.airborne then
     if (self.dx ~= 0) or (self.dy ~= 0) then
       self.dx, self.dy = 0, 0
+      if self.rotation_speed ~= 0 then
+        self.rotation_speed = 0
+      end
     end
     if not self:isColliding(view) then
       self.purge = true
@@ -78,9 +112,13 @@ end
 function Giblet:draw()
   
   local img = 
-    useful.tri(self.airborne, BLOOD_DROP, BLOOD_SPLAT)
+    useful.tri(self.airborne, 
+        self.img_air, self.img_ground)
   love.graphics.draw(img, 
-      self:centreX() - img:getWidth()/2, self.y + 8)
+      self:centreX(), 
+      self.y + 8, 
+      self.rotation, self.imScale, self.imScale,
+      self.imScale*img:getWidth()/2, 0)
 end
 
 

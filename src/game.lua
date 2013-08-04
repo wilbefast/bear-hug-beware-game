@@ -34,6 +34,8 @@ local FOLLOW_DIST = 150
 local SKY
 local HORIZON, HORIZON_W, HORIZON_H, QHORIZON 
 local MOUNTAINS, MOUNTAINS_W, MOUNTAINS_H, QMOUTAINS
+local PORTRAITS, QPORTRAITS
+local BARS, QBARS
 
 --[[------------------------------------------------------------
 GAME GAMESTATE
@@ -64,34 +66,23 @@ function state:init()
   QMOUNTAINS = love.graphics.newQuad(0, 0, DEFAULT_W*3, MOUNTAINS_H, 
                                   MOUNTAINS_W, MOUNTAINS_H)
   
-
-  --baffe= love.audio.newSource("assets/audio/prise_de_degats.ogg", "static")
-  --cri_mort = love.audio.newSource("assets/audio/cri_mort.ogg","static")
-  --explosion = love.audio.newSource("assets/audio/explosion_magique.ogg", "static")
-  --jeu_son = love.audio.newSource("assets/audio/themejeu.ogg")
- -- happy = love.audio.newSource("assets/audio/happy.ogg", "static")
-   
- 
-  --jeu_son:play()
-  --jeu_son:setLooping(true)
+  PORTRAITS = love.graphics.newImage("assets/hud/portraits.png")
+  QPORTRAITS = {}
+  for i = 1,3 do
+    QPORTRAITS[i] = love.graphics.newQuad((i-1)*64, 0, 64, 64, 
+        PORTRAITS:getWidth(), PORTRAITS:getHeight())
+  end
   
-  --image_mort = love.graphics.newImage("assets/images/mort.png")
-  
-  
-  --- GUI health bar
-  --[[
-  self.xLifeBarre  = 150
-  self.yLifeBarre  = 100
-  self.xMagicBarre = 150
-  self.yMagicBarre = 150
-  
-  im = love.graphics.newImage("assets/hud/spriteVie.png")
-  self.gui_life = newAnimation(im, 186, 62, 0.1, 0, 0, 0, {1,2,3,4,5,6,7,8,9})
-  self.gui_life:setMode("once")
-  self.gui_magic = newAnimation(im, 186, 62, 0.1, 0, 0, 0, {10})
-  self.gui_magic:setMode("once") --]]
-  
-
+  BARS = love.graphics.newImage("assets/hud/bars.png")
+  QBARS = {}
+  for i = 1,3 do
+    QBARS[i] = {}
+    for j = 1,10 do
+      QBARS[i][j] = love.graphics.newQuad(
+        0, (i-1)*32, (128/10)*j, 32, 
+        BARS:getWidth(), BARS:getHeight()) 
+    end
+  end
 end
 
 
@@ -208,15 +199,6 @@ function state:update(dt)
   
   -- update listener position
   love.audio.setPosition(self.player.x, self.player.y, 0)
-  
-  -- update GUI
-  --[[if self.player.life ~= 0 then
-    self.gui_life:seek(((90 - self.player.life)/10) + 1)
-    self.gui_magic:seek(((90 - self.player.magic)/10) + 1)
-  end --]]
-  --self.gui_magic:update(dt)
-  --self.gui_life:update(dt)
-
 end
 
 
@@ -268,26 +250,33 @@ function state:draw()
 
   self.camera:detach()
   
+  
+  -- GUI
+  
+  ---!-------------FIXME
+  local portrait_i = math.min(#QPORTRAITS, 
+      math.floor(#QPORTRAITS * ((100 - self.player.life)/100) + 1))
+  self.player.life = self.player.life - 0.5
+  ---!-----------FIXME
+      
+  local portrait_life = math.floor(100/(#QPORTRAITS))
+  local next_portrait_
+  
+  
+  
+  
+  local mod_life = self.player.life % portrait_life
+  local hipoints_i = math.floor((#QBARS[1]-1)
+      * ((portrait_life - mod_life)/portrait_life) + 1)
 
-  -- barre de magie et life :
-
-  --[[
-  if self.player.life>0 then
-    self.gui_life:draw(100,20)
-    self.gui_magic:draw(100,40)
-  end
-
-	if self.player.life == 0 then
-		draw_scaled(image_mort, 10, 10)
-		jeu_son:stop()
-		happy:play()
-	end
-	
-  if paused then 
-    love.graphics.rectangle("line",700,50, 200,40)
-    love.graphics.print("Paused, press 'p' to unpause", 705, 55)
-  end
-  --]]
+  -- draw health-bar
+  love.graphics.drawq(BARS, 
+      QBARS[portrait_i][hipoints_i], 100, 100)
+  
+  -- draw portrait
+  love.graphics.drawq(PORTRAITS, 
+      QPORTRAITS[portrait_i], 100, 100)
+ 
 end
 
 return state

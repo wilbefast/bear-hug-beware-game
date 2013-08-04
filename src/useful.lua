@@ -138,4 +138,9 @@ function useful.signedRand(value)
   return useful.tri(r < 0.5, value*2*r, value*2*(r-0.5))
 end
 
+function useful.iSignedRand(value)
+  local r = math.random()
+  return math.floor(useful.tri(r < 0.5, value*2*r, value*2*(r-0.5)))
+end
+
 return useful
