@@ -134,7 +134,15 @@ function Level:getObject(type, i)
 end
 
 function Level:countObject(type)
-  return #(self.object_types[type])
+  if type then
+    return #(self.object_types[type])
+  else
+    local count = 0
+    for type, objects_of_type in pairs(self.object_types) do
+      count = count + #(objects_of_type)
+    end
+    return count
+  end
 end
 
 function Level:addObject(object)
@@ -150,6 +158,8 @@ Game loop
 --]]
 
 function Level:update(dt, view)
+  
+  print(self:countObject())
   
   -- update objects
   -- ...for each type of object
