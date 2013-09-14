@@ -35,6 +35,7 @@ local SPRITE_SHEET = love.graphics.newImage("assets/sprites/hero.png")
 local ANIM_WALK = Animation(SPRITE_SHEET, 128, 128, 8)
 local ANIM_STAND = Animation(SPRITE_SHEET, 128, 128, 8, 0, 128)
 local ANIM_JUMP = Animation(SPRITE_SHEET, 128, 128, 3, 0, 256)
+local ANIM_CROUCH = Animation(SPRITE_SHEET, 128, 128, 2, 384, 256)
 local ANIM_MAGIC = Animation(SPRITE_SHEET, 128, 128, 2, 640, 256)
 local ANIM_BUTT = Animation(SPRITE_SHEET, 128, 128, 3, 0, 384)
 local ANIM_PAIN = Animation(SPRITE_SHEET, 128, 128, 1, 384, 384)
@@ -62,7 +63,7 @@ local Player = Class
   
     ---- Character
     Character.init(self, x, y, 64, 128,
-        ANIM_STAND, ANIM_WALK, ANIM_JUMP, ANIM_PAIN, ANIM_DEAD)
+        ANIM_STAND, ANIM_WALK, ANIM_JUMP, ANIM_PAIN, ANIM_DEAD, ANIM_CROUCH)
     
     -- combos
     self.score = 0

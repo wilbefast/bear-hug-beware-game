@@ -161,9 +161,11 @@ end
 
 function state:keyreleased(key, uni)
   -- player 1 jump
-  self.player.requestJump
-    = (key == " " or key == "up" 
-      or key == "z" or key == "w")
+  if (key == " " or key == "up" 
+      or key == "z" or key == "w") then
+    self.player.requestJump = true
+    self.player.requestStartJump = false
+  end
   
   -- player 1 attacks
   self.player.requestLightAttack 

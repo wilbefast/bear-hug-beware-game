@@ -35,7 +35,7 @@ CHARACTER CLASS
 local Character = Class
 {
   init = function(self, x, y, w, h, 
-                  astand, awalk, ajump, apain, adead)
+                  astand, awalk, ajump, apain, adead, acrouch)
     GameObject.init(self, x, y, w, h)
     -- get animations
     self.anim_stand = astand
@@ -43,6 +43,7 @@ local Character = Class
     self.anim_jump = ajump
     self.anim_pain = apain
     self.anim_dead = adead
+    self.anim_crouch = acrouch
     -- create view
     self.view = AnimationView(self.anim_stand)
     self.view.offy = -7
@@ -322,7 +323,12 @@ function Character:update(dt, level, view)
   if self.state == self.STATE.NORMAL then
     -- ground-based animations
     if (not self.airborne) and (self.dy == 0) then
-      if self.requestMoveX == 0 then
+      
+      if self.requestStartJump then
+        -- crouch
+        self.view:setAnimation(self.anim_crouch) 
+        print("BINK")
+      elseif self.requestMoveX == 0 then
         -- stand
         self.view:setAnimation(self.anim_stand) 
       else
