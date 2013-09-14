@@ -159,8 +159,6 @@ Game loop
 
 function Level:update(dt, view)
   
-  print(self:countObject())
-  
   -- update objects
   -- ...for each type of object
   for type, objects_of_type in pairs(self.object_types) do

@@ -75,12 +75,15 @@ useful.bind(Character.STATE, "WARMUP", 4)
 useful.bind(Character.STATE, "ATTACKING", 5)
 useful.bind(Character.STATE, "DYING", 6)
 useful.bind(Character.STATE, "DEAD", 7)
+useful.bind(Character.STATE, "CROUCHING", 8)
+
 
 function Character:onStateChange(new_state)
   -- override me!
 end
 
 function Character:setState(new_state, timer, level)
+
   if state ~= new_state then
     self:onStateChange(new_state)
     self.state = new_state
@@ -222,6 +225,19 @@ function Character:attack(weapon, target, level, view)
       self:centreY() + weapon.OFFSET_Y, weapon, self))
 end
 
+--[[------------------------------------------------------------
+Movement
+--]]
+
+function Character:jump()
+  -- boost upwards
+  audio:play_sound("jump", 0.2, self.x, self.y)
+  self.dy = -self.BOOST
+  -- reset boost power
+  if self.BOOST_MIN then
+    self.BOOST = self.BOOST_MIN
+  end
+end
 
 --[[------------------------------------------------------------
 Resources
@@ -287,8 +303,17 @@ function Character:update(dt, level, view)
   --[[------
   Control
   --]]--
-  
-  if self.state == self.STATE.NORMAL then
+
+  if self.state == self.STATE.CROUCHING then
+    -- prepare jump
+    self.BOOST = math.min(self.BOOST + 1.5*dt*self.BOOST_MAX, self.BOOST_MAX)
+    if not self.requestStartJump then
+      self:jump()
+      self:setState(self.STATE.NORMAL)
+    end
+
+  elseif (self.state == self.STATE.NORMAL) then
+
     -- run
     local moveDir = useful.sign(self.requestMoveX)
     if moveDir ~= 0 then
@@ -300,9 +325,7 @@ function Character:update(dt, level, view)
     if self.requestJump then
       -- check if on the ground
       if (not self.airborne) then
-        -- boost
-        audio:play_sound("jump", 0.2, self.x, self.y)
-        self.dy = -self.BOOST
+        self:jump()
       end
     end
     
@@ -324,11 +347,7 @@ function Character:update(dt, level, view)
     -- ground-based animations
     if (not self.airborne) and (self.dy == 0) then
       
-      if self.requestStartJump then
-        -- crouch
-        self.view:setAnimation(self.anim_crouch) 
-        print("BINK")
-      elseif self.requestMoveX == 0 then
+      if self.requestMoveX == 0 then
         -- stand
         self.view:setAnimation(self.anim_stand) 
       else
@@ -349,8 +368,14 @@ function Character:update(dt, level, view)
         self.view.frame = 2
       end
     end
-    
+
   -- if self.state == self.STATE.NORMAL then
+
+  elseif self.state == self.STATE.CROUCHING then
+    -- crouch
+      self.view:setAnimation(self.anim_crouch) 
+    
+  -- elseif self.state == self.STATE.CROUCHING then
     
   elseif self.state == self.STATE.BACKSWING then
     -- backswing frame

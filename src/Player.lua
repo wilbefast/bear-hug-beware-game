@@ -81,7 +81,9 @@ Constants
 -- physics
 Player.MOVE_X = 5000.0
 Player.MAX_DX = 1000.0
-Player.BOOST = 1000.0
+Player.BOOST = 0.0
+Player.BOOST_MIN = 500.0
+Player.BOOST_MAX = 1300.0
 Player.GRAVITY = 1500.0
 Player.FRICTION_X = 100
 
@@ -266,22 +268,27 @@ Game loop
 
 function Player:update(dt, level, view)
 
-  -- prepare attack
   if self.state == Character.STATE.NORMAL then
-    local weapon = nil
-    -- ... light
-    if self.requestStartLightAttack then
-      weapon = self.LIGHTATTACK
-    end
-    -- ... magic
-    if self.requestStartMagicAttack then
-      if (self.magic >= self.MAGICATTACK.MANA) then
-        weapon = self.MAGICATTACK
+    -- prepare jump
+    if (not self.airborne) and self.requestStartJump then
+      self:setState(Character.STATE.CROUCHING)
+
+    -- prepare attack
+    else
+      local weapon = nil
+      -- ... light
+      if self.requestStartLightAttack then
+        weapon = self.LIGHTATTACK
+      -- ... magic
+      elseif self.requestStartMagicAttack then
+        if (self.magic >= self.MAGICATTACK.MANA) then
+          weapon = self.MAGICATTACK
+        end
       end
-    end
-    -- launch attack
-    if weapon and (weapon.reloadTime <= 0) then
-      self:backswingAttack(weapon, nil, level, view)
+      -- launch attack
+      if weapon and (weapon.reloadTime <= 0) then
+        self:backswingAttack(weapon, nil, level, view)
+      end
     end
     
   -- launch attack 
@@ -345,6 +352,7 @@ function Player:draw()
     love.graphics.drawq(SPRITE_SHEET, QORB, x-32, y-32)
   end
   
+  love.graphics.print(tostring(self.BOOST), self.x, self.y+128)
   
 end
 

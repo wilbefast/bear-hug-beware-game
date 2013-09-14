@@ -243,7 +243,6 @@ function state:draw()
   -- calculate what is and isn't in view: useful for culling
   self:recalculate_view()
 	
-  
   -- draw objects from the camera's point of view
   self.camera:attach()
   
