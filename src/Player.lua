@@ -81,9 +81,9 @@ Constants
 -- physics
 Player.MOVE_X = 5000.0
 Player.MAX_DX = 1000.0
-Player.BOOST = 0.0
-Player.BOOST_MIN = 500.0
-Player.BOOST_MAX = 1300.0
+Player.BOOST_MIN = 600.0
+Player.BOOST_MAX = 1150.0
+Player.BOOST = Player.BOOST_MIN
 Player.GRAVITY = 1500.0
 Player.FRICTION_X = 100
 
