@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="512" height="32" tilewidth="64" tileheight="64">
+ <tileset firstgid="1" name="ground" tilewidth="64" tileheight="64">
+  <image source="../sprites/ground.png" width="512" height="256"/>
+ </tileset>
+ <objectgroup name="walls" width="512" height="32">
+  <object x="0" y="0" width="64" height="2048"/>
+  <object x="64" y="1856" width="2432" height="192"/>
+  <object x="128" y="896" width="832" height="448"/>
+  <object x="960" y="1152" width="320" height="512"/>
+  <object x="1280" y="1600" width="320" height="256"/>
+  <object x="64" y="512" width="64" height="256"/>
+  <object x="1280" y="1472" width="192" height="128"/>
+ </objectgroup>
+ <objectgroup name="players" width="512" height="32">
+  <object name="player1" x="128" y="384" width="64" height="128"/>
+ </objectgroup>
+ <layer name="ground_behind" width="512" height="32">
+  <data encoding="base64" compression="zlib">
+   eJztzrENADAIwDAuKfx/JT2AgaFSF1vKnggAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABg69xyqD4+AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAKw0GKQDa
+  </data>
+ </layer>
+ <layer name="ground" width="512" height="32">
+  <data encoding="base64" compression="zlib">
+   eJzt1TEKgDAQRUFrC7VSK/X+pzRNGgkIySoKM/DaZbvfdQAAAAAAAAAAAAAAAAAAAAAAAADAW4bUWGgKvB1xCwCIM6eWQmvFreve59s1twCA57Ts/93eb6k9dcS9CwAEaNl/ew8A/9RXlNl7AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC+7gTsUgU8
+  </data>
+ </layer>
+ <layer name="ground_infront" width="512" height="32">
+  <data encoding="base64" compression="zlib">
+   eJztzjENAAAIA7B9+HeMjJHQKmgCAAAAAAAAAAAAAAAAAAAAAABcMO0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA7y0HzgAI
+  </data>
+ </layer>
+ <objectgroup name="platforms" width="512" height="32">
+  <object x="128" y="640" width="448" height="320"/>
+  <object x="1088" y="768" width="192" height="192"/>
+  <object x="1344" y="704" width="192" height="192"/>
+  <object x="1600" y="640" width="192" height="192"/>
+  <object x="960" y="1024" width="128" height="128"/>
+  <object x="1280" y="1344" width="192" height="256"/>
+ </objectgroup>
+</map>

@@ -22,6 +22,7 @@ local GameObject = require("GameObject")
 local useful      = require("useful")
 local Attack      = require("Attack")
 local Giblet      = require("Giblet")
+local Tile        = require("Tile")
 local Animation   = require("Animation")
 local AnimationView = require("AnimationView")
 local SpecialEffect = require("SpecialEffect")
@@ -34,7 +35,7 @@ CHARACTER CLASS
 local Character = Class
 {
   init = function(self, x, y, w, h, 
-                  astand, awalk, ajump, apain, adead)
+                  astand, awalk, ajump, apain, adead, acrouch)
     GameObject.init(self, x, y, w, h)
     -- get animations
     self.anim_stand = astand
@@ -42,6 +43,7 @@ local Character = Class
     self.anim_jump = ajump
     self.anim_pain = apain
     self.anim_dead = adead
+    self.anim_crouch = acrouch
     -- create view
     self.view = AnimationView(self.anim_stand)
     self.view.offy = -7
@@ -68,16 +70,22 @@ State machine
 Character.STATE = {}
 useful.bind(Character.STATE, "NORMAL", 1)
 useful.bind(Character.STATE, "STUNNED", 2)
-useful.bind(Character.STATE, "WARMUP", 3)
-useful.bind(Character.STATE, "ATTACKING", 4)
-useful.bind(Character.STATE, "DYING", 5)
-useful.bind(Character.STATE, "DEAD", 6)
+useful.bind(Character.STATE, "BACKSWING", 3)
+useful.bind(Character.STATE, "WARMUP", 4)
+useful.bind(Character.STATE, "ATTACKING", 5)
+useful.bind(Character.STATE, "DYING", 6)
+useful.bind(Character.STATE, "DEAD", 7)
+useful.bind(Character.STATE, "CROUCHING", 8)
+
 
 function Character:onStateChange(new_state)
   -- override me!
 end
 
 function Character:setState(new_state, timer, level)
+
+  print()
+
   if state ~= new_state then
     self:onStateChange(new_state)
     self.state = new_state
@@ -110,7 +118,7 @@ function Character:eventCollision(other, level)
   -- collision with attack
   if (other.type == GameObject.TYPE.ATTACK)
   and (other.launcher.type ~= self.type) then
-    push = useful.sign(self:centreX() - other.launcher:centreX())
+    local push = useful.sign(self:centreX() - other.launcher:centreX())
     if (not other.weapon.DIRECTIONAL) 
     or (push == other.launcher.facing) then
       self.facing = -push
@@ -146,13 +154,17 @@ function Character:eventCollision(other, level)
   -- collision with death
   elseif other.type == GameObject.TYPE.DEATH then
     self:addLife(-math.huge, level)
+
   
   -- collision with other characters
-  elseif other.type == self.type then
+  elseif (other.type == GameObject.TYPE.PLAYER)
+  or (other.type == GameObject.TYPE.ENEMY) then
     if (self.state ~= self.STATE.STUNNED)
+    and (self.state ~= self.STATE.WARMUP)
+    and (other.state ~= other.STATE.WARMUP)
     and (other.state ~= other.STATE.STUNNED) then
       push = (self:centreX() - other:centreX())
-      self.dx = self.dx + push * 3
+      self.dx = self.dx + push*3
     end
   end
 end
@@ -162,15 +174,11 @@ end
 Combat
 --]]
 
-function Character:startAttack(weapon, target, level, view)
+function __auxStartAttack(self, weapon, target, level, view)
   -- attack queued to be launched when warmup is over
   self.deferred_weapon = weapon
   self.deferred_target = target
-  self:setState(Character.STATE.WARMUP, (weapon.WARMUP_TIME or 0))
 
-  -- mana-cost is deducted when warmup starts
-  self:addMagic(-weapon.MANA)
-  
   -- WARMUP sound effect
   if weapon.SOUND_WARMUP then
     audio:play_sound(weapon.SOUND_WARMUP, 0.2, self.x, self.y)
@@ -181,6 +189,20 @@ function Character:startAttack(weapon, target, level, view)
     level:addObject(SpecialEffect(self:centreX(), self:centreY(),
         weapon.SFX_WARMUP, weapon.SFX_WARMUP.n_frames/weapon.WARMUP_TIME))
   end
+end
+
+function Character:backswingAttack(weapon, target, level, view)
+  self:setState(Character.STATE.BACKSWING, 0)
+  -- mana-cost is deducted when backswing starts
+  self:addMagic(-weapon.MANA)
+  __auxStartAttack(self, weapon, target, level, view)
+end
+
+function Character:startAttack(weapon, target, level, view)
+  self:setState(Character.STATE.WARMUP, (weapon.WARMUP_TIME or 0))
+  -- mana-cost is deducted when warmup starts
+  self:addMagic(-weapon.MANA)
+  __auxStartAttack(self, weapon, target, level, view)
 end
 
 function Character:attack(weapon, target, level, view)
@@ -205,6 +227,19 @@ function Character:attack(weapon, target, level, view)
       self:centreY() + weapon.OFFSET_Y, weapon, self))
 end
 
+--[[------------------------------------------------------------
+Movement
+--]]
+
+function Character:jump()
+  -- boost upwards
+  audio:play_sound("jump", 0.2, self.x, self.y)
+  self.dy = -self.BOOST
+  -- reset boost power
+  if self.BOOST_MIN then
+    self.BOOST = self.BOOST_MIN
+  end
+end
 
 --[[------------------------------------------------------------
 Resources
@@ -270,8 +305,17 @@ function Character:update(dt, level, view)
   --[[------
   Control
   --]]--
-  
-  if self.state == self.STATE.NORMAL then
+
+  if self.state == self.STATE.CROUCHING then
+    -- prepare jump
+    self.BOOST = math.min(self.BOOST + 1.5*dt*self.BOOST_MAX, self.BOOST_MAX)
+    if not self.requestStartJump then
+      self:jump()
+      self:setState(self.STATE.NORMAL)
+    end
+
+  elseif (self.state == self.STATE.NORMAL) then
+
     -- run
     local moveDir = useful.sign(self.requestMoveX)
     if moveDir ~= 0 then
@@ -283,10 +327,17 @@ function Character:update(dt, level, view)
     if self.requestJump then
       -- check if on the ground
       if (not self.airborne) then
-        -- boost
-        audio:play_sound("jump", 0.2, self.x, self.y)
-        self.dy = -self.BOOST
+        self:jump()
       end
+    end
+    
+    -- drop through 1-sided platforms
+    if (not self.airborne )
+    and (self.requestMoveY > 0) 
+    and (self.standingOn == Tile.TYPE.ONESIDED) then
+      self.y = self.y + 1
+      self.prevy = self.y
+      self.airborne = true
     end
   end
   
@@ -297,6 +348,7 @@ function Character:update(dt, level, view)
   if self.state == self.STATE.NORMAL then
     -- ground-based animations
     if (not self.airborne) and (self.dy == 0) then
+      
       if self.requestMoveX == 0 then
         -- stand
         self.view:setAnimation(self.anim_stand) 
@@ -318,11 +370,24 @@ function Character:update(dt, level, view)
         self.view.frame = 2
       end
     end
-    
+
   -- if self.state == self.STATE.NORMAL then
-  elseif self.state == self.STATE.WARMUP then
+
+  elseif self.state == self.STATE.CROUCHING then
+    -- crouch
+      self.view:setAnimation(self.anim_crouch) 
     
-    -- back-swing/warmup animation
+  -- elseif self.state == self.STATE.CROUCHING then
+    
+  elseif self.state == self.STATE.BACKSWING then
+    -- backswing frame
+    if self.deferred_weapon.ANIM_WARMUP then
+      self.view:setAnimation(self.deferred_weapon.ANIM_WARMUP)
+      self.view:seekStart()
+    end
+    
+  elseif self.state == self.STATE.WARMUP then
+    -- warmup animation
     if self.deferred_weapon.ANIM_WARMUP then
       self.view:setAnimation(self.deferred_weapon.ANIM_WARMUP)
       self.view:seekPercent(1 - self.timer / self.deferred_weapon.WARMUP_TIME)

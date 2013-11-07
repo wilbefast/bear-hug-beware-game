@@ -35,6 +35,7 @@ local SPRITE_SHEET = love.graphics.newImage("assets/sprites/hero.png")
 local ANIM_WALK = Animation(SPRITE_SHEET, 128, 128, 8)
 local ANIM_STAND = Animation(SPRITE_SHEET, 128, 128, 8, 0, 128)
 local ANIM_JUMP = Animation(SPRITE_SHEET, 128, 128, 3, 0, 256)
+local ANIM_CROUCH = Animation(SPRITE_SHEET, 128, 128, 2, 384, 256)
 local ANIM_MAGIC = Animation(SPRITE_SHEET, 128, 128, 2, 640, 256)
 local ANIM_BUTT = Animation(SPRITE_SHEET, 128, 128, 3, 0, 384)
 local ANIM_PAIN = Animation(SPRITE_SHEET, 128, 128, 1, 384, 384)
@@ -62,7 +63,7 @@ local Player = Class
   
     ---- Character
     Character.init(self, x, y, 64, 128,
-        ANIM_STAND, ANIM_WALK, ANIM_JUMP, ANIM_PAIN, ANIM_DEAD)
+        ANIM_STAND, ANIM_WALK, ANIM_JUMP, ANIM_PAIN, ANIM_DEAD, ANIM_CROUCH)
     
     -- combos
     self.score = 0
@@ -80,7 +81,9 @@ Constants
 -- physics
 Player.MOVE_X = 5000.0
 Player.MAX_DX = 1000.0
-Player.BOOST = 1000.0
+Player.BOOST_MIN = 600.0
+Player.BOOST_MAX = 1150.0
+Player.BOOST = Player.BOOST_MIN
 Player.GRAVITY = 1500.0
 Player.FRICTION_X = 100
 
@@ -180,7 +183,7 @@ Player.LIGHTATTACK =
   OFFSET_X = 0,
   DAMAGE = 34,
   MANA = 0,
-  WARMUP_TIME = 0.2,
+  WARMUP_TIME = 0.1,
   DURATION = 0.1,
   RELOAD_TIME = 0.04,
   STUN_TIME = 1.0,
@@ -190,12 +193,12 @@ Player.LIGHTATTACK =
   KNOCKUP = 450,
   ANIM_WARMUP = ANIM_BUTT,
   SOUND_MISS = "miss",
-  DIRECTIONAL = true,
-  
+  --DIRECTIONAL = true,
   ON_HIT = ON_HIT,
   ON_MISS = ON_MISS,
         
-  reloadTime = 0
+  reloadTime = 0,
+  charge = 0
 }
 -- combat - magic attack
 Player.MAGICATTACK = 
@@ -205,7 +208,7 @@ Player.MAGICATTACK =
   OFFSET_X = -32,
   DAMAGE = 45,
   MANA = 30,
-  WARMUP_TIME = 0.4,
+  WARMUP_TIME = 0.2,
   DURATION = 0.4,
   RELOAD_TIME = 0.3,
   STUN_TIME = 3.0,
@@ -223,7 +226,8 @@ Player.MAGICATTACK =
   ON_HIT = ON_HIT,
   ON_MISS = ON_MISS,
   
-  reloadTime = 0
+  reloadTime = 0,
+  charge = 0
 }
 
 Player.MAXMANA = 100
@@ -264,8 +268,31 @@ Game loop
 
 function Player:update(dt, level, view)
 
-  -- try attack
   if self.state == Character.STATE.NORMAL then
+    -- prepare jump
+    if (not self.airborne) and self.requestStartJump then
+      self:setState(Character.STATE.CROUCHING)
+
+    -- prepare attack
+    else
+      local weapon = nil
+      -- ... light
+      if self.requestStartLightAttack then
+        weapon = self.LIGHTATTACK
+      -- ... magic
+      elseif self.requestStartMagicAttack then
+        if (self.magic >= self.MAGICATTACK.MANA) then
+          weapon = self.MAGICATTACK
+        end
+      end
+      -- launch attack
+      if weapon and (weapon.reloadTime <= 0) then
+        self:backswingAttack(weapon, nil, level, view)
+      end
+    end
+    
+  -- launch attack 
+  elseif self.state == Character.STATE.BACKSWING then
     local weapon = nil
     -- ... light
     if self.requestLightAttack then
@@ -273,13 +300,12 @@ function Player:update(dt, level, view)
     end
     -- ... magic
     if self.requestMagicAttack then
-      if (self.magic >= self.MAGICATTACK.MANA) then
-        weapon = self.MAGICATTACK
-      end
+      weapon = self.MAGICATTACK
     end
     -- launch attack
     if weapon and (weapon.reloadTime <= 0) then
-      self:startAttack(weapon, nil, level, view)
+      self:setState(Character.STATE.WARMUP, 
+                    (weapon.WARMUP_TIME or 0))
     end
   end
 
@@ -306,6 +332,8 @@ function Player:update(dt, level, view)
   reload(self.MAGICATTACK, dt)
   
   -- reset input
+  self.requestStartLightAttack = false
+  self.requestStartMagicAttack = false
   self.requestLightAttack = false
   self.requestMagicAttack = false
   
@@ -324,6 +352,7 @@ function Player:draw()
     love.graphics.drawq(SPRITE_SHEET, QORB, x-32, y-32)
   end
   
+  love.graphics.print(tostring(self.BOOST), self.x, self.y+128)
   
 end
 

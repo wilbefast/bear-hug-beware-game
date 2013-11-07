@@ -24,6 +24,9 @@ local GameObject = require("GameObject")
 local Enemy = require("Enemy")
 local Death = require("Death")
 local Bonus = require("Bonus")
+local Player = require("Player")
+local Doodad = require("Doodad")
+local Tile = require("Tile")
 local useful = require("useful")
 
 --[[------------------------------------------------------------
@@ -69,8 +72,51 @@ function Level:load(filename)
       parse_objects(layer, Death)
     elseif layer.name == "bonus" then
       parse_objects(layer, Bonus)
+    elseif layer.name == "players" then
+      parse_objects(layer, Player)
     end
   end
+
+  -- create decorations
+  self.collisiongrid:map(
+    function(tile, tx, ty)
+      if (tile.type == Tile.TYPE.EMPTY)
+      -- ground below
+      and self.collisiongrid:validGridPos(tx, ty+1)
+      and self.collisiongrid:gridCollision(tx, ty+1) 
+      -- ground below left
+      and self.collisiongrid:validGridPos(tx+1, ty+1)
+      and self.collisiongrid:gridCollision(tx+1, ty+1) 
+      -- ground below right
+      and self.collisiongrid:validGridPos(tx-1, ty+1)
+      and self.collisiongrid:gridCollision(tx-1, ty+1)
+      then
+      
+        -- ground below FURTHER left
+        if self.collisiongrid:validGridPos(tx+2, ty+1)
+        and self.collisiongrid:gridCollision(tx+2, ty+1) 
+        -- ground below FURTHER right
+        and self.collisiongrid:validGridPos(tx-2, ty+1)
+        and self.collisiongrid:gridCollision(tx-2, ty+1)
+        then
+          if useful.randBool(0.09) then
+            self:addObject(
+              Doodad.tree(tx*self.collisiongrid.tilew, 
+                          ty*self.collisiongrid.tileh))
+          elseif useful.randBool(0.08) then
+            self:addObject(
+              Doodad.bush(tx*self.collisiongrid.tilew, 
+                          ty*self.collisiongrid.tileh))
+          end
+        elseif useful.randBool(0.6) then
+            self:addObject(
+              Doodad.grass(tx*self.collisiongrid.tilew, 
+                          ty*self.collisiongrid.tileh))
+        end
+      end
+
+    end)
+    
 end
 
 --[[------------------------------------------------------------
@@ -88,7 +134,15 @@ function Level:getObject(type, i)
 end
 
 function Level:countObject(type)
-  return #(self.object_types[type])
+  if type then
+    return #(self.object_types[type])
+  else
+    local count = 0
+    for type, objects_of_type in pairs(self.object_types) do
+      count = count + #(objects_of_type)
+    end
+    return count
+  end
 end
 
 function Level:addObject(object)

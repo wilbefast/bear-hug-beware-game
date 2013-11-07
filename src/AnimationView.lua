@@ -33,6 +33,9 @@ local AnimationView = Class
     self.speed = (speed or 0.0)
     self.frame = (frame or math.random(self.anim.n_frames))
   end,
+      
+  offx = 0,
+  offy = 0
 }
   
   
@@ -41,7 +44,8 @@ Game loop
 --]]
     
 function AnimationView:draw(object)
-  self.anim:draw(object:centreX(), object.y, self.frame, 
+  self.anim:draw(object:centreX() + self.offx, 
+                  object.y + self.offy, self.frame, 
                   self.flip_x, self.flip_y, object.w, self.offy)
 end
 
@@ -69,6 +73,10 @@ end
 function AnimationView:seekPercent(p)
   if p > 1 then p = 1 elseif p < 0 then p = 0 end
   self.frame = ((self.anim.n_frames-1) * p) + 1
+end
+
+function AnimationView:seekStart()
+  self.frame = 1
 end
 
 function AnimationView:setAnimation(anim)

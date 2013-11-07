@@ -57,7 +57,9 @@ useful.bind(GameObject.TYPE, "ENEMY", 3)
 useful.bind(GameObject.TYPE, "DEATH", 4)
 useful.bind(GameObject.TYPE, "BONUS", 5)
 useful.bind(GameObject.TYPE, "PLAYER", 6)
-useful.bind(GameObject.TYPE, "SPECIALEFFECT", 7)
+useful.bind(GameObject.TYPE, "DOODAD", 7)
+useful.bind(GameObject.TYPE, "SPECIALEFFECT", 8)
+
 
 function GameObject:typename()
   return GameObject.TYPE[self.type]
@@ -148,10 +150,10 @@ function GameObject:update(dt, level)
   end
   
   -- friction
-  if fisix.FRICTION_X and (fisix.FRICTION_X ~= 0) then
+  if (self.dx ~= 0) and fisix.FRICTION_X and (fisix.FRICTION_X ~= 0) then
     self.dx = self.dx / (math.pow(fisix.FRICTION_X, dt))
   end
-  if fisix.FRICTION_Y and (fisix.FRICTION_Y ~= 0) then
+  if (self.dx ~= 0) and fisix.FRICTION_Y and (fisix.FRICTION_Y ~= 0) then
     self.dy = self.dy / (math.pow(fisix.FRICTION_Y, dt))
   end
   
@@ -177,9 +179,17 @@ function GameObject:update(dt, level)
   end
   
   -- check if we're on the ground
-  self.airborne = 
+  if
     ((not collisiongrid:pixelCollision(self.x, self.y + self.h + 1, collide_type)
     and (not collisiongrid:pixelCollision(self.x + self.w, self.y + self.h + 1, collide_type))))
+  then
+    self.airborne = true
+    self.standingOn = nil
+  else
+    self.airborne = false
+    self.standingOn = collisiongrid:pixelType(self.x, self.y + self.h + 1)
+  end
+    
   if not self.airborne and self.dy > 0 then
     if collisiongrid:collision(self, collide_type) then
       self:snap_from_collision(0, -1, collisiongrid, math.abs(self.dy), collide_type)
@@ -197,7 +207,12 @@ function GameObject:update(dt, level)
       -- move as far as possible towards new position
       self:snap_to_collision(useful.sign(self.dx), 0, 
                         collisiongrid, math.abs(self.dx))
-      self.dx = 0
+      
+      if fisix.BOUNCY then
+        self.dx = -self.dx * fisix.BOUNCY 
+      else
+        self.dx = 0
+      end
     else
       -- if not move to new position
       self.x = new_x

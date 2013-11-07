@@ -37,8 +37,9 @@ local SpecialEffect = Class
   init = function(self, x, y, anim, speed, follow)
     self.offx, self.offy = -anim.frame_w/2, -anim.frame_h/2
       GameObject.init(self, 
-          x + self.offx, y + self.offy, 0, 0)
+          x + self.offx, y + self.offy, anim.frame_w, anim.frame_h)
     self.view = AnimationView(anim, speed, 1)
+    self.view.offx = -self.offx
     self.follow = follow
   end,
 }
@@ -61,8 +62,12 @@ function SpecialEffect:update(dt, level, view)
   end
 end
 
-function SpecialEffect:draw(view)
+function SpecialEffect:draw()
   self.view:draw(self)
+  
+  if DEBUG then
+    GameObject.draw(self)
+  end
 end
 
 

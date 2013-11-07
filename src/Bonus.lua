@@ -40,7 +40,9 @@ Bonus:include(GameObject)
 function Bonus:draw()
   love.graphics.draw(self.image, self.x, 
       self.y + math.cos(self.offset)*16)
-  love.graphics.print(self.x, self.y, self.offset)
+
+  -- debug
+  GameObject.draw(self)
 end
 
 function Bonus:update(dt)
