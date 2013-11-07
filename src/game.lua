@@ -22,6 +22,7 @@ local Level = require("Level")
 local Camera = require("hump/camera")
 local GameObject = require("GameObject")
 local Player = require("Player")
+local Enemy = require("Enemy")
 local useful = require("useful")
 
 
@@ -204,6 +205,13 @@ function state:update(dt)
   -- update the objects in the Level
   self:recalculate_view()
   self.level:update(dt, self.view)
+
+  -- create more teddies 
+  if self.level:countObject(GameObject.TYPE.ENEMY) < 10 then
+    self.level:addObject(Enemy(
+        self.player.x, 
+        0, 64, 128))
+  end
   
   -- camera follows player horizontally
   if self.player:centreX() < self.cam_x - FOLLOW_DIST then
