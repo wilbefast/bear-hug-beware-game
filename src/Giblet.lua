@@ -62,6 +62,7 @@ Blood
 --]]--
 
 Giblet.blood = function(level, bleeder, amount)
+
   amount = amount or 5
   Giblet.spawn(level, bleeder.x, bleeder.y, 
       amount + useful.iSignedRand(2), 
