@@ -131,7 +131,7 @@ function state:keypressed(key, uni)
   
   -- exit
   if key=="escape" then
-    GameState.switch(title)
+    love.event.push("quit")
     
   -- pause
   elseif key == "p" then

@@ -19,8 +19,6 @@ IMPORTS
 
 GameState = require("hump/gamestate")
 conf = require("conf")
-title = require("menus/title")
-prologue = require("menus/prologue")
 game = require("game")
 audio = require("audio")
 
@@ -107,7 +105,7 @@ function love.load(arg)
   audio:load_sound("miss", 4)
   audio:load_music("music_defeat")
   audio:load_music("music_game") 
-  audio:load_music("music_title")
+  --audio:load_music("music_title")
 
   -- initialise random
   math.randomseed(os.time())
@@ -116,7 +114,7 @@ function love.load(arg)
   love.mouse.setVisible(false)
 
   -- go to the initial gamestate
-  GameState.switch(useful.tri(DEBUG, game, title))
+  GameState.switch(game)
 end
 
 function love.focus(f)
