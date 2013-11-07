@@ -55,6 +55,7 @@ function Level:load(filename)
   
   -- parse objects
   self.object_types = {}
+
   -- ... using this function
   function parse_objects(table, constructor)
     for i, object in ipairs(table.objects) do
@@ -99,16 +100,16 @@ function Level:load(filename)
         and self.collisiongrid:validGridPos(tx-2, ty+1)
         and self.collisiongrid:gridCollision(tx-2, ty+1)
         then
-          if useful.randBool(0.09) then
+          if useful.randBool(0.03) then
             self:addObject(
               Doodad.tree(tx*self.collisiongrid.tilew, 
                           ty*self.collisiongrid.tileh))
-          elseif useful.randBool(0.08) then
+          elseif useful.randBool(0.02) then
             self:addObject(
               Doodad.bush(tx*self.collisiongrid.tilew, 
                           ty*self.collisiongrid.tileh))
           end
-        elseif useful.randBool(0.6) then
+        elseif useful.randBool(0.06) then
             self:addObject(
               Doodad.grass(tx*self.collisiongrid.tilew, 
                           ty*self.collisiongrid.tileh))

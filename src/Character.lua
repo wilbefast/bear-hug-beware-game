@@ -308,7 +308,7 @@ function Character:update(dt, level, view)
 
   if self.state == self.STATE.CROUCHING then
     -- prepare jump
-    self.BOOST = math.min(self.BOOST + 1.5*dt*self.BOOST_MAX, self.BOOST_MAX)
+    self.BOOST = math.min(self.BOOST + 4*dt*self.BOOST_MAX, self.BOOST_MAX)
     if not self.requestStartJump then
       self:jump()
       self:setState(self.STATE.NORMAL)

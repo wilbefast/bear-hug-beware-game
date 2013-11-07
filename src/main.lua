@@ -29,7 +29,7 @@ local useful = require("useful")
 GLOBAL SETTINGS
 --]]------------------------------------------------------------
 
-DEBUG = false
+DEBUG = true
 audio.mute = DEBUG
 
 --[[------------------------------------------------------------

@@ -352,8 +352,10 @@ function Player:draw()
     love.graphics.drawq(SPRITE_SHEET, QORB, x-32, y-32)
   end
   
-  love.graphics.print(tostring(self.BOOST), self.x, self.y+128)
-  
+  if DEBUG then
+    love.graphics.print(tostring(self.BOOST), self.x, self.y+128)
+  end
+
 end
 
 return Player

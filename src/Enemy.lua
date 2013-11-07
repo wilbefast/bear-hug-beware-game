@@ -51,7 +51,7 @@ Enemy:include(Character)
 
 function Enemy:init(x, y, w, h)
   -- base constructor
-  Character.init(self, x, y, w, h, 
+  Character.init(self, x, y, 64, 128, 
       ANIM_STAND, ANIM_STAND, ANIM_JUMP, ANIM_PAIN)
 
 end
