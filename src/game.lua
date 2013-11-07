@@ -322,7 +322,7 @@ function state:draw()
   end
   
   -- draw score 
-  love.graphics.print(self.player.score, 600, 32)
+  --love.graphics.print(self.player.score, 600, 32)
  
 end
 
