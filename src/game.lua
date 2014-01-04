@@ -114,7 +114,6 @@ function state:enter()
   
   -- reset objects
   self.level:load("../assets/maps/arena")
-  --self.level:load("../assets/maps/map00")
   self.player = self.level:getObject(GameObject.TYPE.PLAYER)
   
   -- reset camera

@@ -239,7 +239,6 @@ Collisions
 --]]
 
 function Player:die()
-  audio:play_music("music_defeat")
   self:setState(self.STATE.DEAD)
 end
 

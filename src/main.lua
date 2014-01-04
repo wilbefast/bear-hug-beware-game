@@ -103,9 +103,7 @@ function love.load(arg)
   audio:load_sound("disgust", 2)
   audio:load_sound("punch", 4)
   audio:load_sound("miss", 4)
-  audio:load_music("music_defeat")
   audio:load_music("music_game") 
-  --audio:load_music("music_title")
 
   -- initialise random
   math.randomseed(os.time())
