@@ -83,9 +83,6 @@ function Character:onStateChange(new_state)
 end
 
 function Character:setState(new_state, timer, level)
-
-  print()
-
   if state ~= new_state then
     self:onStateChange(new_state)
     self.state = new_state

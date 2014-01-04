@@ -61,7 +61,7 @@ function TileSet:tryDraw(id, x, y)
     return false -- fail!
   end
   -- draw using the appropriate quad and report success
-  love.graphics.drawq(self.image, self.quads[id], 
+  love.graphics.draw(self.image, self.quads[id], 
       (x-1)*self.quadw, (y-1)*self.quadh)
   return true -- success!
 end

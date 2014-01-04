@@ -63,7 +63,7 @@ function Animation:draw(x, y, subimage, flip_x, flip_y, ox, oy)
               or 1)           
   flip_x = (flip_x or self.flip_x)
   flip_y = (flip_y or self.flip_y)
-  love.graphics.drawq(self.img, self.quads[subimage], x, y, 0,
+  love.graphics.draw(self.img, self.quads[subimage], x, y, 0,
       useful.tri(flip_x, -1, 1), 
       useful.tri(flip_y, -1, 1),
       ox, oy)

@@ -230,7 +230,7 @@ function Giblet:draw()
       self.qground)
   local offy = (self.offy or 0) + useful.tri(self.airborne, -8, 8)
   local _, _, quadw, quadh = quad:getViewport()
-  love.graphics.drawq(self.img, quad,
+  love.graphics.draw(self.img, quad,
       self:centreX(), 
       self:centreY() + offy, 
       self.rotation, self.face*self.imScale, self.imScale,

@@ -273,7 +273,7 @@ function state:draw()
       1000 - (self.view.y/8)%DEFAULT_H
     local horizon_offset = 
       base_offset - (self.view.x/30)%DEFAULT_W
-    love.graphics.drawq(HORIZON, QHORIZON, horizon_offset, 400)
+    love.graphics.draw(HORIZON, QHORIZON, horizon_offset, 400)
     love.graphics.setColor(160, 61, 96)
       love.graphics.rectangle("fill", self.view.x, 
           400+HORIZON_H, self.view.w, 
@@ -286,7 +286,7 @@ function state:draw()
     local mountains_offset = 
       base_offset - (self.view.x/12)%DEFAULT_W
     if self.view.y < mountains_yoffset + MOUNTAINS_H then
-      love.graphics.drawq(MOUNTAINS, QMOUNTAINS, 
+      love.graphics.draw(MOUNTAINS, QMOUNTAINS, 
                           mountains_offset, mountains_yoffset)
     end
     love.graphics.setColor(104, 161, 127)

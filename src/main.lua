@@ -49,7 +49,7 @@ end
 
 function scaled_drawq(img, quad, x, y, rot, sx, sy)
   x, y, rot, sx, sy = (x or 0), (y or 0), (rot or 0), (sx or 1), (sy or 1)
-  love.graphics.drawq(img, quad, x*SCALE_MIN, --+ DEFAULT_W*(SCALE_X-SCALE_MIN)/2, 
+  love.graphics.draw(img, quad, x*SCALE_MIN, --+ DEFAULT_W*(SCALE_X-SCALE_MIN)/2, 
                                   y*SCALE_MIN, --+ DEFAULT_H*(SCALE_Y-SCALE_MIN)/2, 
                                   rot, 
                                   sx*SCALE_MIN, 
@@ -59,7 +59,7 @@ end
 local function setBestResolution(desired_w, desired_h, fullscreen)
   DEFAULT_W, DEFAULT_H = desired_w, desired_h
   -- get and sort the available screen modes from best to worst
-  local modes = love.graphics.getModes()
+  local modes = love.window.getFullscreenModes()
   table.sort(modes, function(a, b) 
     return ((a.width*a.height > b.width*b.height) 
           and (a.width <= desired_w) and a.height <= desired_h) end)
@@ -72,7 +72,7 @@ local function setBestResolution(desired_w, desired_h, fullscreen)
     end
     
     -- try to set the resolution
-    local success = love.graphics.setMode(m.width, m.height, fullscreen)
+    local success = love.window.setMode(m.width, m.height, { fullscreen = true } )
     if success then
       SCALE_X, SCALE_Y = m.width/desired_w, m.height/desired_h
       SCALE_MIN, SCALE_MAX = math.min(SCALE_X, SCALE_Y), math.max(SCALE_X, SCALE_Y)

@@ -349,7 +349,7 @@ function Player:draw()
   -- draw combo orbs
   for i = 1, self.combo do
     local x, y = self:getOrbPosition(i)
-    love.graphics.drawq(SPRITE_SHEET, QORB, x-32, y-32)
+    love.graphics.draw(SPRITE_SHEET, QORB, x-32, y-32)
   end
   
   if DEBUG then

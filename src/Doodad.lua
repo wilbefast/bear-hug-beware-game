@@ -81,7 +81,7 @@ Game loop
 
 function Doodad:draw()
   
-  love.graphics.drawq(self.image, self.quad, self.x, self.y, 
+  love.graphics.draw(self.image, self.quad, self.x, self.y, 
       0, 1, 1, 0, 0)
   
   if DEBUG then
