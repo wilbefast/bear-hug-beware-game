@@ -131,6 +131,15 @@ function love.keyreleased(key, uni)
   GameState.keyreleased(key, uni)
 end
 
+function love.joystickpressed( joystick, button )
+	GameState.joystickpressed(joystick, button)
+end
+
+function love.joystickreleased( joystick, button )
+	GameState.joystickreleased(joystick, button)
+end
+
+
 MIN_DT = 1/60
 MAX_DT = 1/30
 function love.update(dt)

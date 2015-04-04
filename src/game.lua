@@ -177,6 +177,26 @@ function state:keyreleased(key, uni)
       or key == "rshift" or key == "lshift")
 end
 
+local _joystick = nil
+
+function state:joystickpressed( joystick, button )
+	_joystick = joystick
+  -- player 1 jump
+  self.player.requestStartJump = (button == 1)
+  self.player.requestStartLightAttack = (button == 3)
+  self.player.requestStartMagicAttack = (button == 4)
+end
+
+function state:joystickreleased( joystick, button )
+	_joystick = joystick
+	if button == 1 then
+    self.player.requestJump = true
+    self.player.requestStartJump = false
+  end
+  self.player.requestLightAttack = (button == 3)
+  self.player.requestMagicAttack = (button == 4)
+end
+
 function state:update(dt)
   
   -- do nothing if paused
@@ -198,6 +218,28 @@ function state:update(dt)
   if love.keyboard.isDown("down", "s") then 
     ky = ky + 1 
   end
+
+  if _joystick then
+  	local jx, jy = _joystick:getGamepadAxis("leftx"), _joystick:getGamepadAxis("lefty")
+  	if (math.abs(jx) < 0.3) and (math.abs(jy) < 0.3) then
+  		jx, jy = 0, 0
+  	end
+  	kx, ky = kx + jx, ky + jy
+
+  	if _joystick:isGamepadDown("dpleft") then 
+  		kx = kx - 1
+  	end
+		if _joystick:isGamepadDown("dpleft") then 
+  		kx = kx + 1
+  	end
+  	if _joystick:isGamepadDown("dpup") then 
+  		ky = ky - 1
+  	end
+  	if _joystick:isGamepadDown("dpdown") then 
+  		ky = ky + 1
+  	end
+  end 
+
   self.player.requestMoveX = kx
   self.player.requestMoveY = ky
 
