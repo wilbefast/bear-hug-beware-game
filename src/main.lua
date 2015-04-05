@@ -30,6 +30,7 @@ MOUNTAINS_W = nil
 MOUNTAINS_H = nil
 QMOUTAINS = nil
 
+credits = require("credits")
 game = require("game")
 prologue = require("prologue")
 title = require("title")
@@ -50,7 +51,7 @@ _joystick = nil
 GLOBAL SETTINGS
 --]]------------------------------------------------------------
 
---DEBUG = true
+DEBUG = true
 audio.mute = (DEBUG == true)
 CAN_CAPTURE_GIF = false
 
@@ -128,6 +129,7 @@ function love.load(arg)
   WINDOW_H = love.graphics.getHeight()
   
   -- load sound and music
+  audio:load_sound("page", 2) 
   audio:load_sound("bear_attack", 3)  
   audio:load_sound("bear_die", 3)
   audio:load_sound("jump", 2)  

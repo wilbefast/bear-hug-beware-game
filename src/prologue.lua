@@ -72,6 +72,7 @@ function state:keypressed(key, uni)
   if key=="escape" then
     GameState.switch(title)
   else
+  	audio:play_sound("page")
   	if _page_turned then
   		GameState.switch(game)
   	else
@@ -85,6 +86,7 @@ end
 
 
 function state:joystickpressed( joystick, button )
+	audio:play_sound("page")
 	if _page_turned then
 		GameState.switch(game)
 	else
@@ -119,11 +121,11 @@ function state:draw()
   if _page_turned then
 	  scaled_draw(_PROLOGUE2_IMG,
 	  	DEFAULT_W*0.5 - _PROLOGUE2_IMG_W*0.5, 
-	  	DEFAULT_H*0.5 - _PROLOGUE2_IMG_H*0.5 + 48 + 8*offset)
+	  	DEFAULT_H*0.5 - _PROLOGUE2_IMG_H*0.5 + 8*offset)
 	else
 	  scaled_draw(_PROLOGUE1_IMG,
 	  	DEFAULT_W*0.5 - _PROLOGUE1_IMG_W*0.5, 
-	  	DEFAULT_H*0.5 - _PROLOGUE1_IMG_H*0.5 + 48 + 8*offset)
+	  	DEFAULT_H*0.5 - _PROLOGUE1_IMG_H*0.5 + 8*offset)
 	end
 end
 

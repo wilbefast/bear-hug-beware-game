@@ -48,11 +48,13 @@ ScorePop.spawn = function (level, x, y, score)
 end
 
 function ScorePop:draw()
+	local a = ((self.life > 0.2) and 255) or (255*self.life/0.2)
+
 	-- print score
   love.graphics.setFont(FONT_LARGE_OUTLINE)
-  love.graphics.setColor(0, 0, 0)
+  love.graphics.setColor(32, 16, 32, a)
   love.graphics.printf(self.text, self.x, self.y - 4, 0, "center")
-	love.graphics.setColor(255, 128, 255)
+	love.graphics.setColor(255, 128, 255, a)
 	love.graphics.setFont(FONT_LARGE)
   love.graphics.printf(self.text, self.x, self.y, 0, "center")
 	love.graphics.setColor(255, 255, 255)

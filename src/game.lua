@@ -124,8 +124,8 @@ function state:keypressed(key, uni)
     GameState.switch(title)
     
   -- pause
-  elseif key == "p" then
-    paused = (not paused)
+  -- elseif key == "p" then
+  --   paused = (not paused)
   
   -- restart after death
   elseif key=="return" or key=="kpenter" then
@@ -136,7 +136,7 @@ function state:keypressed(key, uni)
  
 	-- move back to menu
 	if self.player.state == self.player.STATE.DEAD then
-		GameState.switch(title)
+		GameState.switch(credits)
 	end
 
   -- player 1 jump
@@ -178,7 +178,7 @@ function state:joystickpressed( joystick, button )
 
 	-- move back to menu
 	if self.player.state == self.player.STATE.DEAD then
-		GameState.switch(title)
+		GameState.switch(credits)
 	end
 
   -- player 1 jump
