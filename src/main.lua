@@ -19,7 +19,21 @@ IMPORTS
 
 GameState = require("hump/gamestate")
 conf = require("conf")
+
+SKY = nil
+HORIZON = nil
+HORIZON_W = nil 
+HORIZON_H = nil
+QHORIZON = nil 
+MOUNTAINS = nil
+MOUNTAINS_W = nil
+MOUNTAINS_H = nil
+QMOUTAINS = nil
+
 game = require("game")
+prologue = require("prologue")
+title = require("title")
+
 audio = require("audio")
 
 local useful = require("useful")
@@ -27,16 +41,16 @@ local useful = require("useful")
 local SCREENSHOT_KEY = "x"
 local _capture_gif = false
 
-
-
 WINDOW_W = 0
 WINDOW_H = 0
+
+_joystick = nil
 
 --[[------------------------------------------------------------
 GLOBAL SETTINGS
 --]]------------------------------------------------------------
 
-DEBUG = true
+--DEBUG = true
 audio.mute = (DEBUG == true)
 CAN_CAPTURE_GIF = false
 
@@ -63,6 +77,14 @@ function scaled_drawq(img, quad, x, y, rot, sx, sy)
                                   sx*SCALE_MIN, 
                                   sy*SCALE_MIN)
 end
+
+function scaled_rect(mode, x, y, w, h)
+  love.graphics.rectangle(mode, x*SCALE_MIN,
+                                  y*SCALE_MIN,
+                                  w*SCALE_MIN, 
+                                  h*SCALE_MIN)
+end
+
 
 local function setBestResolution(desired_w, desired_h, fullscreen)
   DEFAULT_W, DEFAULT_H = desired_w, desired_h
@@ -114,6 +136,22 @@ function love.load(arg)
   audio:load_sound("punch", 4)
   audio:load_sound("miss", 4)
   audio:load_music("music_game") 
+  audio:play_music("music_game")
+
+  -- load resources
+  SKY = love.graphics.newImage("assets/background/sky.jpg")
+  
+  HORIZON = love.graphics.newImage("assets/background/horizon.png")
+  HORIZON:setWrap('repeat', 'clamp')
+  HORIZON_W, HORIZON_H = HORIZON:getWidth(), HORIZON:getHeight()
+  QHORIZON = love.graphics.newQuad(0, 0, DEFAULT_W*3, HORIZON_H, 
+                                  HORIZON_W, HORIZON_H)
+  
+  MOUNTAINS = love.graphics.newImage("assets/background/mountains.png")
+  MOUNTAINS:setWrap('repeat', 'clamp')
+  MOUNTAINS_W, MOUNTAINS_H = MOUNTAINS:getWidth(), MOUNTAINS:getHeight()
+  QMOUNTAINS = love.graphics.newQuad(0, 0, DEFAULT_W*3, MOUNTAINS_H, 
+                                  MOUNTAINS_W, MOUNTAINS_H)
 
   -- load font
   FONT_DEFAULT = love.graphics.newFont(14)
@@ -131,7 +169,7 @@ function love.load(arg)
   love.mouse.setVisible(false)
 
   -- go to the initial gamestate
-  GameState.switch(game)
+  GameState.switch(title)
 end
 
 function love.focus(f)
@@ -155,6 +193,7 @@ function love.keyreleased(key, uni)
 end
 
 function love.joystickpressed( joystick, button )
+	_joystick = joystick
 	GameState.joystickpressed(joystick, button)
 end
 

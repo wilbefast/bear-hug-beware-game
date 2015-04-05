@@ -119,6 +119,12 @@ function Player:onAttacked(attack, level)
   if self.combo > 0 then
     self:onComboEnd(level)
   end
+
+  -- pause slightly
+	love.timer.sleep(0.1)
+
+	-- shake screen
+	screenshake = screenshake + 1
 end
 
 function Player:onHit(weapon, attack, level)
@@ -139,7 +145,6 @@ function Player:onHit(weapon, attack, level)
     self.combo = COMBO_MAX
   end
   audio:play_sound("punch", nil, nil, nil, 1+(self.combo/COMBO_MAX))
-  
   
   -- create 'orb appear' sfx
   for i = 1, dcombo do
@@ -163,6 +168,12 @@ function Player:comboBonus(amount, level)
 
   -- popup score
   ScorePopup.spawn(level, self.x, self.y, dscore)
+
+  -- pause slightly
+	love.timer.sleep(0.1)
+
+	-- shake screen
+	screenshake = screenshake + 0.1*self.combo
 end
 
 function Player:onComboEnd(level)

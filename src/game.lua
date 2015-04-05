@@ -32,11 +32,9 @@ CONSTANTS
 
 -- camera
 local FOLLOW_DIST = 150
+screenshake = 0
 
 -- background images
-local SKY
-local HORIZON, HORIZON_W, HORIZON_H, QHORIZON 
-local MOUNTAINS, MOUNTAINS_W, MOUNTAINS_H, QMOUTAINS
 local PORTRAITS, QPORTRAITS
 local BARS, QBARS
 local BAR_DIVISIONS = 30
@@ -56,20 +54,6 @@ function state:init()
   
   -- set up camera
   self.camera = Camera(0, 0)
-
-  SKY = love.graphics.newImage("assets/background/sky.jpg")
-  
-  HORIZON = love.graphics.newImage("assets/background/horizon.png")
-  HORIZON:setWrap('repeat', 'clamp')
-  HORIZON_W, HORIZON_H = HORIZON:getWidth(), HORIZON:getHeight()
-  QHORIZON = love.graphics.newQuad(0, 0, DEFAULT_W*3, HORIZON_H, 
-                                  HORIZON_W, HORIZON_H)
-  
-  MOUNTAINS = love.graphics.newImage("assets/background/mountains.png")
-  MOUNTAINS:setWrap('repeat', 'clamp')
-  MOUNTAINS_W, MOUNTAINS_H = MOUNTAINS:getWidth(), MOUNTAINS:getHeight()
-  QMOUNTAINS = love.graphics.newQuad(0, 0, DEFAULT_W*3, MOUNTAINS_H, 
-                                  MOUNTAINS_W, MOUNTAINS_H)
   
   PORTRAITS = love.graphics.newImage("assets/hud/portraits.png")
   QPORTRAITS = {}
@@ -107,7 +91,11 @@ function state:recalculate_view()
                              self.view.endy - self.view.y
 end
 
+local _first = true
+
 function state:enter()
+
+	_first = true
 
   -- play music
   audio:play_music("music_game")
@@ -133,7 +121,7 @@ function state:keypressed(key, uni)
   
   -- exit
   if key=="escape" then
-    love.event.push("quit")
+    GameState.switch(title)
     
   -- pause
   elseif key == "p" then
@@ -146,6 +134,11 @@ function state:keypressed(key, uni)
     end
   end
  
+	-- move back to menu
+	if self.player.state == self.player.STATE.DEAD then
+		GameState.switch(title)
+	end
+
   -- player 1 jump
   self.player.requestStartJump
     = (key == " " or key == "up" 
@@ -178,10 +171,16 @@ function state:keyreleased(key, uni)
       or key == "rshift" or key == "lshift")
 end
 
-local _joystick = nil
-
 function state:joystickpressed( joystick, button )
-	_joystick = joystick
+	if _first then
+		return
+	end
+
+	-- move back to menu
+	if self.player.state == self.player.STATE.DEAD then
+		GameState.switch(title)
+	end
+
   -- player 1 jump
   self.player.requestStartJump = (button == 1)
   self.player.requestStartLightAttack = (button == 3)
@@ -189,7 +188,11 @@ function state:joystickpressed( joystick, button )
 end
 
 function state:joystickreleased( joystick, button )
-	_joystick = joystick
+	if _first then
+		_first = false
+		return
+	end
+
 	if button == 1 then
     self.player.requestJump = true
     self.player.requestStartJump = false
@@ -201,9 +204,15 @@ end
 local _t = 0
 function state:update(dt)
 
+	-- timing
 	_t = _t + dt
 	if _t > 1 then
 		_t = _t - 1
+	end
+
+	screenshake = screenshake - dt*screenshake*10
+	if screenshake < 0 then
+		screenshake = 0
 	end
   
   -- do nothing if paused
@@ -280,6 +289,11 @@ function state:update(dt)
   
   -- camera follows player vertically
   self.cam_y = self.player.y
+
+  -- apply screenshake
+	self.cam_x = self.cam_x + math.random()*screenshake*16 
+	self.cam_y = self.cam_y + math.random()*screenshake*16
+
   -- don't look outside the level bounds...
   -- ... snap horizontal
   local cam_left  = self.cam_x - self.view.w/2
