@@ -115,7 +115,8 @@ function state:enter()
   -- reset objects
   self.level:load("../assets/maps/arena")
   self.player = self.level:getObject(GameObject.TYPE.PLAYER)
-  
+  self.displayedScore = 0
+
   -- reset camera
   self.cam_x, self.cam_y = self.player.x, self.player.y
   self.camera:zoomTo(SCALE_MAX)
@@ -197,11 +198,27 @@ function state:joystickreleased( joystick, button )
   self.player.requestMagicAttack = (button == 4)
 end
 
+local _t = 0
 function state:update(dt)
+
+	_t = _t + dt
+	if _t > 1 then
+		_t = _t - 1
+	end
   
   -- do nothing if paused
   if paused then 
     return
+  end
+
+  -- interpolate score
+  local dscore = (self.player.score - self.displayedScore)*10*dt
+  if dscore < 0.1 then
+  	dscore = 0.1
+  end
+  self.displayedScore = self.displayedScore + dscore
+  if self.displayedScore > self.player.score then
+  	self.displayedScore = self.player.score
   end
   
   -- deal with input
@@ -382,16 +399,57 @@ function state:draw()
     scaled_drawq(PORTRAITS, 
         QPORTRAITS[portrait_i], 64, 32, 0, 2, 2)
    
-    
+    -- draw score 
+	  local d = math.min(100, (self.player.score - self.displayedScore))/20
+	  love.graphics.push()
+	  	love.graphics.translate(WINDOW_W - 64, 32)
+	  	love.graphics.scale(1 + d, 1 + d)
+			  love.graphics.setFont(FONT_LARGE_OUTLINE)
+			  love.graphics.setColor(0, 0, 0)
+			  love.graphics.printf(math.floor(self.displayedScore), 4, -4, 0, "right")
+				love.graphics.setColor(255, 128, 255)
+				love.graphics.setFont(FONT_LARGE)
+			  love.graphics.printf(math.floor(self.displayedScore), 0, 0, 0, "right")
+				love.graphics.setColor(255, 255, 255)
+		love.graphics.pop()		
+
+		d = d + self.player.combo/9
+		if d > 0 then
+			local txt = "X"..tostring(math.floor(self.player.combo))
+			love.graphics.push()
+		  	love.graphics.translate(WINDOW_W - 64, 128)
+		  	love.graphics.scale(1 + d, 1 + d)
+				  love.graphics.setFont(FONT_LARGE_OUTLINE)
+				  love.graphics.setColor(0, 0, 0)
+				  love.graphics.printf(txt, 4, -4, 0, "right")
+					love.graphics.setColor(255, 128, 255)
+					love.graphics.setFont(FONT_LARGE)
+				  love.graphics.printf(txt, 0, 0, 0, "right")
+					love.graphics.setColor(255, 255, 255)
+
+			love.graphics.pop()
+		end
+
   else
+  	local offset = math.cos(math.pi*2*_t)*8
     scaled_draw(DEFEAT_SPLASH,
         DEFAULT_W/2 - DEFEAT_SPLASH:getWidth()/2,
-        DEFAULT_H/2 - DEFEAT_SPLASH:getHeight()/2)
+        DEFAULT_H*0.65 - DEFEAT_SPLASH:getHeight()/2 + offset)
+  
+    -- draw score 
+	  love.graphics.push()
+	  	love.graphics.translate(WINDOW_W/2, 32)
+			  love.graphics.setFont(FONT_HUGE_OUTLINE)
+			  love.graphics.setColor(0, 0, 0)
+			  love.graphics.printf(self.player.score, 4, -4, 0, "center")
+				love.graphics.setColor(255, 128, 255)
+				love.graphics.setFont(FONT_HUGE)
+			  love.graphics.printf(self.player.score, 0, 0, 0, "center")
+				love.graphics.setColor(255, 255, 255)
+		love.graphics.pop()		
   end
   
-  -- draw score 
-  --love.graphics.print(self.player.score, 600, 32)
- 
+
 end
 
 return state

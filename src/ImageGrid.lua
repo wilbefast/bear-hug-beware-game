@@ -158,7 +158,10 @@ function ImageGrid:draw(view)
   for z, layer in ipairs(self.layers) do
     for x = start_x, end_x do
       for y = start_y, end_y do
-        self:tryDraw(layer[x][y], x, y)
+      	local id = layer[x][y]
+      	if id then
+        	self:tryDraw(id, x, y)
+        end
       end
     end
   end

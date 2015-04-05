@@ -24,13 +24,21 @@ audio = require("audio")
 
 local useful = require("useful")
 
+local SCREENSHOT_KEY = "x"
+local _capture_gif = false
+
+
+
+WINDOW_W = 0
+WINDOW_H = 0
 
 --[[------------------------------------------------------------
 GLOBAL SETTINGS
 --]]------------------------------------------------------------
 
-DEBUG = false
-audio.mute = DEBUG
+DEBUG = true
+audio.mute = (DEBUG == true)
+CAN_CAPTURE_GIF = false
 
 --[[------------------------------------------------------------
 DEAL WITH DIFFERENT RESOLUTIONS (scale images)
@@ -94,6 +102,8 @@ function love.load(arg)
     print("Failed to set mode")
     love.event.push("quit")
   end
+  WINDOW_W = love.graphics.getWidth()
+  WINDOW_H = love.graphics.getHeight()
   
   -- load sound and music
   audio:load_sound("bear_attack", 3)  
@@ -105,6 +115,15 @@ function love.load(arg)
   audio:load_sound("miss", 4)
   audio:load_music("music_game") 
 
+  -- load font
+  FONT_DEFAULT = love.graphics.newFont(14)
+  FONT_SMALL = love.graphics.newFont("assets/ttf/APACAXI_COMIC.ttf", 64)
+  FONT_LARGE = love.graphics.newFont("assets/ttf/APACAXI_COMIC.ttf", 128)
+  FONT_LARGE_OUTLINE = love.graphics.newFont("assets/ttf/APACAXI_COMIC.ttf", 136)
+  love.graphics.setFont(FONT_LARGE)
+  FONT_HUGE = love.graphics.newFont("assets/ttf/APACAXI_COMIC.ttf", 256)
+  FONT_HUGE_OUTLINE = love.graphics.newFont("assets/ttf/APACAXI_COMIC.ttf", 264)
+ 
   -- initialise random
   math.randomseed(os.time())
   
@@ -125,6 +144,10 @@ end
 
 function love.keypressed(key, uni)
   GameState.keypressed(key, uni)
+
+  if CAN_CAPTURE_GIF and (key == SCREENSHOT_KEY) then
+  	_capture_gif = (not _capture_gif)
+  end
 end
 
 function love.keyreleased(key, uni)
@@ -143,10 +166,21 @@ end
 MIN_DT = 1/60
 MAX_DT = 1/30
 function love.update(dt)
-  dt = math.max(MIN_DT, math.min(MAX_DT, dt))
+  if _capture_gif then
+    dt = MAX_DT
+  else
+  	dt = math.max(MIN_DT, math.min(MAX_DT, dt))
+  end
+
   GameState.update(dt)
 end
 
 function love.draw()
+	love.graphics.setFont(FONT_DEFAULT)
   GameState.draw()
+
+  -- capture GIF footage
+  if _capture_gif then
+    useful.recordGIF()
+  end
 end

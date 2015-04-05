@@ -26,6 +26,7 @@ local audio      = require("audio")
 local Animation   = require("Animation")
 local AnimationView = require("AnimationView")
 local SpecialEffect = require("SpecialEffect")
+local ScorePopup = require("ScorePopup")
 
 --[[------------------------------------------------------------
 PLAYER CLASS
@@ -98,7 +99,7 @@ local COMBO_JUGGLE_VALUE = 2
 local COMBO_KILLHIT_VALUE = 3
 local COMBO_JUMPATTACK_VALUE = 1.5
 
-local COMBO_MAX = 10
+local COMBO_MAX = 9
 
 local COMBO_MAGIC_BONUS = 4
 local COMBO_LIFE_BONUS = 1
@@ -129,7 +130,7 @@ function Player:onHit(weapon, attack, level)
             + attack.n_kills*COMBO_KILLHIT_VALUE) 
     * useful.tri(self.airborne, COMBO_JUMPATTACK_VALUE, 1), level)
 
-  -- reset combo
+  -- reset combo timer
   self.combo = self.combo + dcombo
   self.combo_timer = COMBO_DURATION
   
@@ -157,7 +158,11 @@ end
 function Player:comboBonus(amount, level)
   self:addMagic(self.combo * COMBO_MAGIC_BONUS)
   self:addLife(self.combo * COMBO_LIFE_BONUS)
-  self.score = self.score + self.combo * COMBO_SCORE_BONUS
+  local dscore = (self.combo + 1) * COMBO_SCORE_BONUS
+  self.score = self.score + dscore
+
+  -- popup score
+  ScorePopup.spawn(level, self.x, self.y, dscore)
 end
 
 function Player:onComboEnd(level)

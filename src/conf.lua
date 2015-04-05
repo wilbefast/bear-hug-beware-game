@@ -3,8 +3,8 @@
 function love.conf(t)
 	t.title = "Hugly"  -- The title of the window the game is in (string)
 	t.author = "Bisounours Team"        -- The author of the game (string)
-	t.url = "http://github.com/wilbefast/bear-hug-beware-game"        
-	t.identity = nil            -- The name of the save directory (string)
+	t.url = "http://github.com/wilbefast/hugly"        
+	t.identity = "hugly"            -- The name of the save directory (string)
 	t.version = "0.9.1"         -- The LÖVE version this game was made for (string)
 	t.console = true           -- Attach a console (boolean, Windows only)
 	t.release = false           --FIXME -- Enable release mode (boolean)

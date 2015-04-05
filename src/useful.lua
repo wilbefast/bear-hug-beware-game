@@ -134,11 +134,13 @@ function useful.bind(table, a, b)
 end
 
 function useful.signedRand(value)
+  value = (value or 1)
   local r = math.random()
-  return useful.tri(r < 0.5, value*2*r, value*2*(r-0.5))
+  return useful.tri(r < 0.5, value*2*r, -value*2*(r-0.5))
 end
 
 function useful.iSignedRand(value)
+	value = (value or 1)
   local r = math.random()
   return math.floor(useful.tri(r < 0.5, value*2*r, value*2*(r-0.5)))
 end
@@ -153,6 +155,14 @@ end
 
 function useful.randBool(chanceOfTrue)
   return (math.random() < chanceOfTrue)
+end
+
+function useful.recordGIF(key)
+  if (not key) or love.keyboard.isDown(key) then
+    local s = love.graphics.newScreenshot()
+    __kev__snum = (__kev__snum or 0) + 1
+    s:encode(string.format("%04d",__kev__snum)..".png")
+  end
 end
 
 return useful
